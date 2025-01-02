@@ -1,0 +1,31 @@
+class Solution {
+    public boolean checkIfPangram(String s) {
+        int n = s.length();
+        int[] alp = new int[26];
+        Arrays.fill(alp, 0);
+        
+        for(int i=0; i<n; i++){
+            alp[s.charAt(i)-'a']++;
+        }
+        for(int i=0; i<26; i++){
+            if(alp[i] == 0) return false;
+        }
+
+        return true;
+    }
+}
+
+class Solution {
+    public boolean checkIfPangram(String s) {
+        int n = s.length();
+        int[] alp = new int[26];
+        Arrays.fill(alp, 0);
+        int cnt = 0;
+        for(int i=0; i<n; i++){
+            if(alp[s.charAt(i)-'a'] == 0) cnt++;
+            alp[s.charAt(i)-'a']++;
+        }
+
+        return cnt==26;
+    }
+}
