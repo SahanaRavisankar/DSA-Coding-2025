@@ -1,0 +1,77 @@
+class Solution {
+    public int[] vowelStrings(String[] words, int[][] q) {
+        int n = q.length;
+        int[] res = new int[n];
+        int ind = 0;
+        for(int i=0; i<n; i++){
+            ArrayList<String> temp = new ArrayList<>();
+            for(int j = q[i][0]; j<=q[i][1]; j++){
+                temp.add(words[j]);
+            }
+            int t = solve(temp);
+            res[ind] = t;
+            ind++;
+        }
+        return res;
+    }
+
+    int solve(ArrayList<String> list){
+        int count = 0;
+        for(String s:list){
+            if(check(s)) count++;
+        }
+        return count;
+    }
+
+    boolean check(String s){
+        s = s.toLowerCase();
+        char st = s.charAt(0);
+        char end = s.charAt(s.length()-1);
+        if(st=='a' || st=='e' || st=='i' || st=='o' || st=='u'){
+            if(end=='a' || end=='e' || end=='i' || end=='o' || end=='u') return true;
+        }
+        return false;
+    }
+}
+
+
+
+class Solution {
+    public int[] vowelStrings(String[] words, int[][] q) {
+        int n = q.length;
+        int m = words.length;
+        int[] res = new int[n];
+        int[] sum = new int[m];
+        int ind = 0;
+        int count = 0;
+        for(int i=0; i<m; i++){
+            if(check(words[i])) count++;
+            sum[ind] = count;
+            ind++;
+        }
+
+        ind = 0;
+
+        for(int i=0; i<n; i++){
+            int st = q[i][0];
+            int end = q[i][1];
+            int add = 0;
+            if(st == 0) add = sum[end];
+            else add = sum[end] - sum[st-1];
+            res[ind] = add;
+            ind++;
+        }
+
+        return res;
+    }
+
+    boolean check(String s){
+        s = s.toLowerCase();
+        char st = s.charAt(0);
+        char end = s.charAt(s.length()-1);
+        if(st=='a' || st=='e' || st=='i' || st=='o' || st=='u'){
+            if(end=='a' || end=='e' || end=='i' || end=='o' || end=='u') return true;
+        }
+        return false;
+    }
+}
