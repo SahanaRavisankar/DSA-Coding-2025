@@ -1,0 +1,33 @@
+class Solution {
+    public int waysToSplitArray(int[] nums) {
+        int cnt = 0;
+        int n = nums.length;
+        long[] sum1 = new long[n];
+        long[] sum2 = new long[n];
+        sum1[0] = nums[0];
+        sum2[n-1] = nums[n-1];
+        for(int i=1; i<n; i++) sum1[i] = sum1[i-1] + nums[i];
+        for(int i=n-2; i>=0; i--) sum2[i] = sum2[i+1] + nums[i];
+        //System.out.println(Arrays.toString(sum1));
+        //System.out.println(Arrays.toString(sum2));
+        for(int i=0; i<n-1; i++) if(sum1[i]>=sum2[i+1]) cnt++;
+        return cnt;
+    }
+}
+
+
+class Solution {
+    public int waysToSplitArray(int[] nums) {
+        int cnt = 0;
+        long ls = 0;
+        long rs = 0;
+        long sum = 0;
+        for(int i:nums) sum+=i;
+        for(int i=0; i<nums.length-1; i++){
+            ls += nums[i];
+            rs = sum-ls;
+            if(ls>=rs) cnt++;
+        }
+        return cnt;
+    }
+}
