@@ -1,0 +1,41 @@
+BRUTE FORCE
+class Solution {
+    public int[] minOperations(String s) {
+        int n = s.length();
+        int[] arr = new int[n];
+        for(int i=0; i<n; i++){
+            int cnt = 0;
+            for(int j=0; j<n; j++){
+                if(s.charAt(j) == '1') cnt += Math.abs(j-i);
+            }
+            arr[i] = cnt;
+        }
+        return arr;
+    }
+}
+
+
+class Solution {
+    public int[] minOperations(String s) {
+        int n = s.length();
+        int[] res = new int[n];
+        int cv = 0;
+        int cvs = 0;
+        // for left to i
+        for(int i=0; i<n; i++){
+            res[i] = cvs;
+            cv += s.charAt(i)=='0'?0:1;
+            cvs += cv;
+        }
+        //reset values
+        cv = 0;
+        cvs = 0;
+        // for i to rigth
+        for(int i=n-1; i>=0; i--){
+            res[i] += cvs;
+            cv += s.charAt(i)=='0'?0:1;
+            cvs += cv;
+        }
+        return res;
+    }
+}
