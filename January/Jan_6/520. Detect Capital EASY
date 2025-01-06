@@ -1,0 +1,29 @@
+class Solution {
+    public boolean detectCapitalUse(String s) {
+        return (allcaps(s) || allsmall(s) || allsmall(s.substring(1, s.length())));
+    }
+
+    boolean allcaps(String s){
+        for(char ch:s.toCharArray()) if(ch<'A' || ch>'Z') return false;
+        return true;
+    }
+    
+    boolean allsmall(String s){
+        for(char ch:s.toCharArray()) if(ch<'a' || ch>'z') return false;
+        return true;
+    }
+}
+
+class Solution {
+    public boolean detectCapitalUse(String s) {
+        int cnt = 0;
+        for(char ch:s.toCharArray()){
+            if(ch>='A' && ch<='Z') cnt++;
+        }
+        if(cnt == 0 || cnt == s.length()) return true;
+        if(cnt == 1){
+            if(s.charAt(0)>='A' && s.charAt(0)<='Z') return true;
+        }
+        return false;
+    }
+}
