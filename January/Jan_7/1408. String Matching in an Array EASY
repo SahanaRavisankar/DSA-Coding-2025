@@ -1,0 +1,72 @@
+class Solution {
+    public List<String> stringMatching(String[] words) {
+        List<String> res = new ArrayList<>();
+        int n = words.length;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                if(i==j) continue;
+                if(words[j].contains(words[i])) {
+                    if(!res.contains(words[i])) res.add(words[i]);
+                }
+            }
+        }
+        return res;
+    }
+}
+
+class Solution {
+    public List<String> stringMatching(String[] words) {
+        List<String> res = new ArrayList<>();
+        int n = words.length;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                if(i==j) continue;
+                if(searchKMP(words[i], words[j])) if(!res.contains(words[i])) res.add(words[i]);
+            }
+        }
+        return res;
+    }
+
+    boolean searchKMP(String pat, String txt){
+        int i=0, j=0;
+        int m = pat.length();
+        int n = txt.length();
+        int[] lps = new int[m];
+        ArrayList<Integer> res = new ArrayList<>();
+        lps = solve(lps, pat, m);
+        while(i<n){
+            if(pat.charAt(j) == txt.charAt(i)){
+                i++;
+                j++;
+            }
+            if(j==m){
+                /*res.add(i-j);
+                j = lps[j-1];*/
+                return true;
+            } else if(i<n && (j==0 || pat.charAt(j) != txt.charAt(i))){
+                if(j != 0) j = lps[j-1];
+                else i++;
+            }
+        }
+        return false; //!res.isEmpty();
+    }
+
+    int[] solve(int[] lps, String pat, int m){
+        int i=1;
+        int len = 0;
+        while(i<m){
+            if(pat.charAt(i) == pat.charAt(len)){
+                len++;
+                lps[i] = len;
+                i++;
+            } else{
+                if(len != 0) len = lps[len-1];
+                else{
+                    lps[i] = 0;
+                    i++;
+                }
+            }
+        }
+        return lps;
+    }
+}
