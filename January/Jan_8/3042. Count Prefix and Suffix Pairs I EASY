@@ -1,0 +1,86 @@
+class Solution {
+    public int countPrefixSuffixPairs(String[] words) {
+        int cnt = 0;
+        for(int i=0; i<words.length; i++){
+            for(int j=i+1; j<words.length; j++){
+                if(check(words[i], words[j])) cnt++;
+            }
+        }
+        return cnt;
+    }
+
+    boolean check(String str1, String str2){
+        int m = str1.length();
+        int n = str2.length();
+        if(m>n) return false;
+        if( (str2.substring(0, m).equals(str1)) && (str2.substring(n-m, n).equals(str1))) return true;
+        return false;
+    }
+}
+
+
+WITH TRIE
+
+class Solution {
+
+    class trieNode{
+        boolean endword;
+        String word;
+        trieNode[] child = new trieNode[26];
+    }
+
+    trieNode getNode(){
+        trieNode newNode = new trieNode();
+        newNode.endword = false;
+        newNode.word = "";
+        Arrays.fill(newNode.child, null);
+        return newNode;
+    }
+
+    public int countPrefixSuffixPairs(String[] words) {
+        int cnt = 0;
+        for(int i=0; i<words.length; i++){
+            for(int j=i+1; j<words.length; j++){
+                if(check(words[i], words[j])) cnt++;
+            }
+        }
+        return cnt;
+    }
+
+    boolean check(String str1, String str2){
+        int n = str1.length(); // check with
+        int m = str2.length(); // check on
+        if(n>m) return false;
+        trieNode s1 = new trieNode();
+        insert(s1, str2);
+        trieNode s2 = new trieNode();
+        StringBuilder tmp1 = new StringBuilder(str1);
+        StringBuilder tmp2 = new StringBuilder(str2);
+        insert(s2, tmp2.reverse().toString());
+        if(startwith(s1, str1) && startwith(s2, tmp1.reverse().toString())) return true;
+        return false;
+    }
+
+    void insert(trieNode root, String word){
+        trieNode trie = root;
+        for(int i=0; i<word.length(); i++){
+            if(trie.child[word.charAt(i)-'a'] == null) trie.child[word.charAt(i)-'a'] = getNode();
+            trie = trie.child[word.charAt(i)-'a'];
+        }
+        trie.endword = true;
+        trie.word = word;
+    }
+
+    boolean startwith(trieNode root, String word){
+        trieNode trie = root;
+        int i;
+        for(i=0; i<word.length(); i++){
+            int ind = word.charAt(i)-'a';
+            if(trie.child[ind] == null) return false;
+            trie = trie.child[ind];
+        }
+        if(i == word.length()) return true;
+        return false;
+    }
+
+}
