@@ -1,0 +1,63 @@
+class Solution {
+    int m, n;
+    List<String> res = new ArrayList<>();
+    class trieNode{
+        boolean endword;
+        String word;
+        trieNode[] children = new trieNode[26];
+    }
+
+    trieNode getNode(){
+        trieNode newNode = new trieNode();
+        newNode.endword = false;
+        newNode.word = "";
+        Arrays.fill(newNode.children, null);
+        return newNode;
+    }
+
+    void insert(trieNode root, String word){
+        trieNode trie = root;
+        for(int i=0; i<word.length(); i++){
+            char ch = word.charAt(i);
+            if(trie.children[ch-'a'] == null) trie.children[ch-'a'] = getNode();
+            trie = trie.children[ch-'a'];
+        }
+        trie.endword = true;
+        trie.word = word;
+    }
+
+    public List<String> findWords(char[][] board, String[] words) {
+        trieNode root = getNode();
+        for(String s:words) insert(root, s);
+        m = board.length;
+        n = board[0].length;
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                char ch = board[i][j];
+                if(root.children[ch-'a'] != null) findw(board, i, j, root);
+            }
+        }
+        return res;
+    }
+
+    int[][] dir = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+    void findw(char[][] board, int i, int j, trieNode root){
+        if(i<0 || i>=m || j<0 || j>=n) return;
+        if(board[i][j] == '$' || root.children[board[i][j]-'a'] == null) return;
+        root = root.children[board[i][j]-'a'];
+        if(root.endword == true){
+            res.add(root.word);
+            root.endword = false;
+        }
+        char tmp = board[i][j];
+        board[i][j] = '$';
+
+        for(int[] d:dir){
+            int inew = i+d[0];
+            int jnew = j+d[1];
+            findw(board, inew, jnew, root);
+        }
+        board[i][j] = tmp;
+    }
+}
