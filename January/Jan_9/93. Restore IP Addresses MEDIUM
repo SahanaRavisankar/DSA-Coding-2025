@@ -1,0 +1,58 @@
+class Solution {
+    List<String> res = new ArrayList<>();
+    String str;
+    public List<String> restoreIpAddresses(String s) {
+        str = s;
+        int n = s.length();
+        if(n>12) return new ArrayList<String>();
+        solve("", 0,0);
+        return res;
+    }
+
+    void solve(String curr, int ind, int part){
+        if(part>4) return;
+        if(part == 4 && ind>=str.length()){
+            res.add(curr.substring(0, curr.length()-1));
+            return;
+        }
+
+        for(int len = 1; len<=3 && ind+len<=str.length(); len++){
+            String num = str.substring(ind, ind+len);
+            if(num.charAt(0)=='0' && len!=1) break;
+            else if(Integer.parseInt(num)<=255){
+                solve(curr+str.substring(ind, ind+len)+".", ind+len, part+1);
+            }
+        }
+    }
+}
+
+
+class Solution {
+    List<String> res = new ArrayList<>();
+    String str;
+    public List<String> restoreIpAddresses(String s) {
+        str = s;
+        int n = s.length();
+        if(n>12) return new ArrayList<String>();
+        solve("", 0,0);
+        return res;
+    }
+
+    boolean check(String str){
+        if(str.charAt(0) == '0') return false;
+        int num = Integer.parseInt(str);
+        return num<=255;
+    }
+
+    void solve(String curr, int ind, int part){
+        if(part == 4 && ind>=str.length()){
+            res.add(curr.substring(0, curr.length()-1));
+            return;
+        }
+
+        if(ind+1 <= str.length()) solve(curr+str.substring(ind, ind+1)+".", ind+1, part+1);
+        //        solve(curr+str.substring(ind, ind+len)+".", ind+len, part+1);
+        if(ind+2<=str.length() && check(str.substring(ind, ind+2))) solve(curr+str.substring(ind, ind+2)+".", ind+2, part+1);
+        if(ind+3<=str.length() && check(str.substring(ind, ind+3))) solve(curr+str.substring(ind, ind+3)+".", ind+3, part+1);
+    }
+}
