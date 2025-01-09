@@ -1,0 +1,108 @@
+class Solution {
+
+    public int prefixCount(String[] words, String pref) {
+        int cnt = 0;
+        for(int i=0; i<words.length; i++){
+            if(words[i].startsWith(pref)) cnt++;
+        }
+        return cnt;
+    }
+}
+
+
+TRIE
+
+class Solution {
+
+    class trieNode{
+        boolean end;
+        trieNode[] child = new trieNode[26];
+    }
+
+    trieNode getNode(){
+        trieNode node = new trieNode();
+        node.end = false;
+        Arrays.fill(node.child, null);
+        return node;
+    }
+
+    public int prefixCount(String[] words, String pref) {
+        int cnt = 0;
+        trieNode trie = new trieNode();
+        for(int i=0; i<words.length; i++){
+            if(check(words[i], pref)) cnt++;
+        }
+        return cnt;
+    }
+
+    boolean check(String s1, String s2){
+        trieNode trie = new trieNode();
+        insert(trie, s1);
+        return starts(trie, s2);
+    }
+
+    void insert(trieNode root, String s){
+        trieNode node = root;
+        for(char c:s.toCharArray()){
+            if(node.child[c-'a'] == null) node.child[c-'a'] = getNode();
+            node = node.child[c-'a'];
+        }
+        node.end = true;
+    }
+
+    boolean starts(trieNode root, String p){
+        int i;
+        trieNode node = root;
+        for(i=0; i<p.length(); i++){
+            int ind = p.charAt(i)-'a';
+            if(node.child[ind] == null) return false;
+            node = node.child[ind];
+        }
+        return i == p.length();
+    }
+}
+
+
+TRIE WITH GETCOUNT FUNCTION
+
+class Solution {
+
+    class trieNode{
+        boolean end;
+        int count;
+        trieNode[] child = new trieNode[26];
+    }
+
+    trieNode getNode(){
+        trieNode node = new trieNode();
+        node.end = false;
+        Arrays.fill(node.child, null);
+        node.count = 0;
+        return node;
+    }
+
+    public int prefixCount(String[] words, String pref) {
+        trieNode trie = new trieNode();
+        for(String s:words) insert(trie, s);
+        return getCount(trie, pref);
+    }
+
+    int getCount(trieNode trie, String prefix){
+        trieNode node = trie;
+        for(char c:prefix.toCharArray()){
+            if(node.child[c-'a'] == null) return 0;
+            node = node.child[c-'a'];
+        }
+        return node.count;
+    }
+
+    void insert(trieNode root, String s){
+        trieNode node = root;
+        for(char c:s.toCharArray()){
+            if(node.child[c-'a'] == null) node.child[c-'a'] = getNode();
+            node = node.child[c-'a'];
+            node.count++;
+        }
+        node.end = true;
+    }
+}
