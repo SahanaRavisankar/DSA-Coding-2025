@@ -1,0 +1,35 @@
+class Solution {
+    public boolean buddyStrings(String s, String goal) {
+        if(s.length() != goal.length()) return false;
+        if(s.equals(goal)) return check(s);
+        int[] index = new int[2];
+        int cnt = 0;
+        for(int i=0; i<s.length(); i++){
+            if(s.charAt(i) != goal.charAt(i)){
+                cnt++;
+                if(cnt>2) return false;
+                index[cnt-1] = i;
+            }
+        }
+        s = swap(s, index[0], index[1]);
+        return s.equals(goal);
+    }
+
+    boolean check(String s){
+        int[] arr = new int[26];
+        Arrays.fill(arr, 0);
+        for(char c:s.toCharArray()) arr[c-'a']++;
+        for(int i=0; i<26; i++) if(arr[i]>1) return true;
+        return false;
+    }
+
+    String swap(String s, int i, int j){
+        char[] ch = s.toCharArray();
+        char t = ch[i];
+        ch[i] = ch[j];
+        ch[j] = t;
+        StringBuilder str = new StringBuilder();
+        for(char c:ch) str.append(c);
+        return str.toString();
+    }
+}
