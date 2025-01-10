@@ -1,0 +1,29 @@
+class Solution {
+    public List<String> wordSubsets(String[] w1, String[] w2) {
+        List<String> res = new ArrayList<>();
+        int[] freq = new int[26];
+        Arrays.fill(freq, 0);
+        for(String w:w2){
+            int[] tmp = new int[26];
+            Arrays.fill(tmp, 0);
+            for(char c:w.toCharArray()) tmp[c-'a']++;
+            for(int i=0; i<26; i++) freq[i] = Math.max(freq[i], tmp[i]);
+        }
+
+        for(String w:w1){
+            int[] tmp = new int[26];
+            Arrays.fill(tmp, 0);
+            for(char c:w.toCharArray()) tmp[c-'a']++;
+            boolean flag = true;
+            for(int i=0; i<26; i++){
+                if(freq[i]>tmp[i]){
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag) res.add(w);
+        }
+
+        return res;
+    }
+}
