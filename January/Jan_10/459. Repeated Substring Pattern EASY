@@ -5,8 +5,9 @@ class Solution {
             if(n % l == 0){
                 int time = n/l;
                 StringBuilder str = new StringBuilder();
+                String stemp = s.substring(0, l);
                 while(time>0) {
-                    str.append(s.substring(0, l));
+                    str.append(stemp);
                     time--;
                 }
                 if(str.toString().equals(s)) return true;
