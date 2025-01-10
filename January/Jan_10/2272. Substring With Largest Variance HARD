@@ -1,0 +1,28 @@
+class Solution {
+    public int largestVariance(String s) {
+        int res = 0;
+        for(char first = 'a'; first <= 'z'; first++){
+            for(char second = 'a'; second <= 'z'; second++){
+                StringBuilder s1 = new StringBuilder(first);
+                StringBuilder s2 = new StringBuilder(second);
+                boolean past = false;
+                if(s.contains(s1.toString()) && s.contains(s2.toString())){
+                    int f1 = 0;
+                    int f2 = 0;
+                    for(char c:s.toCharArray()){
+                        if(c == first) f1++;
+                        if(c == second) f2++;
+                        if(f2>0) res = Math.max(res, f1-f2);
+                        if(f2==0 && past) res = Math.max(res, f1-1);
+                        if(f2>f1){
+                            f1=0;
+                            f2=0;
+                            past = true;
+                        }
+                    }
+                }
+            }
+        }
+        return res;
+    }
+}
