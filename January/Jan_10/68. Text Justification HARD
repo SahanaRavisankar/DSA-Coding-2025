@@ -1,0 +1,53 @@
+class Solution {
+    public List<String> fullJustify(String[] words, int mw) {
+
+        List<String> list = new ArrayList<>();
+        int i = 0;
+        int n = words.length;
+        
+        while (i < n) {
+            int j = i + 1;
+            int lcnt = words[i].length();
+            int scnt = 0;
+        
+            while (j < n && lcnt + scnt + words[j].length() + 1 <= mw) {
+                lcnt += words[j].length();
+                scnt++;
+                j++;
+            }
+        
+            int vacant = mw - lcnt;
+            int eachsp = scnt == 0 ? 0 : vacant / scnt;
+            int extra = scnt == 0 ? 0 : vacant % scnt;
+        
+            if (j == n) {
+                eachsp = 1;
+                extra = 0;
+            }
+        
+            list.add(findline(i, j, eachsp, extra, words, mw));
+            i = j;
+        }
+        
+        return list;
+    }
+
+    String findline(int i, int j, int eachsp, int extra, String[] words, int mw) {
+        StringBuilder line = new StringBuilder();
+        for (int k = i; k < j; k++) {
+            line.append(words[k]);
+            if (k == j - 1)
+                continue;
+            for (int m = 1; m <= eachsp; m++) {
+                line.append(" ");
+            }
+            if (extra > 0) {
+                line.append(" ");
+                extra--;
+            }
+        }
+        while (line.toString().length() < mw)
+            line.append(" ");
+        return line.toString();
+    }
+}
