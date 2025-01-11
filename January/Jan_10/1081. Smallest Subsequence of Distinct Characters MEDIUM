@@ -1,0 +1,22 @@
+class Solution {
+    public String smallestSubsequence(String s) {
+        StringBuilder str = new StringBuilder();
+        int[] last = new int[26];
+        boolean[] bool = new boolean[26];
+        Arrays.fill(bool, false);
+        int n = s.length();
+        for(int i=0; i<n; i++) last[s.charAt(i)-'a'] = i;
+        for(int i=0; i<n; i++){
+            int ind = s.charAt(i) - 'a';
+            if(bool[ind]) continue;
+            while(str.length()>0 && str.charAt(str.length()-1)>s.charAt(i) && last[str.charAt(str.length()-1)-'a']>i){
+                bool[str.charAt(str.length()-1)-'a'] = false;
+                str.deleteCharAt(str.length()-1);
+            }
+            str.append(s.charAt(i));
+            bool[ind] = true;
+        }
+
+        return str.toString();
+    }
+}
