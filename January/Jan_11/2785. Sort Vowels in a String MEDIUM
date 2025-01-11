@@ -1,0 +1,53 @@
+class Solution {
+    public String sortVowels(String s) {
+        char[] ch = s.toCharArray();
+        ArrayList<Character> list = new ArrayList<>();
+        for(char c:ch) if(vowel(c)) list.add(c);
+        Collections.sort(list);
+        int j=0;
+        for(int i=0; i<ch.length; i++){
+            if(vowel(ch[i])){
+                ch[i] = list.get(j);
+                j++;
+            }
+        }
+        StringBuilder str = new StringBuilder();
+        for(char c:ch) str.append(c);
+        return str.toString();
+    }
+
+    boolean vowel(char c){
+        if(c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U' || c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') return true;
+        return false;
+    }
+}
+
+
+class Solution {
+    public String sortVowels(String s) {
+        char[] ch = s.toCharArray();
+        Map<Character, Integer> map = new HashMap<>();
+
+        for(char c:ch){
+            if(vowel(c)) map.put(c, map.getOrDefault(c, 0)+1);
+        }
+        
+        String temp = "AEIOUaeiou";
+        int j=0;
+        for(int i=0; i<s.length(); i++){
+            if(vowel(ch[i])){
+                while(!map.containsKey(temp.charAt(j)) || map.get(temp.charAt(j)) == 0) j++;
+                ch[i] = temp.charAt(j);
+                map.put(temp.charAt(j), map.get(temp.charAt(j))-1);
+            }
+        }
+        StringBuilder str = new StringBuilder();
+        for(char c:ch) str.append(c);
+        return str.toString();
+    }
+
+    boolean vowel(char c){
+        if(c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U' || c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') return true;
+        return false;
+    }
+}
