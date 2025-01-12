@@ -1,0 +1,15 @@
+//approach 3
+//to do 1,2
+
+class Solution {
+    public String findDifferentBinaryString(String[] nums) {
+        int n = nums.length;
+        StringBuilder str = new StringBuilder();
+        for(int i=0; i<n; i++){
+            char c = nums[i].charAt(i);
+            char x = c == '0' ? '1' : '0';
+            str.append(x);
+        }
+        return str.toString();
+    }
+}
