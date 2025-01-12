@@ -1,0 +1,31 @@
+class Solution {
+    public long beautifulSubstrings(String s, int k) {
+        Long res = 0L;
+        Map<Long, Map<Long, Long>> map = new HashMap<>();
+        Long v = 0L;
+        Long c = 0L;
+        // conso = -1, vowel = 1
+        map.put(0L, new HashMap<>());
+        map.get(0L).put(0L, 1L);
+        //int n = s.length();
+
+        for(char ch:s.toCharArray()){
+            if(vowel(ch)) v++;
+            else c++;
+            Long ps = v-c;
+            for(Map.Entry<Long, Long> entry: map.getOrDefault(ps, new HashMap<>()).entrySet()) {
+                Long curr = entry.getKey();
+                Long cnt = entry.getValue();
+                if((v % k - curr)*(v % k - curr) % k == 0) res += cnt;
+            }
+
+            map.computeIfAbsent(ps, key -> new HashMap<>()).merge(v % k, 1L, Long::sum);
+        }
+        
+        return (long)res;
+    }
+
+    boolean vowel(char c){
+        return (c=='a'||c=='e'||c=='i'||c=='o'||c=='u');
+    }
+}
