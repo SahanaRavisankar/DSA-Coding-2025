@@ -1,0 +1,38 @@
+class Solution {
+    public long countSubstrings(String s, char c) {
+        long res = 0;
+        long past = 0;
+        for(int i=0; i<s.length(); i++){
+            if(s.charAt(i) == c){
+                res += 1 + past;
+                past++;
+            }
+        }
+        return res;
+    }
+}
+
+class Solution {
+    public long countSubstrings(String s, char c) {
+        int cnt = 0;
+        for (int i = 0; i < s.length(); i++)
+            if (s.charAt(i) == c)
+                cnt++;
+        long c2 = combin(cnt, 2);
+        return cnt + c2;
+    }
+
+    long combin(int a, int b) {
+        if (b > a) {
+            return 0;
+        }
+        
+        b = Math.min(b, a - b); 
+        long result = 1;
+        for (int i = 0; i < b; i++) {
+            result *= (a - i);
+            result /= (i + 1);
+        }
+        return result;
+    }
+}
