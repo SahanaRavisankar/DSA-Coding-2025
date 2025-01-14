@@ -1,0 +1,101 @@
+//APPROACH 1
+class Solution {
+    public int[] findThePrefixCommonArray(int[] A, int[] B) {
+        int n = A.length;
+        int[] res = new int[n];
+        Set<Integer> a = new HashSet<>();
+        Set<Integer> b = new HashSet<>();
+        for(int i=0; i<n; i++){
+            a.add(A[i]);
+            b.add(B[i]);
+            Set<Integer> inter = new HashSet<>(a);
+            inter.retainAll(b);
+            res[i] = inter.size();
+        }
+        return res;
+    }
+}
+
+
+//APPROACH 2
+class Solution {
+    public int[] findThePrefixCommonArray(int[] A, int[] B) {
+        int n = A.length;
+        int[] res = new int[n];
+        
+        for(int i=0; i<n; i++){
+            int cnt = 0;
+            for(int j=0; j<=i; j++) for(int k=0; k<=i; k++) if(A[j] == B[k]) cnt++;
+            res[i] = cnt;
+        }
+        return res;
+    }
+}
+
+
+//APPROACH 3
+class Solution {
+    public int[] findThePrefixCommonArray(int[] A, int[] B) {
+        int n = A.length;
+        int[] res = new int[n];
+        boolean[] bool_a = new boolean[n+1];
+        boolean[] bool_b = new boolean[n+1];
+        Arrays.fill(bool_a, false);
+        Arrays.fill(bool_b, false);
+
+        for(int i=0; i<n; i++){
+            int cnt = 0;
+            bool_a[A[i]] = true;
+            bool_b[B[i]] = true;
+            for(int j=0; j<=n; j++) if(bool_a[j] && bool_b[j]) cnt++;
+            res[i] = cnt;
+        }
+
+        return res;
+    }
+}
+
+
+//APPROACH 4
+class Solution {
+    public int[] findThePrefixCommonArray(int[] A, int[] B) {
+        int n = A.length;
+        int[] res = new int[n];
+        boolean[] bool_a = new boolean[n+1];
+        boolean[] bool_b = new boolean[n+1];
+        Arrays.fill(bool_a, false);
+        Arrays.fill(bool_b, false);
+
+        int cnt = 0;
+        for(int i=0; i<n; i++){
+            bool_a[A[i]] = true;
+            bool_b[B[i]] = true;
+            if(bool_a[A[i]] && bool_b[A[i]]) cnt++;
+            if(A[i] != B[i]) if(bool_b[B[i]] && bool_a[B[i]]) cnt++;
+            res[i] = cnt;
+        }
+
+        return res;
+    }
+}
+
+
+//APPROACH 5
+class Solution {
+    public int[] findThePrefixCommonArray(int[] A, int[] B) {
+        int n = A.length;
+        int[] res = new int[n];
+        Map<Integer, Integer> mp = new HashMap<>();
+
+        int cnt = 0;
+        for(int i=0; i<n; i++){
+            mp.put(A[i], mp.getOrDefault(A[i], 0)+1);
+            if(mp.get(A[i]) == 2) cnt++;
+            mp.put(B[i], mp.getOrDefault(B[i], 0)+1);
+            if(mp.get(B[i]) == 2) cnt++;
+            res[i] = cnt;
+        }
+
+        return res;
+    }
+}
