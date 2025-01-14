@@ -1,0 +1,39 @@
+class Solution {
+    public String[] shortestSubstrings(String[] arr) {
+        Map<String, Integer> mp = new HashMap<>();
+        ArrayList<String> res = new ArrayList<>();
+        
+        for(String s:arr){
+            int n = s.length();
+            Set<String> set = new HashSet<>();
+            for(int i=0; i<n; i++){
+                for(int j=i+1; j<=n; j++){
+                    String sub = s.substring(i,j);
+                    if(!set.contains(sub)){
+                        mp.put(sub, mp.getOrDefault(sub, 0)+1);
+                        set.add(sub);
+                    }
+                }
+            }
+        }
+
+        for(String str:arr){
+            String shortest = "";
+            int n = str.length();
+            for(int i=0; i<n; i++){
+                for(int j=i+1; j<=n; j++){
+                    String sub = str.substring(i,j);
+
+                    if( mp.get(sub)==1 && 
+                    (shortest.equals("") || shortest.length()>sub.length() 
+                    || ( shortest.length()==sub.length() && sub.compareTo(shortest)<0) ) ) {
+                        shortest = sub;
+                    }
+                }
+            }
+            res.add(shortest);
+        }
+
+        return res.toArray(new String[0]);
+    }
+}
