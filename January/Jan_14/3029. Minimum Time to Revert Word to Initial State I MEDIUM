@@ -1,0 +1,25 @@
+class Solution {
+    public int minimumTimeToInitialState(String s, int k) {
+        int count = 1;
+        int i=k;
+        int n = s.length();
+        while(i<n){
+            if(check(s, s, i)) break;
+            count++;
+            i+=k;
+        }
+        
+        return count;
+    }
+
+    boolean check(String s, String s1, int i){
+        int j=0;
+        while(i<s.length()){
+            if(s.charAt(i) == s1.charAt(j)){
+                i++;
+                j++;
+            } else break;
+        }
+        return i==s1.length();
+    }
+}
