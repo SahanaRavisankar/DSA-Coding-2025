@@ -1,0 +1,32 @@
+class Solution {
+    public int[] sortJumbled(int[] map, int[] nums) {
+        int[] ans = new int[nums.length];
+        List<Pair> res = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            String s = String.valueOf(nums[i]);
+            String str = "";
+            for (int j = 0; j < s.length(); j++) {
+                str += map[s.charAt(j) - '0'];
+            }
+            int mappedNum = Integer.valueOf(str);
+            res.add(new Pair(mappedNum, i));
+        }
+
+        Collections.sort(res, (a, b) -> Integer.compare(a.mappedNum, b.mappedNum));
+
+        for (int i = 0; i < nums.length; i++) {
+            ans[i] = nums[res.get(i).originalIdx];
+        }
+        return ans;
+    }
+
+    static class Pair {
+        int mappedNum;
+        int originalIdx;
+
+        Pair(int mappedNum, int originalIdx) {
+            this.mappedNum = mappedNum;
+            this.originalIdx = originalIdx;
+        }
+    }
+}
