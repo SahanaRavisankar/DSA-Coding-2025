@@ -1,0 +1,68 @@
+class Solution {
+    public int minimizeXor(int num1, int num2) {
+        int x = num1;
+        int req = Integer.bitCount(num2);
+        int curr = Integer.bitCount(x);
+        int bit = 0;
+        if(curr < req){
+            while(curr < req){
+                if(!isset(x, bit)){
+                    x = setbit(x, bit);
+                    curr++;
+                }
+                bit++;
+            }
+        } else if(curr > req){
+            while(curr > req){
+                if(isset(x, bit)){
+                    x = unsetbit(x, bit);
+                    curr--;
+                }
+                bit++;
+            }
+        }
+        return x;
+    }
+
+    boolean isset(int x, int bit) {
+        return (x & (1 << bit)) != 0;
+    }
+    int setbit(int x, int bit) {
+        return x | (1 << bit);
+    }
+    int unsetbit(int x, int bit){
+        return x & ~(1 << bit);
+    } 
+}
+
+
+
+class Solution {
+    public int minimizeXor(int num1, int num2) {
+        int x = 0;
+        int req = Integer.bitCount(num2);
+
+        for(int bit = 31; bit>=0 && req>0; bit--){
+            if(isset(num1, bit)){
+                x = setbit(x, bit);
+                req--;
+            }
+        }
+
+        for(int bit = 0; bit<32 && req>0; bit++){
+            if(!isset(num1, bit)){
+                x = setbit(x, bit);
+                req--;
+            }
+        }
+
+        return x;
+    }
+
+    boolean isset(int x, int bit) {
+        return (x & (1 << bit)) != 0;
+    }
+    int setbit(int x, int bit) {
+        return x | (1 << bit);
+    } 
+}
