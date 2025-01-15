@@ -1,0 +1,23 @@
+class Solution {
+    public String compressedString(String s) {
+        int i = 0;
+        int n = s.length();
+        StringBuilder str = new StringBuilder();
+        while(i<n){
+            int cnt = 0;
+            char ch = s.charAt(i);
+            while(i<n && ch == s.charAt(i)){
+                cnt++;
+                i++;
+            }
+            while(cnt>9){
+                str.append(9).append(ch);
+                cnt -= 9;
+            }
+            if(cnt != 0){
+                str.append(cnt).append(ch);
+            }
+        }
+        return str.toString();
+    }
+}
