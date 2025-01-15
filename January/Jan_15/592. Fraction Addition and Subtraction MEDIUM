@@ -1,0 +1,41 @@
+class Solution {
+    public String fractionAddition(String expr) {
+        int num = 0, den = 1, i = 0, n = expr.length();
+
+        while (i < n) {
+            int currn = 0, currd = 0;
+            boolean flag = (expr.charAt(i) == '-');
+            if (expr.charAt(i) == '-' || expr.charAt(i) == '+')
+                i++;
+
+            while (i < n && expr.charAt(i) != '/') {
+                currn = currn * 10 + (expr.charAt(i) - '0');
+                i++;
+            }
+            i++;
+
+            if (flag) currn *= -1;
+
+            while (i < n && expr.charAt(i) != '+' && expr.charAt(i) != '-') {
+                currd = currd * 10 + (expr.charAt(i) - '0');
+                i++;
+            }
+            
+
+            num = num * currd + den * currn;
+            den *= currd;
+        }
+
+        int x = gcd(Math.abs(num), den);
+        num /= x;
+        den /= x;
+
+        return num + "/" + den;
+    }
+
+    int gcd(int a, int b) {
+        if (a == 0)
+            return b;
+        return gcd(b % a, a);
+    }
+}
