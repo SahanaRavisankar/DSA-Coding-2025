@@ -1,0 +1,48 @@
+class Solution {
+    public boolean areSentencesSimilar(String s1, String s2) {
+        if(s2.length() > s1.length()) return areSentencesSimilar(s2, s1);
+        String[] str1 = s1.split(" "); //longer
+        String[] str2 = s2.split(" "); // smaller
+        int i=0, k=0;
+        int m = str1.length;
+        int n = str2.length;
+        int j=m-1, l=n-1;
+        while(i<m && k<n && str1[i].equals(str2[k])){
+            i++;
+            k++;
+        } 
+        while(j>=0 && l>=0 && str1[j].equals(str2[l])){
+            j--;
+            l--;
+        }
+        
+        return (l<k);
+    }
+}
+
+
+
+class Solution {
+    public boolean areSentencesSimilar(String s1, String s2) {
+        if(s2.length() > s1.length()) return areSentencesSimilar(s2, s1);
+        String[] str1 = s1.split(" "); //longer
+        String[] str2 = s2.split(" "); // smaller
+
+        ArrayDeque<String> d1 = new ArrayDeque();
+        for(String s:str1) d1.add(s);
+        ArrayDeque<String> d2 = new ArrayDeque();
+        for(String s:str2) d2.add(s);
+        
+        while(!d1.isEmpty() && !d2.isEmpty() && d1.peekFirst().equals(d2.peekFirst())){
+            d1.removeFirst();
+            d2.removeFirst();
+        } 
+
+        while(!d1.isEmpty() && !d2.isEmpty() && d1.peekLast().equals(d2.peekLast())){
+            d1.removeLast();
+            d2.removeLast();
+        }
+        
+        return d2.isEmpty();
+    }
+}
