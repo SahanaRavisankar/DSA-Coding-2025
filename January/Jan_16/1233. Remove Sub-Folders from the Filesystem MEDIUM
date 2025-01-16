@@ -1,0 +1,37 @@
+class Solution {
+    public List<String> removeSubfolders(String[] folder) {
+        List<String> res = new ArrayList<>();
+        Set<String> set = new HashSet<>();
+        for(String s:folder) set.add(s);
+        for(String curr:folder){
+            String temp = curr;
+            boolean subf = false;
+            while(!curr.equals("")){
+                int ind = curr.lastIndexOf("/");
+                curr = curr.substring(0, ind);
+                if(set.contains(curr)){
+                    subf = true;
+                    break;
+                }
+            }
+            if(!subf) res.add(temp);
+        }
+        return res;
+    }
+}
+
+class Solution {
+    public List<String> removeSubfolders(String[] folder) {
+        List<String> res = new ArrayList<>();
+        Arrays.sort(folder);
+        res.add(folder[0]);
+        int n = folder.length;
+        for(int i=1; i<n; i++){
+            String curr = folder[i];
+            String last = res.get(res.size() - 1);
+            last += "/";
+            if(!curr.startsWith(last)) res.add(curr);
+        }
+        return res;
+    }
+}
