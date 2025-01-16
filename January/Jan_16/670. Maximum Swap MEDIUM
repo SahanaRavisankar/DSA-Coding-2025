@@ -1,0 +1,56 @@
+class Solution {
+    public int maximumSwap(int num) {
+        String s = String.valueOf(num);
+        char[] ch = s.toCharArray();
+        int n = s.length();
+        int[] maxrt = new int[n];
+        maxrt[n-1] = n-1;
+        for(int i=n-2; i>=0; i--){
+            int rtmaxind = maxrt[i+1];
+            int rtmaxel = s.charAt(rtmaxind)-'0';
+            maxrt[i] = (s.charAt(i)-'0' > rtmaxel)?i:rtmaxind;
+        }
+
+        for(int i=0; i<n; i++){
+            int rtmaxind = maxrt[i];
+            int maxrtel = s.charAt(rtmaxind)-'0';
+            if(s.charAt(i)-'0'<maxrtel){
+                char temp = ch[i];
+                ch[i] = ch[rtmaxind];
+                ch[rtmaxind] = temp;
+                StringBuilder str = new StringBuilder();
+                for(char c:ch) str.append(c);
+                return Integer.valueOf(str.toString());
+            }
+        }
+        return num;
+    }
+}
+
+
+class Solution {
+    public int maximumSwap(int num) {
+        StringBuilder s = new StringBuilder(String.valueOf(num));
+        int n = s.length();
+        int[] rtmax = new int[10];
+        Arrays.fill(rtmax, -1);
+
+        for (int i = 0; i < n; i++)
+            rtmax[s.charAt(i) - '0'] = i;
+
+        for (int i = 0; i < n; i++) {
+            int curr = s.charAt(i) - '0';
+
+            for (int j = 9; j > curr; j--) {
+                if (rtmax[j] > i) { // checking place value
+                    char temp = s.charAt(i);
+                    s.replace(i, i + 1, String.valueOf(s.charAt(rtmax[j])));
+                    s.replace(rtmax[j], rtmax[j] + 1, String.valueOf(temp));
+                    return Integer.valueOf(s.toString());
+                }
+            }
+        }
+
+        return num;
+    }
+}
