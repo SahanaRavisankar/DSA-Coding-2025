@@ -1,0 +1,50 @@
+class Solution {
+    public int maximumLength(String s) {
+        Map<String, Integer> mp = new HashMap<>();
+        int n = s.length();
+        for(int i=0; i<n; i++){
+            StringBuilder curr = new StringBuilder();
+            for(int j=i; j<n; j++){
+                if(curr.length() == 0 || curr.charAt(curr.length()-1)==s.charAt(j)) {
+                    curr.append(s.charAt(j));
+                    mp.put(curr.toString(), mp.getOrDefault(curr.toString(), 0)+1);
+                } else break;
+            }
+        }
+        
+        int max = 0;
+        for (Map.Entry<String, Integer> entry: mp.entrySet()){
+            if(entry.getValue()>=3) max = Math.max(max, entry.getKey().length());
+        }
+        return max==0?-1:max;
+    }
+}
+
+
+
+class Solution {
+    public int maximumLength(String s) {
+        int res = 0;
+        Map<Pair<Character, Integer>, Integer> mp = new HashMap<>();
+        int sub = 0;
+        for(int i=0; i<s.length(); i++){
+            char ch = s.charAt(i);
+            sub = 0;
+            for(int j=i; j<s.length(); j++){
+                if(s.charAt(j) == ch){
+                    sub++;
+                    Pair<Character, Integer> pair = new Pair<>(ch, sub);
+                    mp.put(pair, mp.getOrDefault(pair, 0)+1);
+                } else break;
+            }
+        }
+
+        for(Map.Entry<Pair<Character, Integer>, Integer> entry:mp.entrySet()){
+            int len = entry.getKey().getValue();
+            int cnt = entry.getValue();
+            if(cnt>=3) res = Math.max(res, len);
+        }
+
+        return res==0?-1:res;
+    }
+}
