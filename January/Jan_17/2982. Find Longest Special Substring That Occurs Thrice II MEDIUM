@@ -1,0 +1,36 @@
+class Solution {
+    public int maximumLength(String s) {
+        int res = -1;
+        int n = s.length();
+        int[][] matrix = new int[26][n+1];
+        for(int[] i:matrix) Arrays.fill(i, 0);
+        int i = 0;
+        char ch = s.charAt(0);
+        int l = 0;
+        while(i<n){
+            char c = s.charAt(i);
+            if(c == ch){
+                l++;
+                matrix[c-'a'][l]++;
+            } else{
+                l=1;
+                matrix[c-'a'][l]++;
+                ch = s.charAt(i);
+            }
+            i++;
+        }
+
+        for(int row = 0; row<26; row++){
+            int cumsum = 0;
+            for(int col = n; col>=0; col--){
+                cumsum += matrix[row][col];
+                if(cumsum>=3) {
+                    res = Math.max(res, col);
+                    break;
+                }
+            }
+        }
+        
+        return res==0?-1:res;
+    }
+}
