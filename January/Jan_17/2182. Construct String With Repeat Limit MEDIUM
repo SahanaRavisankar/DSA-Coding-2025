@@ -1,0 +1,56 @@
+class Solution {
+    public String repeatLimitedString(String s, int lt) {
+        StringBuilder res = new StringBuilder();
+        int[] freq = new int[26];
+        for(char ch:s.toCharArray()) freq[ch-'a']++;
+        int i=25;
+        while(i>=0){
+            if(freq[i] == 0) {
+                i--;
+                continue;
+            }
+            char ch = (char) ('a'+i);
+            int min = Math.min(lt, freq[i]);
+            freq[i] -= min;
+
+            while(min>0){
+                res.append(ch);
+                min--;
+            }
+            
+            if(freq[i]>0){
+                int j=i-1;
+                while(j>=0 && freq[j]==0) j--;
+                if(j<0) break;
+                res.append((char) ('a'+j));
+                freq[j]--;
+            }
+        }
+        return res.toString();
+    }
+}
+
+
+class Solution {
+    public String repeatLimitedString(String s, int lt) {
+        int[] freq = new int[26];
+        for(char ch:s.toCharArray()) freq[ch-'a']++;
+        StringBuilder res = new StringBuilder();
+        PriorityQueue<Character> pq = new PriorityQueue<>((a, b) -> b-a);
+        for(int i=0; i<26; i++) if(freq[i]>0) pq.offer((char) ('a'+i));
+        while(!pq.isEmpty()){
+            char ch = pq.poll();
+            int min = Math.min(lt, freq[ch-'a']);
+            for(int i=0; i<min; i++) res.append(ch);
+            freq[ch-'a'] -= min;
+            if(freq[ch-'a']>0 && !pq.isEmpty()){
+                char nxt = pq.poll();
+                res.append(nxt);
+                freq[nxt-'a']--;
+                if(freq[nxt-'a']>0) pq.offer(nxt);
+                pq.offer(ch);
+            }
+        }
+        return res.toString();
+    }
+}
