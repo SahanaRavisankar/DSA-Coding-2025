@@ -1,0 +1,18 @@
+class Solution {
+    public boolean canChange(String st, String t) {
+        int i=0, j=0;
+        int n = st.length();
+        while(i<n || j<n){
+            while(i<n && st.charAt(i) == '_') i++;
+            while(j<n && t.charAt(j) == '_') j++;
+            if(i==n || j==n) return i==n && j==n;
+            if(st.charAt(i) == t.charAt(j)){
+                if(st.charAt(i) == 'L') if(i<j) return false;
+                if(st.charAt(i) == 'R') if(j<i) return false;
+            } else return false;
+            i++;
+            j++;
+        }
+        return true;
+    }
+}
