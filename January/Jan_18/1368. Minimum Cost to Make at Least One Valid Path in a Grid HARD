@@ -1,0 +1,75 @@
+class Solution {
+    int m, n;
+    int[][] direction = {{0,1}, {0,-1}, {1,0}, {-1,0}};
+
+    public int minCost(int[][] grid) {
+        m = grid.length;
+        n = grid[0].length;
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a,b)->Integer.compare(a[0],b[0]));
+        int[][] res = new int[m][n];
+        for(int[] r:res) Arrays.fill(r,Integer.MAX_VALUE);
+        pq.offer(new int[]{0,0,0});
+        res[0][0] = 0;
+
+        while(!pq.isEmpty()){
+            int[] curr = pq.poll();
+            int cost = curr[0];
+            int i=curr[1];
+            int j=curr[2];
+            if(res[i][j] < cost) continue;
+            for(int k=0; k<4; k++){
+                int i_ = i+direction[k][0];
+                int j_ = j+direction[k][1];
+                if (i_ >= 0 && j_ >= 0 && i_ < m && j_ < n){
+                    int griddir = grid[i][j];
+                    int dircost = ((griddir!=k+1)?1:0);
+                    int newcost = cost + dircost;
+                    if(newcost<res[i_][j_]){
+                        res[i_][j_] = newcost;
+                        pq.offer(new int[]{newcost, i_, j_});
+                    }
+                }
+            }
+        }
+        return res[m-1][n-1];
+    }
+    
+}
+
+
+
+//TLE !!!
+class Solution {
+    int m, n;
+    public int minCost(int[][] grid) {
+        m = grid.length;
+        n = grid[0].length;
+        boolean[][] vis = new boolean[m][n];
+        for(boolean[] b:vis) Arrays.fill(b, false);
+        return backtrack(0, 0, grid, vis, 0);
+    }
+
+    int backtrack(int i, int j, int[][] grid, boolean[][] vis, int cost){
+        if(i == m-1 && j == n-1) return cost;
+        
+        int[][] direction = {{0,1}, {0,-1}, {1,0}, {-1,0}};
+        vis[i][j] = true;
+        
+        int min = Integer.MAX_VALUE;
+
+        for(int d = 0; d < 4; d++){
+            int i_ = i + direction[d][0];
+            int j_ = j + direction[d][1];
+            
+            if(i_ >= 0 && i_ < m && j_ >= 0 && j_ < n && !vis[i_][j_]){
+                int dir = grid[i][j];
+                int dircost = 0;
+                if(dir != d + 1) dircost = 1;
+                int newcost = cost + dircost;
+                min = Math.min(min, backtrack(i_, j_, grid, vis, newcost));
+            }
+        }
+        vis[i][j] = false;
+        return min;
+    }
+}
