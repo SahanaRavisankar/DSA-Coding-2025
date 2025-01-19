@@ -1,0 +1,48 @@
+class Solution {
+    public int trapRainWater(int[][] heightMap) {
+        int m = heightMap.length;     // row
+        int n = heightMap[0].length;  // col
+
+        PriorityQueue<int[]> boundary = new PriorityQueue<>(Comparator.comparingInt(a -> a[0])); // min heap
+        boolean[][] vis = new boolean[m][n];
+
+        // for rows marks and put boundary
+        for(int r = 0; r < m; r++){
+            boundary.offer(new int[] {heightMap[r][0], r, 0});
+            vis[r][0] = true;
+            boundary.offer(new int[] {heightMap[r][n-1], r, n-1});
+            vis[r][n-1] = true;
+        }
+        
+        // for cols marks and put boundary
+        for(int c = 0; c < n; c++){
+            boundary.offer(new int[] {heightMap[0][c], 0, c});
+            vis[0][c] = true;
+            boundary.offer(new int[] {heightMap[m-1][c], m-1, c});
+            vis[m-1][c] = true;
+        }
+
+        int w = 0;
+        int[][] directions = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
+
+        while(!boundary.isEmpty()){
+            int[] cell = boundary.poll();
+            int h = cell[0];
+            int i = cell[1];
+            int j = cell[2];
+
+            for(int[] dir:directions){
+                int i_ = i + dir[0];
+                int j_ = j + dir[1];
+
+                if(i_ >= 0 && i_ < m && j_ >= 0 && j_ < n && !vis[i_][j_]){
+                    w += Math.max(h - heightMap[i_][j_], 0);
+                    boundary.offer(new int[]{Math.max(h, heightMap[i_][j_]), i_, j_});
+                    vis[i_][j_] = true;
+                }
+            }
+        }
+
+        return w;
+    }
+}
