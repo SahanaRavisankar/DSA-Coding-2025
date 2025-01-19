@@ -1,0 +1,55 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+
+    ArrayList<Integer> list = new ArrayList<>();
+
+    public Solution(ListNode node) {
+        while(node != null){
+            list.add(node.val);
+            node = node.next;
+        }
+    }
+    
+    public int getRandom() {
+        Random rand = new Random();
+        return list.get(rand.nextInt(list.size()));
+    }
+}
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution obj = new Solution(head);
+ * int param_1 = obj.getRandom();
+ */
+
+
+// RESERVOIR SAMPLING
+class Solution {
+
+    ListNode node = new ListNode();
+
+    public Solution(ListNode head) {
+        node = head;
+    }
+    
+    public int getRandom() {
+        Random rand = new Random();
+        int count = 1;
+        ListNode temp = node;
+        int res = temp.val;
+        while(temp.next != null){
+            temp = temp.next;
+            if(rand.nextInt(++count) == 0) res = temp.val;
+        }
+        return res;
+    }
+}
