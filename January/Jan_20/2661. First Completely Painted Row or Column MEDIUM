@@ -1,0 +1,106 @@
+// APPROACH 1
+class Solution {
+    public int firstCompleteIndex(int[] arr, int[][] mat) {
+        Map<Integer, Pair<Integer, Integer>> mp = new HashMap<>();
+        int m = mat.length;
+        int n = mat[0].length;
+
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                mp.put(mat[i][j], new Pair(i, j));
+            }
+        }
+
+        for(int i=0; i<arr.length; i++){
+            Pair p = mp.get(arr[i]);
+            int key = (int)p.getKey();
+            int val = (int)p.getValue();
+            mat[key][val] = 0; //paint
+            if(checkR(mat, key) || checkC(mat, val)) return i;
+        }
+
+        return -1;
+    }
+
+    boolean checkR(int[][] mat, int key){
+        for(int i=0; i<mat[0].length; i++){
+            // for col
+            if(mat[key][i] != 0) return false;
+        }
+        return true;
+    }
+    
+    boolean checkC(int[][] mat, int val){
+        for(int i=0; i<mat.length; i++){
+            // for col
+            if(mat[i][val] != 0) return false;
+        }
+        return true;
+    }
+}
+
+
+
+// APPROACH 2
+class Solution {
+    public int firstCompleteIndex(int[] arr, int[][] mat) {
+        Map<Integer, Pair<Integer, Integer>> mp = new HashMap<>();
+        int m = mat.length;
+        int n = mat[0].length;
+        int[] rowCount = new int[m];
+        int[] colCount = new int[n];
+
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                mp.put(mat[i][j], new Pair(i, j));
+            }
+        }
+
+        for(int i=0; i<arr.length; i++){
+            Pair p = mp.get(arr[i]);
+            int key = (int)p.getKey();
+            int val = (int)p.getValue();
+            rowCount[key]++;
+            colCount[val]++;
+            if(rowCount[key] == n || colCount[val] == m) return i; // row = num of cols and col = num of rows
+        }
+
+        return -1;
+    }
+
+}
+
+
+
+// APPROACH 3
+class Solution {
+    public int firstCompleteIndex(int[] arr, int[][] mat) {
+        Map<Integer, Integer> mp = new HashMap<>();
+        int m = mat.length;
+        int n = mat[0].length;
+        
+        int res = Integer.MAX_VALUE;
+        for(int i=0; i<arr.length; i++) mp.put(arr[i], i);
+
+        for(int i=0; i<m; i++){  // for rows
+            int max = Integer.MIN_VALUE;
+            for(int j=0; j<n; j++){
+                int ind = mp.get(mat[i][j]);
+                max = Math.max(max, ind);
+            }
+            res = Math.min(max, res);
+        }
+        
+        for(int j=0; j<n; j++){  // for cols
+            int max = Integer.MIN_VALUE;
+            for(int i=0; i<m; i++){
+                int ind = mp.get(mat[i][j]);
+                max = Math.max(max, ind);
+            }
+            res = Math.min(max, res);
+        }
+
+        return res;
+    }
+
+}
