@@ -1,0 +1,64 @@
+// APPROACH 1
+class Solution {
+    public ListNode swapNodes(ListNode head, int k) {
+        int l = findLen(head);
+        int k1 = k;
+        int k2 = l - k + 1;
+        ListNode node1 = head;
+        ListNode node2 = head;
+
+        while(k1 > 1) { // 1 based indexing
+            node1 = node1.next;
+            k1--;
+        }
+        
+        while(k2 > 1) { // 1 based indexing
+            node2 = node2.next;
+            k2--;
+        }
+
+        int swap = node1.val;
+        node1.val = node2.val;
+        node2.val = swap;
+
+        return head;
+    }
+
+    int findLen(ListNode root) {
+        int l = 0;
+        while(root != null) {
+            l++;
+            root = root.next;
+        }
+        return l;
+    }
+}
+
+
+// APPROACH 2
+class Solution {
+    public ListNode swapNodes(ListNode head, int k) {
+        ListNode temp = head;
+        ListNode node1 = new ListNode();
+        ListNode node2 = new ListNode();
+
+        while(temp != null) {
+            if (node2 != null) 
+                node2 = node2.next;
+
+            k--;
+            if(k == 0) {
+                node1 = temp;
+                node2 = head;
+            }
+
+            temp = temp.next;
+        }
+
+        int swap = node1.val;
+        node1.val = node2.val;
+        node2.val = swap;
+
+        return head;
+    }
+}
