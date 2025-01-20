@@ -1,0 +1,28 @@
+class Solution {
+    public ListNode removeZeroSumSublists(ListNode head) {
+        ListNode dummy = new ListNode();
+        dummy.next = head;
+        Map<Integer, ListNode> map = new HashMap<>();
+        map.put(0, dummy);
+        int prefsum = 0;
+        while(head != null) {
+            prefsum += head.val;
+            if (!map.containsKey(prefsum)) {
+                map.put(prefsum, head);
+            } else {
+                ListNode st = map.get(prefsum);
+                ListNode temp = st;
+                int psum = prefsum;
+                while(temp != head) {
+                    temp = temp.next;
+                    psum += temp.val;
+                    if (temp != head)
+                        map.remove(psum);
+                }
+                st.next = head.next;
+            }
+            head = head.next;
+        }
+        return dummy.next;
+    }
+}
