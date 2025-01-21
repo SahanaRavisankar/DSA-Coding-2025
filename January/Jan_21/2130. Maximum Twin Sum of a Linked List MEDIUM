@@ -1,0 +1,77 @@
+// APPROACH 1
+class Solution {
+    public int pairSum(ListNode head) {
+        ArrayList<Integer> list = new ArrayList<>();
+        while (head != null) {
+            list.add(head.val);
+            head = head.next;
+        }
+
+        int i = 0, j = list.size() - 1;
+        int maxsum = Integer.MIN_VALUE;
+        while (i < j) {
+            maxsum = Math.max(maxsum, list.get(i) + list.get(j));
+            i++;
+            j--;
+        }
+
+        return maxsum;
+    }
+}
+
+
+// APPROACH 2
+class Solution {
+    public int pairSum(ListNode head) {
+        ListNode curr = head;
+        Stack<Integer> st = new Stack<>();
+        while (curr != null) {
+            st.push(curr.val);
+            curr = curr.next;
+        }
+
+        int n = st.size() / 2;
+        int maxsum = Integer.MIN_VALUE;
+        while (n > 0) {
+            maxsum = Math.max(maxsum, head.val + st.pop());
+            n--;
+            head = head.next;
+        }
+
+        return maxsum;
+    }
+}
+
+
+// APPROACH 3
+class Solution {
+    public int pairSum(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        ListNode mid = slow;
+        ListNode prev = new ListNode();
+        ListNode nextNode = new ListNode();
+
+        while (mid != null) {
+            nextNode = mid.next;
+            mid.next = prev;
+            prev = mid;
+            mid = nextNode;
+        }
+
+        int maxsum = Integer.MIN_VALUE;
+        while (prev != null) {
+            maxsum = Math.max(maxsum, prev.val + head.val);
+            prev = prev.next;
+            head = head.next;
+        }
+
+        return maxsum;
+    }
+}
