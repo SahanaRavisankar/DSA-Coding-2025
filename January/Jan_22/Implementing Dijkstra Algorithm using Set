@@ -1,0 +1,51 @@
+/*
+class iPair {
+    int first, second;
+
+    iPair(int first, int second) {
+        this.first = first;
+        this.second = second;
+    }
+}
+*/
+
+// User function Template for Java
+class Solution {
+    ArrayList<Integer> dijkstra(ArrayList<ArrayList<iPair>> adj, int src) {
+        TreeSet<int[]> set = new TreeSet<>((a, b)->{
+            if(a[0] == b[0]) return Integer.compare(a[1], b[1]);
+            return Integer.compare(a[0], b[0]);
+        });
+        
+        int v = adj.size();
+        int[] res = new int[v];
+        Arrays.fill(res, Integer.MAX_VALUE);
+        res[src] = 0;
+        
+        set.add(new int[]{0, src});
+        
+        while(!set.isEmpty()){
+            int[] curr = set.pollFirst();
+            int d = curr[0];
+            int node = curr[1];
+            
+            for(iPair vec:adj.get(node)){
+                int adjn = vec.first;
+                int dist = vec.second;
+                
+                if(d + dist < res[adjn]){
+                    if(res[adjn] != Integer.MAX_VALUE) {
+                        set.remove(new int[]{res[adjn], adjn});
+                    }
+                    res[adjn] = d+dist;
+                    set.add(new int[]{res[adjn], adjn});
+                }
+            }
+        }
+       
+        
+        ArrayList<Integer> result = new ArrayList<>();
+        for(int i:res) result.add(i);
+        return result;
+    }
+}
