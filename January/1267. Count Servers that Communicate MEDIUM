@@ -1,0 +1,96 @@
+// APPROACH 1 - BRUTE FORCE
+class Solution {
+    public int countServers(int[][] grid) {
+        int cnt = 0;
+        int m = grid.length;
+        int n = grid[0].length;
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                if(grid[i][j] == 1){
+                    boolean bool = false;
+                    for(int col = 0; col<n; col++){
+                        if(grid[i][col] == 1 && col != j) bool = true;
+                    }
+                    if(bool) cnt++;
+                    else{
+                        for(int row = 0; row<m; row++){
+                            if(grid[row][j] == 1 && row != i) bool = true;
+                        }
+                        if(bool) cnt++;
+                    }
+                }
+            }
+        }
+
+        return cnt;
+    }
+}
+
+
+// APPROACH 2
+class Solution {
+    public int countServers(int[][] grid) {
+        int cnt = 0;
+        int m = grid.length;
+        int n = grid[0].length;
+        int[] row = new int[m];
+        int[] col = new int[n];
+
+        // preprocessing
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                if(grid[i][j] == 1){
+                    row[i]++;
+                    col[j]++;
+                }
+            }
+        }
+
+        // finding count
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                if(grid[i][j] == 1){
+                    if(row[i]>1 || col[j]>1) cnt++;
+                }
+            }
+        }
+
+        return cnt;
+    }
+}
+
+
+// APPROACH 3
+class Solution {
+    public int countServers(int[][] grid) {
+        int res = 0;
+        int m = grid.length;
+        int n = grid[0].length;
+        int[] row = new int[m];
+        Arrays.fill(row, -1);
+        int[] col = new int[n];
+
+        // preprocessing
+        for(int i=0; i<m; i++){
+            int rowcnt = 0;
+            for(int j=0; j<n; j++){
+                if(grid[i][j] == 1){
+                    rowcnt++;
+                    if(rowcnt == 1) row[i] = j;
+                    else row[i] = -1;
+                    col[j]++;
+                }
+            }
+            if(rowcnt > 1) res += rowcnt;
+        }
+
+        // finding count
+        for(int i=0; i<m; i++){
+            if(row[i] != -1){
+                if(col[row[i]] > 1) res++;
+            }
+        }
+
+        return res;
+    }
+}
