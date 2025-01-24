@@ -1,5 +1,4 @@
 // Go and study other approach - graph playlist
-
 class Solution {
     public List<Integer> eventualSafeNodes(int[][] graph) {
         List<List<Integer>> adj = new ArrayList<>();
