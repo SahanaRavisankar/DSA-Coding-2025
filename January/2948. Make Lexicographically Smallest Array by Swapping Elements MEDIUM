@@ -1,0 +1,60 @@
+// APPROACH 1 BRUTE FORCE
+class Solution {
+    public int[] lexicographicallySmallestArray(int[] nums, int limit) {
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            while (true) {
+                int x = nums[i];
+                int ind = -1;
+                for (int j = i + 1; j < n; j++) {
+                    if (nums[i] > nums[j] && nums[i] - nums[j] <= limit && nums[j] < x)
+                        ind = j;
+                }
+                
+                if (ind != -1) {
+                    int temp = nums[i];
+                    nums[i] = nums[ind];
+                    nums[ind] = temp;
+                } else 
+                    break;
+            }
+        }
+
+        return nums;
+    }
+}
+
+
+// APPROACH 2
+class Solution {
+    public int[] lexicographicallySmallestArray(int[] nums, int limit) {
+        int n = nums.length;
+        int grp = 0;
+        Map<Integer, LinkedList<Integer>> group = new HashMap<>();
+        Map<Integer, Integer> map = new HashMap<>();
+        int[] arr = nums.clone();
+        Arrays.sort(arr);
+
+        map.put(arr[0], grp);
+        group.putIfAbsent(grp, new LinkedList<>());
+        group.get(grp).add(arr[0]);
+
+        for (int i = 1; i < n; i++) {
+            if(Math.abs(arr[i] - arr[i-1])>limit) {
+                grp++;
+            }
+            map.put(arr[i], grp);
+            group.putIfAbsent(grp, new LinkedList<>());
+            group.get(grp).add(arr[i]);
+        }
+        System.out.println(group);
+        System.out.println(map);
+
+        for(int i=0; i<n; i++) {
+            int find = map.get(nums[i]);
+            nums[i] = group.get(find).pollFirst();
+        }
+
+        return nums;
+    }
+}
