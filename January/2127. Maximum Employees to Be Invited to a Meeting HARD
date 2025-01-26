@@ -1,0 +1,61 @@
+class Solution {
+    public int maximumInvitations(int[] favorite) {
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+        int n = favorite.length;
+        for(int i=0; i<n; i++){
+            int u=i;
+            int v=favorite[i];
+            adj.computeIfAbsent(v, k->new ArrayList<>()).add(u);
+        }
+        int longest = 0;
+        int happy = 0;
+        boolean[] vis = new boolean[n];
+        Arrays.fill(vis, false);
+        for(int i=0; i<n; i++) {
+            if(!vis[i]){
+                Map<Integer, Integer> map = new HashMap<>();
+                int curr = i;
+                int currcnt = 0;
+                while(!vis[curr]){
+                    vis[curr] = true;
+                    map.put(curr, currcnt);
+                    int nxt = favorite[curr];
+                    currcnt++;
+                    if(map.containsKey(nxt)){
+                        int len = currcnt - map.get(nxt);
+                        longest = Math.max(longest, len);
+                        if(len == 2){
+                            boolean[] v = new boolean[n];
+                            Arrays.fill(v, false);
+                            v[curr] = true;
+                            v[nxt] = true;
+                            happy += 2 + bfs(curr, adj, v) + bfs(nxt, adj, v);
+                        }
+                        break;
+                    }
+                    curr = nxt;
+                }
+            }
+        }
+        return Math.max(longest, happy);
+    }
+
+    int bfs(int st, Map<Integer, List<Integer>> adj, boolean[] vis) {
+        Queue<int[]> que = new LinkedList<>();
+        que.offer(new int[]{st, 0});
+        int maxdist = 0;
+        while(!que.isEmpty()) {
+            int[] arr = que.poll();
+            int curr = arr[0];
+            int dist = arr[1];
+            for(int ngbr:adj.getOrDefault(curr, new ArrayList<>())){
+                if(!vis[ngbr]){
+                    vis[ngbr] = true;
+                    que.offer(new int[]{ngbr, dist+1});
+                    maxdist = Math.max(maxdist, dist+1);
+                }
+            }
+        }
+        return maxdist;
+    }
+}
