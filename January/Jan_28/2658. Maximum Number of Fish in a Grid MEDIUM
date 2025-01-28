@@ -1,0 +1,29 @@
+class Solution {
+    int n, m;
+    public int findMaxFish(int[][] grid) {
+        m = grid.length;
+        n = grid[0].length;
+        int maxfish = 0;
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                if(grid[i][j]>0)
+                    maxfish = Math.max(maxfish, dfs(i, j, grid));
+            }
+        }
+        return maxfish;
+    }
+
+    int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+    int dfs(int i, int j, int[][] grid){
+        if(i<0 || i>=m || j<0 || j>=n || grid[i][j]==0) return 0;
+        int fcnt = grid[i][j];
+        grid[i][j] = 0;
+        for(int[] dir:directions){
+            int i_ = i+dir[0];
+            int j_ = j+dir[1];
+            fcnt += dfs(i_, j_, grid);
+        }
+        return fcnt;
+    }
+}
