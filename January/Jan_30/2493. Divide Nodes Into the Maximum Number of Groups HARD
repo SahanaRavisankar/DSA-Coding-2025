@@ -1,0 +1,81 @@
+class Solution {
+    public int magnificentSets(int n, int[][] edges) {
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+        for(int[] ed:edges){
+            int u = ed[0]-1;
+            int v = ed[1]-1;
+            adj.computeIfAbsent(u, k -> new ArrayList<Integer>()).add(v);
+            adj.computeIfAbsent(v, k -> new ArrayList<Integer>()).add(u);
+        }
+
+        int[] color = new int[n];
+        Arrays.fill(color, -1);
+        for(int node = 0; node < n; node++){
+            if(color[node] == -1){
+                if(!bipar(adj, node, color, 1)) return -1;
+            }
+        }
+
+        int[] level = new int[n];
+        Arrays.fill(level, 0);
+        for(int i = 0; i < n; i++){
+            level[i] = bfs(adj, i, n);
+        }
+
+        int max = 0;
+        boolean[] vis = new boolean[n];
+        Arrays.fill(vis, false);
+        for(int i=0; i<n; i++){
+            if(!vis[i]){
+                max += getMax(adj, i, vis, level);
+            }
+        }
+
+        return max;
+    }
+
+    int getMax(Map<Integer, List<Integer>> adj, int curr, boolean[] vis, int[] level){
+        int max = level[curr];
+        vis[curr] = true;
+        for(int i:adj.getOrDefault(curr, new ArrayList<>())){
+            if(!vis[i]){
+                max = Math.max(max, getMax(adj, i, vis, level));
+            }
+        }
+        return max;
+    }
+
+    int bfs(Map<Integer, List<Integer>> adj, int curr, int n){
+        Queue<Integer> que = new LinkedList<>();
+        que.add(curr);
+        boolean[] vis = new boolean[n];
+        Arrays.fill(vis, false);
+        int level = 1;
+        vis[curr] = true;
+
+        while(!que.isEmpty()){
+            int s = que.size();
+            while(s-->0){
+                curr = que.poll();
+                for(int i:adj.getOrDefault(curr, new ArrayList<>())){
+                    if(vis[i]) continue;
+                    que.add(i);
+                    vis[i] = true;
+                }
+            }
+            level++;
+        }
+        return level-1;
+    }
+
+    boolean bipar(Map<Integer, List<Integer>> adj, int curr, int[] color, int currcol){
+        color[curr] = currcol;
+        for(int n:adj.getOrDefault(curr, new ArrayList<>())){
+            if(color[n] == color[curr]) return false;
+            if(color[n] == -1){
+                if(!bipar(adj, n, color, 1-currcol)) return false;
+            }
+        }
+        return true;
+    }
+}
