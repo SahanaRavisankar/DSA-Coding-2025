@@ -1,0 +1,38 @@
+class Solution {
+    
+    public boolean isCycle(ArrayList<ArrayList<Integer>> map) {
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+        int n = map.size();
+        for(int i=0; i<n; i++){
+            adj.put(i, new ArrayList<>());
+            for(int j:map.get(i)){
+                adj.get(i).add(j);
+            }
+        }
+        
+        boolean[] vis = new boolean[n];
+        Arrays.fill(vis, false);
+        for(int i=0; i<n; i++){
+            if(!vis[i] && bfs(adj, i, vis, -1)) return true;
+        }
+        return false;
+    }
+    
+    boolean bfs(Map<Integer, List<Integer>> adj, int u, boolean[] vis, int parent){
+        vis[u] = true;
+        Queue<int[]> que = new LinkedList<>();
+        que.offer(new int[]{u, -1});
+        while(!que.isEmpty()){
+            int[] curr = que.poll();
+            int n = curr[0];
+            int p = curr[1];
+            for(int j:adj.get(n)){
+                if(!vis[j]){
+                    vis[j] = true;
+                    que.offer(new int[]{j, n});
+                } else if(j != p) return true;
+            }
+        }
+        return false;
+    }
+}
