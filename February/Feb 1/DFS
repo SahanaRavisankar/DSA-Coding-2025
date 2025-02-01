@@ -1,0 +1,29 @@
+class Solution {
+    
+    public ArrayList<Integer> dfsOfGraph(ArrayList<ArrayList<Integer>> adj) {
+        ArrayList<Integer> res = new ArrayList<>();
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        int n = adj.size();
+        for(int i=0; i<n; i++){
+            for(int j:adj.get(i))
+                map.computeIfAbsent(i, k -> new ArrayList<>()).add(j);
+        }
+        
+        boolean[] vis = new boolean[n];
+        Arrays.fill(vis, false);
+        
+        dfs(map, 0, vis, res);
+        return res;
+    }
+    
+    void dfs(Map<Integer, List<Integer>> adj, int u, boolean[] vis, ArrayList<Integer> res){
+        if(vis[u]) return;
+        vis[u] = true;
+        res.add(u);
+        for(int v:adj.get(u)){
+            if(!vis[v]){
+                dfs(adj, v, vis, res);
+            }
+        }
+    }
+}
