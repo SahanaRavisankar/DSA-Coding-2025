@@ -1,0 +1,30 @@
+class Solution {
+    
+    public boolean isCycle(ArrayList<ArrayList<Integer>> map) {
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+        int n = map.size();
+        for(int i=0; i<n; i++){
+            adj.put(i, new ArrayList<>());
+            for(int j:map.get(i)){
+                adj.get(i).add(j);
+            }
+        }
+        
+        boolean[] vis = new boolean[n];
+        Arrays.fill(vis, false);
+        for(int i=0; i<n; i++){
+            if(!vis[i] && dfs(adj, i, vis, -1)) return true;
+        }
+        return false;
+    }
+    
+    boolean dfs(Map<Integer, List<Integer>> adj, int u, boolean[] vis, int parent){
+        vis[u] = true;
+        for(int v:adj.get(u)){
+            if(parent == v) continue;
+            if(vis[v]) return true;
+            if(dfs(adj, v, vis, u)) return true;
+        }
+        return false;
+    }
+}
