@@ -1,3 +1,52 @@
+// approach 1
+class Solution {
+    public boolean check(int[] nums) {
+        int n = nums.length;
+        int[] sort = new int[n];
+        for(int r=0; r<n; r++){
+            int idx = 0;
+            for(int i=r; i<n; i++){
+                sort[idx]=nums[i];
+                idx++;
+            }
+            for(int i=0; i<r; i++){
+                sort[idx]=nums[i];
+                idx++;
+            }
+            boolean flag = true;
+            for(int i=0; i<n-1; i++){
+                if(sort[i]>sort[i+1]){
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag) return true;
+        }
+        return false;
+    }
+}
+
+// approach 2
+class Solution {
+    public boolean check(int[] nums) {
+        int n = nums.length;
+        int[] sort = nums.clone();
+        Arrays.sort(sort);
+        for(int r=0; r<n; r++){
+            boolean flag = true;
+            for(int i=0; i<n; i++){
+                if(sort[i] != nums[(i+r)%n]){
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag) return true;
+        }
+        return false;
+    }
+}
+
+// approach 3 O(n)
 class Solution {
     public boolean check(int[] nums) {
         int cnt = 0;
