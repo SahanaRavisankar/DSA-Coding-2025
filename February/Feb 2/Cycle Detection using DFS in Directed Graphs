@@ -1,0 +1,31 @@
+class Solution {
+    
+    public boolean isCyclic(int n, ArrayList<ArrayList<Integer>> map) {
+        Map<Integer, ArrayList<Integer>> adj = new HashMap<>();
+        for(int i=0; i<n; i++){
+            adj.put(i, new ArrayList<>());
+            adj.put(i, map.get(i));
+        }
+        
+        boolean[] vis = new boolean[n];
+        boolean[] recur = new boolean[n];
+        Arrays.fill(vis, false);
+        Arrays.fill(recur, false);
+        
+        for(int i=0; i<n; i++){
+            if(!vis[i] && dfs(adj, i, vis, recur)) return true;
+        }
+        return false;
+    }
+    
+    boolean dfs(Map<Integer, ArrayList<Integer>> adj, int u, boolean[] vis, boolean[] recur){
+        vis[u] = true;
+        recur[u] = true;
+        for(int j:adj.get(u)){
+            if(!vis[j] && dfs(adj, j, vis, recur)) return true;
+            else if(recur[j]) return true;
+        }
+        recur[u] = false;
+        return false;
+    }
+}
