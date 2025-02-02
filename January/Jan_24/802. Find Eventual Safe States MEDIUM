@@ -1,31 +1,78 @@
-// Go and study other approach - graph playlist
+// approach 1 - cycle detection using dfs
 class Solution {
     public List<Integer> eventualSafeNodes(int[][] graph) {
-        List<List<Integer>> adj = new ArrayList<>();
-        int v = graph.length;
-        for(int i=0; i<v; i++){
-            adj.add(new ArrayList<>());
-            for(int u:graph[i]) adj.get(i).add(u);
-        }
-        boolean[] vis = new boolean[v];
-        boolean[] rec = new boolean[v];
-        for(int i=0; i<v; i++){
-            if(!vis[i]) cycle(adj, i, vis, rec);
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+        int n = graph.length;
+        for(int u=0; u<n; u++){
+            for(int v:graph[u]){
+                adj.computeIfAbsent(u, k -> new ArrayList<Integer>()).add(v);
+            }
         }
 
-        List<Integer> list = new ArrayList<>();
-        for(int i=0; i<v; i++) if(!rec[i]) list.add(i);
-        return list;
+        boolean[] vis = new boolean[n];
+        boolean[] recur = new boolean[n];
+
+        for(int i=0; i<n; i++){
+            if(!vis[i] && isCycle(adj, i, vis, recur)) continue;
+        }
+
+        List<Integer> res = new ArrayList<Integer>();
+        for(int i=0; i<n; i++){
+            if(!recur[i]) res.add(i);
+        }
+
+        return res;
     }
 
-    boolean cycle(List<List<Integer>> adj, int u, boolean[] vis, boolean[] rec) {
+    boolean isCycle(Map<Integer, List<Integer>> adj, int u, boolean[] vis, boolean[] recur){
         vis[u] = true;
-        rec[u] = true;
-        for(int v:adj.get(u)){
-            if(!vis[v] && cycle(adj, v, vis, rec)) return true;
-            else if(rec[v]) return true;
+        recur[u] = true;
+        for(int v:adj.getOrDefault(u, new ArrayList<Integer>())){
+            if(!vis[v] && isCycle(adj, v, vis, recur)) return true;
+            else if(recur[v]) return true;
         }
-        rec[u] = false;
+        recur[u] = false;
         return false;
+    }
+}
+
+// approach 2 - kahn's algorithm
+class Solution {
+    public List<Integer> eventualSafeNodes(int[][] graph) {
+        Queue<Integer> que = new LinkedList<Integer>();
+        int n = graph.length;
+        int[] indeg = new int[n];
+        List<Integer> res = new ArrayList<Integer>();
+        boolean[] safe = new boolean[n];
+
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+
+        for(int u=0; u<n; u++){
+            for(int v:graph[u]){
+                adj.computeIfAbsent(v, k-> new ArrayList<>()).add(u);
+                indeg[u]++;
+            }
+        }
+
+        for(int i=0; i<n; i++){
+            if (indeg[i] == 0) que.offer(i);
+        }
+
+        while(!que.isEmpty()){
+            int u = que.poll();
+            safe[u] = true;
+            for(int v:adj.getOrDefault(u, new ArrayList<>())){
+                indeg[v]--;
+                if(indeg[v]==0){
+                    que.offer(v);
+                }
+            }
+        }
+
+        for(int i=0; i<n; i++){
+            if(safe[i]) res.add(i);
+        }
+
+        return res;
     }
 }
