@@ -1,0 +1,38 @@
+class Solution {
+    
+    static ArrayList<Integer> topologicalSort(ArrayList<ArrayList<Integer>> map) {
+        Stack<Integer> stk = new Stack<>();
+        Map<Integer, ArrayList<Integer>> adj = new HashMap<>();
+        ArrayList<Integer> res = new ArrayList<>();
+        int n = map.size();
+        
+        for(int i=0; i<n; i++){
+            adj.put(i, new ArrayList<>());
+            adj.put(i, map.get(i));
+        }
+        
+        boolean[] vis = new boolean[n];
+        Arrays.fill(vis, false);
+        
+        for(int i=0; i<n; i++){
+            if(!vis[i]){
+                dfs(adj, i, vis, stk);
+            }
+        }
+        
+        while(!stk.isEmpty()) res.add(stk.pop());
+        
+        return res;
+    }
+    
+    public static void dfs(Map<Integer, ArrayList<Integer>> adj, int u, boolean[] vis, Stack<Integer> stk){
+        vis[u] = true;
+        for(int v:adj.getOrDefault(u, new ArrayList<>())){
+            if(!vis[v]){
+                dfs(adj, v, vis, stk);
+            }
+        }
+        stk.push(u);
+    }
+    
+}
