@@ -1,0 +1,53 @@
+// approach 1 O(n^2)
+class Solution {
+    public int longestMonotonicSubarray(int[] nums) {
+        int res = 1;
+        int n = nums.length;
+        
+        for (int i = 0; i < n - 1; i++) {
+            int j = i + 1;
+            int incr = 1;
+            while (j < n && nums[j] > nums[j - 1]) {
+                incr++;
+                j++;
+            }
+            
+            j = i + 1;
+            int decr = 1;
+            while (j < n && nums[j] < nums[j - 1]) {
+                decr++;
+                j++;
+            }
+
+            res = Math.max(Math.max(incr, decr), res);
+        }
+
+        return res;
+    }
+}
+
+// approach 2 O(n)
+class Solution {
+    public int longestMonotonicSubarray(int[] nums) {
+        int incr = 1;
+        int decr = 1;
+        int n = nums.length;
+        int inc = 1;
+        int dec = 1;
+        for (int i = 0; i < n - 1; i++) {
+            if (nums[i] < nums[i + 1]) {
+                dec = 1;
+                inc++;
+                incr = Math.max(incr, inc);
+            } else if (nums[i] > nums[i + 1]) {
+                inc = 1;
+                dec++;
+                decr = Math.max(decr, dec);
+            } else if (nums[i] == nums[i + 1]) {
+                inc = 1;
+                dec = 1;
+            }
+        }
+        return Math.max(decr, incr);
+    }
+}
