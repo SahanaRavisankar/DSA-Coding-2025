@@ -31,3 +31,89 @@ class Solution {
         return flag;
     }
 }
+
+// APPROACH 2 PRE PROCESS DATA
+class Solution {
+    public List<Boolean> checkIfPrerequisite(int numCourses, int[][] prerequisites, int[][] queries) {
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+        for(int[] e:prerequisites){
+            int u = e[0];
+            int v = e[1];
+            adj.putIfAbsent(u, new ArrayList<>());
+            adj.get(u).add(v);
+        }
+        List<Boolean> res = new ArrayList<>();
+        boolean[][] mat = new boolean[numCourses][numCourses];
+
+        int q = queries.length;
+        for(int u=0; u < numCourses; u++){
+            for(int v=0; v < numCourses; v++){
+                if(u != v) {
+                    boolean[] vis = new boolean[numCourses];
+                    mat[u][v] = dfs(adj, u, v, vis);
+                }
+            }
+        }
+
+        for(int i=0; i<q; i++){
+            res.add(mat[queries[i][0]][queries[i][1]]);
+        }
+        return res;
+    }
+
+    boolean dfs(Map<Integer, List<Integer>> adj, int u, int v, boolean[] vis){
+        vis[u] = true;
+        if(u==v) return true;
+        boolean flag = false;
+        for(int adjn:adj.getOrDefault(u, new ArrayList<>())){
+            if(!vis[adjn]) flag = flag || dfs(adj, adjn, v, vis);
+        }
+        return flag;
+    }
+}
+
+// APPROACH 3 Set kahn algorithm
+class Solution {
+    public List<Boolean> checkIfPrerequisite(int n, int[][] prerequisites, int[][] queries) {
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+        int[] indeg = new int[n];
+        for(int[] e:prerequisites){
+            int u = e[0];
+            int v = e[1];
+            adj.putIfAbsent(u, new ArrayList<>());
+            adj.get(u).add(v);
+            indeg[v]++;
+        }
+        List<Boolean> res = new ArrayList<>();
+        
+        int q = queries.length;
+
+        Queue<Integer> que = new LinkedList<>();
+        for(int i=0; i<n; i++){
+            if(indeg[i] == 0) que.offer(i);
+        }
+
+        Map<Integer, Set<Integer>> setmap = new HashMap<>();
+
+        while(!que.isEmpty()){
+            int u = que.poll();
+            for(int v: adj.getOrDefault(u, new ArrayList<>())){
+                setmap.computeIfAbsent(v, k -> new HashSet<>()).add(u);
+                setmap.get(v).addAll(setmap.getOrDefault(u, new HashSet<>()));
+                indeg[v]--;
+                if(indeg[v]==0) {
+                    que.offer(v);
+                }
+            }
+        }
+
+        for(int i=0; i<q; i++){
+            int src = queries[i][0];
+            int dst = queries[i][1];
+            res.add(setmap.getOrDefault(dst, new HashSet<>()).contains(src));
+        }
+        
+        return res;
+    }
+    
+}
