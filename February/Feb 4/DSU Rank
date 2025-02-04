@@ -1,0 +1,31 @@
+class Solution
+{
+    public void union_(int a, int b, int par[], int rank[])
+    {
+        int ap = find(a, par);
+        int bp = find(b, par);
+        if(ap == bp) return;
+        if(rank[ap] > rank[bp]){
+            par[bp] = ap;
+        } else if(rank[ap] < rank[bp]){
+            par[ap] = bp;
+        } else{
+            par[bp] = ap;
+            rank[ap]++;
+        }
+    }
+
+    //Function to check whether 2 nodes are connected or not.
+    public Boolean isConnected(int a, int b, int par[], int rank[])
+    {
+        int ap = find(a, par);
+        int bp = find(b, par);
+        return ap == bp;
+    }
+    
+    public static int find(int i, int[] par){
+        if(i == par[i]) return i;
+        return par[i] = find(par[i], par);
+    }
+
+}
