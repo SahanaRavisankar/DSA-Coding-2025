@@ -1,0 +1,13 @@
+class GfG {
+    int find(int par[], int x) {
+        if(x == par[x]) return x;
+        return find(par, par[x]);
+    }
+
+    void unionSet(int par[], int x, int y) { // y parent of x - given
+        int xp = find(par, x);
+        int yp = find(par, y);
+        if(xp == yp) return;
+        par[xp] = yp;
+    }
+}
