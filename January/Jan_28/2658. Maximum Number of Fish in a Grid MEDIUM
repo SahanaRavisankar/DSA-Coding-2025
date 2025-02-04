@@ -1,3 +1,4 @@
+// approach 1 - dfs
 class Solution {
     int n, m;
     public int findMaxFish(int[][] grid) {
@@ -25,5 +26,103 @@ class Solution {
             fcnt += dfs(i_, j_, grid);
         }
         return fcnt;
+    }
+}
+
+
+// approach 2 - bfs
+class Solution {
+    int n, m;
+    public int findMaxFish(int[][] grid) {
+        m = grid.length;
+        n = grid[0].length;
+        int maxfish = 0;
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                if(grid[i][j]>0)
+                    maxfish = Math.max(maxfish, bfs(i, j, grid));
+            }
+        }
+        return maxfish;
+    }
+
+    int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+    int bfs(int i, int j, int[][] grid){
+        Queue<int[]> que = new LinkedList<>();
+        que.offer(new int[]{i, j});
+        int fcnt = grid[i][j];
+        grid[i][j] = 0;
+        while(!que.isEmpty()){
+            int[] curr = que.poll();
+            int i_ = curr[0];
+            int j_ = curr[1];
+            for(int[] dir:directions){
+                int u = i_ + dir[0];
+                int v = j_ + dir[1];
+
+                if(u < grid.length && u >= 0 && v < grid[0].length && v >= 0 && grid[u][v] > 0) {
+                    que.offer(new int[]{u, v});
+                    fcnt += grid[u][v];
+                    grid[u][v] = 0;
+                }
+            }
+        }
+        return fcnt;
+    }
+}
+
+
+// approach 3 - dsu
+class Solution {
+    public int findMaxFish(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int[] parent = new int[n*m];
+        int[] size = new int[n*m];
+        for(int i=0; i<m; i++) {
+            for(int j=0; j<n; j++){
+                parent[i*n + j] = i*n + j;
+                size[i*n + j] = grid[i][j];
+            }
+        }
+
+        int[][] direc = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                if(grid[i][j]>0){
+                    int idx = i*n + j;
+                    for(int[] dir:direc){
+                        int i_ = i+dir[0];
+                        int j_ = j+dir[1];
+                        if(i_>=0 && i_<m && j_>=0 && j_<n && grid[i_][j_]>0){
+                            int idx_ = i_*n + j_;
+                            union(idx, idx_, parent, size);
+                        }
+                    }
+                }
+            }
+        }
+        int cnt = 0;
+        for(int i:size) cnt = Math.max(cnt, i);
+        return cnt;
+    }
+
+    void union(int x, int y, int[] parent, int[] size){
+        int xp = find(x, parent);
+        int yp = find(y, parent);
+        if(xp == yp) return;
+        if(size[xp] > size[yp]){
+            parent[yp] = xp;
+            size[xp] += size[yp];
+        } else {
+            parent[xp] = yp;
+            size[yp] += size[xp];
+        }
+    }
+
+    int find(int x, int[] parent){
+        if(x == parent[x]) return x;
+        return parent[x] = find(parent[x], parent);
     }
 }
