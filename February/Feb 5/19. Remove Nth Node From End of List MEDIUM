@@ -1,0 +1,43 @@
+// approach 1 brute force [2 pass solution]
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode curr = head;
+        int l = 0;
+        while(curr != null){
+            l++;
+            curr = curr.next;
+        }
+        if(n == l) return head.next;
+        if(n==1){
+            curr = head;
+            while(curr.next.next != null) curr = curr.next;
+            curr.next = null;
+            return head;
+        }
+        int n_ = l - n;
+        curr = head;
+        for(int i = 1; i<n_; i++){
+            curr = curr.next;
+        }
+        curr.next = curr.next.next;
+        return head;
+    }
+}
+
+// approach 2 [1 pass solution]
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode curr = new ListNode(1);
+        curr.next = head;
+        ListNode temp = curr, move = curr;
+        for(int i=0; i<=n; i++) move = move.next;
+
+        while(move != null){
+            move = move.next;
+            temp = temp.next;
+        }
+        temp.next = temp.next.next;
+        
+        return curr.next; // because head could have been changed
+    }
+}
