@@ -1,0 +1,31 @@
+class Solution {
+    public ListNode[] splitListToParts(ListNode head, int k) {
+        ListNode[] res = new ListNode[k];
+        ListNode curr = head;
+        int len = 0;
+        while(curr != null){
+            len++;
+            curr = curr.next;
+        }
+        int each = len / k;
+        int rem = len % k;
+        curr = head;
+        for(int i = 0; i < k; i++){
+            ListNode st = new ListNode();
+            ListNode newcurr = st;
+            ListNode prev = new ListNode();
+            int n = each + ((rem <= 0) ? 0 : 1);
+            rem--;
+            while(n > 0 && curr != null && newcurr != null){
+                newcurr.next = curr;
+                prev = curr;
+                curr = curr.next;
+                newcurr = newcurr.next;
+                n--;
+            }
+            prev.next = null;
+            res[i] = st.next;
+        }
+        return res;
+    }
+}
