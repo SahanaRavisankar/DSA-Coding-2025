@@ -55,3 +55,45 @@ class Solution {
         return newHead;
     }
 }
+
+
+
+// approach 2 O(n) time and space is debatable - O(n) or O(1)
+class Solution {
+    public Node copyRandomList(Node head) {
+        if(head == null)
+            return null;
+        
+        Node curr = head;    
+
+        while(curr != null) {
+            Node nextcurr = curr.next;
+            curr.next = new Node(curr.val);
+            curr.next.next = nextcurr;
+            curr = curr.next.next;
+        }
+
+        curr = head;
+        while(curr != null && curr.next != null){
+            if(curr.random == null)
+                curr.next.random = null;
+            else
+                curr.next.random = curr.random.next;
+            
+            curr = curr.next.next;
+        }
+
+        Node newHead = head.next;
+        Node newcurr = newHead;
+        curr = head;
+
+        while(curr != null && newcurr != null){
+            curr.next = (curr.next == null) ? null : curr.next.next;
+            newcurr.next = (newcurr.next == null) ? null : newcurr.next.next;
+            curr = curr.next;
+            newcurr = newcurr.next;
+        }
+
+        return newHead;
+    }
+}
