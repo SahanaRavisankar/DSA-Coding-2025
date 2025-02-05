@@ -1,0 +1,57 @@
+/*
+// Definition for a Node.
+class Node {
+    int val;
+    Node next;
+    Node random;
+
+    public Node(int val) {
+        this.val = val;
+        this.next = null;
+        this.random = null;
+    }
+}
+*/
+
+// approach 1 - O(n) time and O(n) space
+class Solution {
+    public Node copyRandomList(Node head) {
+        if(head == null)
+            return null;
+        
+        Map<Node, Node> mp = new HashMap<>();
+        
+        Node curr = head;
+        Node prev = null;
+        Node newHead = null;
+
+        while(curr != null) {
+            Node temp = new Node(curr.val);
+            mp.put(curr, temp);
+            if(newHead == null){
+                newHead = temp;
+                prev = newHead;
+            } else {
+                prev.next = temp;
+                prev = temp;
+            }
+            curr = curr.next;
+        }
+
+        Node newcurr = newHead;
+        curr = head;
+        while(curr != null){
+            if(curr.random == null)
+                newcurr.random = null;
+            else {
+                Node rand = curr.random;
+                Node deepCopyRand = mp.get(rand);
+                newcurr.random = deepCopyRand;
+            }
+            curr = curr.next;
+            newcurr = newcurr.next;
+        }
+
+        return newHead;
+    }
+}
