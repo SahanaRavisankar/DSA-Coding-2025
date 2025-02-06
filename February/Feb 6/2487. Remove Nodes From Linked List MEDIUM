@@ -1,0 +1,76 @@
+// approach 1 using stack
+class Solution {
+    public ListNode removeNodes(ListNode head) {
+        ListNode curr = head;
+        Stack<ListNode> st = new Stack<>();
+        while(curr != null){
+            st.push(curr);
+            curr = curr.next;
+        }
+
+        ListNode newcurr = st.pop();
+        int max = newcurr.val;
+        ListNode res = new ListNode(max);
+        
+        while(!st.isEmpty()){
+            newcurr = st.pop();
+            if(max > newcurr.val) continue;
+            else{
+                max = newcurr.val;
+                ListNode newres = new ListNode(max);
+                newres.next = res;
+                res = newres;
+            }
+        }
+
+        return res;
+    }
+}
+
+// approach 2 recursion
+class Solution {
+    public ListNode removeNodes(ListNode head) {
+        if(head==null || head.next==null) return head;
+        ListNode curr = removeNodes(head.next);
+        
+        if(head.val < curr.val){
+            head = null;
+            return curr;
+        } else{
+            head.next = curr;
+            return head;
+        }
+    }
+}
+
+// approach 3
+class Solution {
+    public ListNode removeNodes(ListNode head) {
+        ListNode curr = reverse(head);
+        int max = curr.val;
+        ListNode prev = curr;
+        ListNode res = curr;
+        curr = curr.next;
+
+        while(curr != null){
+            if(curr.val < max) curr = curr.next;
+            else {
+                prev.next = curr;
+                prev = curr;
+                max = curr.val;
+                curr = curr.next;
+            }
+        }
+        prev.next = null;
+
+        return reverse(res);
+    }
+
+    ListNode reverse(ListNode head){
+        if(head == null || head.next == null) return head;
+        ListNode last = reverse(head.next);
+        head.next.next = head;
+        head.next = null;
+        return last;
+    }
+}
