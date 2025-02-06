@@ -1,0 +1,78 @@
+// approach 1 reverse
+class Solution {
+    public void reorderList(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        ListNode curr = head;
+        while(fast != null && fast.next != null){
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+
+        ListNode rev = reverse(slow);
+        while(rev.next != null){
+            ListNode temp = curr.next;
+            curr.next = rev;
+            ListNode temp2 = rev.next;
+            rev.next = temp;
+            curr = temp;
+            rev = temp2;
+        }
+    }
+
+    ListNode reverse(ListNode head){
+        if(head == null || head.next == null) return head;
+        ListNode last = reverse(head.next);
+        head.next.next = head;
+        head.next = null;
+        return last;
+    }
+}
+
+// approach 2 using stacks
+class Solution {
+    public void reorderList(ListNode head) {
+        ListNode test = head;
+        ListNode curr = head;
+        Stack<ListNode> stack = new Stack<>();
+        while(test != null){
+            stack.push(test);
+            test = test.next;
+        }
+
+        int k = stack.size()/2;
+
+        while(k > 0){
+            ListNode top = stack.pop();
+            ListNode temp = curr.next;
+            curr.next = top;
+            top.next = temp;
+            curr = temp;
+            k--;
+        }
+        curr.next = null;
+    }
+}
+
+// approach 3
+class Solution {
+    ListNode curr;
+    public void reorderList(ListNode head) {
+        curr = head;
+        solve(head);
+    }
+
+    void solve(ListNode head){
+        if(head == null) return;
+        solve(head.next);
+        ListNode temp = curr.next;
+        if(curr.next == null) return; // head crossed curr
+        else if (curr == head){
+            curr.next = null;
+            return;
+        }
+        curr.next = head;
+        head.next = (temp == head) ? null : temp;
+        curr = temp;
+    }
+}
