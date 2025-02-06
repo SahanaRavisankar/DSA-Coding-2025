@@ -1,0 +1,117 @@
+// approach 1 - O(n) space - O(n)
+class Solution {
+    public boolean isPalindrome(ListNode head) {
+        ListNode curr = head;
+        ArrayList<Integer> list = new ArrayList<>();
+        while(curr!=null){
+            list.add(curr.val);
+            curr = curr.next;
+        }
+
+        int i=0, j=list.size()-1;
+
+        while(i<=j){
+            if(list.get(i) != list.get(j)) return false;
+            i++;
+            j--;
+        }
+        
+        return true;
+    }
+}
+
+
+// approach 2 stacks
+class Solution {
+    public boolean isPalindrome(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        Stack<Integer> stack = new Stack<>();
+        while(fast!=null && fast.next!=null){
+            stack.push(slow.val);
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        if(fast !=  null) slow = slow.next;
+
+        while(!stack.isEmpty() && slow!=null){
+            if(stack.pop() != slow.val) return false;
+            slow = slow.next;
+        }
+        
+        return true;
+    }
+}
+
+// approach 3 reverse ll
+class Solution {
+    public boolean isPalindrome(ListNode head) {
+        ListNode curr = head;
+        ListNode slow = head;
+        ListNode fast = head;
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        if(fast != null) slow = slow.next;
+        slow = reverse(slow);
+        while(curr != null && slow != null){
+            if(curr.val != slow.val) return false;
+            curr = curr.next;
+            slow = slow.next;
+        }
+        return true;
+    }
+
+    ListNode reverse(ListNode head){
+        if(head == null || head.next == null) return head;
+        ListNode last = reverse(head.next);
+        head.next.next = head;
+        head.next = null;
+        return last;
+    }
+}
+
+// approach 4 reverse while finding mid
+class Solution {
+    public boolean isPalindrome(ListNode head) {
+        ListNode curr = head;
+        ListNode slow = head;
+        ListNode fast = head;
+
+        while(fast != null && fast.next != null){
+            fast = fast.next.next;
+            ListNode temp = slow.next; // assign temp value
+            slow.next = curr; // make slow next pointing to previous
+            curr = slow; // move previous value curr forward to slow
+            slow = temp; // move slow forward
+        }
+        if(fast != null) slow = slow.next;
+        
+        while(curr != null && slow != null){
+            if(curr.val != slow.val) return false;
+            curr = curr.next;
+            slow = slow.next;
+        }
+        return true;
+    }
+
+}
+
+// approach 5 - dont use extra space or change the input
+class Solution {
+    ListNode curr;
+    public boolean isPalindrome(ListNode head) {
+        curr = head;
+        return recur(head);
+    }
+
+    boolean recur(ListNode head){
+        if(head == null) return true;
+        boolean ans = recur(head.next);
+        if(head.val != curr.val) return false;
+        curr = curr.next;
+        return ans;
+    }
+
+}
