@@ -1,0 +1,46 @@
+// approach 1 MLE
+class Solution {
+    public int[] queryResults(int limit, int[][] queries) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int n = limit+1;
+        int[] res = new int[queries.length];
+        int[] arr = new int[n];
+        Arrays.fill(arr, -1);
+        for(int i=0; i<queries.length; i++){
+            int b = queries[i][0];
+            int c = queries[i][1];
+            if(arr[b] != -1){
+                map.put(arr[b], map.get(arr[b])-1);
+                if(map.get(arr[b]) == 0) map.remove(arr[b]);
+            }
+            arr[b] = c;
+            map.put(c, map.getOrDefault(c, 0)+1);
+            res[i] = map.size();
+        }
+        return res;
+    }
+}
+
+// approach 2 use maps
+class Solution {
+    public int[] queryResults(int limit, int[][] queries) {
+        Map<Integer, Integer> map = new HashMap<>();
+        Map<Integer, Integer> arr = new HashMap<>();
+        int n = limit+1;
+        int[] res = new int[queries.length];
+        
+        for(int i=0; i<queries.length; i++){
+            int b = queries[i][0];
+            int c = queries[i][1];
+            int x = arr.getOrDefault(b, -1);
+            if(x != -1){
+                map.put(x, map.get(x)-1);
+                if(map.get(x) == 0) map.remove(x);
+            }
+            arr.put(b, c);
+            map.put(c, map.getOrDefault(c, 0)+1);
+            res[i] = map.size();
+        }
+        return res;
+    }
+}
