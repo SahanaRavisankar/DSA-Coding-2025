@@ -1,0 +1,148 @@
+// approach 1 reverse ll
+class Solution {
+    public ListNode doubleIt(ListNode head) {
+        head = reverse(head);
+        ListNode curr = head;
+        ListNode prev = null;
+        int carry = 0;
+        while(curr != null){
+            int val = curr.val * 2 + carry;
+            int newval = val % 10;
+            carry = val/10;
+            curr.val = newval;
+            prev = curr;
+            curr = curr.next;
+        } 
+
+        if(carry != 0){
+            ListNode temp = new ListNode(carry);
+            prev.next = temp;
+        }
+        
+        return reverse(head);
+    }
+
+    ListNode reverse(ListNode head){
+        if(head == null || head.next == null) return head;
+        ListNode last = reverse(head.next);
+        head.next.next = head;
+        head.next = null;
+        return last;
+    }
+}
+
+
+// approach 2 recursion
+class Solution {
+    public ListNode doubleIt(ListNode head) {
+        int carry = recursion(head);
+        if(carry != 0){
+            ListNode temp = new ListNode(carry);
+            temp.next = head;
+            return temp;
+        }
+        
+        return head;
+    }
+
+    int recursion(ListNode head){
+        if(head == null) return 0;
+        int carry = recursion(head.next);
+        int newval = carry + (head.val * 2);
+        head.val = newval % 10;
+        return newval / 10;
+    }
+}
+
+
+// approach 3 direct left to right traversal
+class Solution {
+    public ListNode doubleIt(ListNode head) {
+        ListNode curr = head;
+        ListNode prev = null;
+        while(curr != null){
+            int newval = curr.val * 2;
+            curr.val = newval % 10;
+            int carry = newval / 10;
+            if(carry > 0){
+                if(prev == null){
+                    ListNode newhead = new ListNode(carry);
+                    newhead.next = curr;
+                    head = newhead;
+                } else prev.val += 1;
+            }
+            prev = curr;
+            curr = curr.next;
+        }
+
+        return head;
+    }
+
+}
+
+
+// approach 4
+class Solution {
+    public ListNode doubleIt(ListNode head) {
+        ListNode curr = head;
+
+        if(head.val >= 5){
+            ListNode newhead = new ListNode(1);
+            newhead.next = curr;
+            head = newhead;
+        }
+
+        while(curr != null){
+            curr.val = (curr.val * 2) % 10;
+            if(curr.next != null && curr.next.val >= 5){
+                curr.val++;
+            }
+            curr = curr.next;
+        }
+
+        return head;
+    }
+
+}
+
+
+// approach 5 using stacks
+class Solution {
+    public ListNode doubleIt(ListNode head) {
+        ListNode curr = head;
+        ListNode prev = null;
+
+        Stack<Integer> stack = new Stack<>();
+        while(curr != null){
+            stack.push(curr.val);
+            curr = curr.next;
+        }
+
+        curr = head;
+
+        int carry = 0;
+        while(!stack.isEmpty()){
+            int value = (stack.pop()*2) + carry;
+            curr.val = value % 10;
+            carry = value / 10;
+            prev = curr;
+            curr = curr.next;
+        }
+
+        if(carry > 0){
+            ListNode list = new ListNode(carry);
+            prev.next = list;
+        }
+
+        return reverse(head);
+    }
+
+    ListNode reverse(ListNode head){
+        if(head == null || head.next == null) return head;
+        ListNode last = reverse(head.next);
+        head.next.next = head;
+        head.next = null;
+        return last;
+    }
+
+}
