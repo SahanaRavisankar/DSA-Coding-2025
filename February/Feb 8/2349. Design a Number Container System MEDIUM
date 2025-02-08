@@ -1,0 +1,69 @@
+// approach 1 using maps and treeset
+import java.util.*;
+class NumberContainers {
+
+    Map<Integer, Integer> indnum; // ind and num
+    Map<Integer, TreeSet<Integer>> numind; // num and index
+
+    public NumberContainers() {
+        numind = new HashMap<>();
+        indnum = new HashMap<>();
+    }
+    
+    public void change(int index, int number) {
+        if(indnum.containsKey(index)){
+            int other = indnum.get(index); // get other num to remove
+            numind.get(other).remove(index);
+            if(numind.get(other).isEmpty()){
+                numind.remove(other);
+            }
+        }
+        indnum.put(index, number);
+        numind.putIfAbsent(number, new TreeSet<>());
+        numind.get(number).add(index);
+    }
+    
+    public int find(int number) {
+        if(numind.containsKey(number)){
+            return numind.get(number).first();
+        }
+        return -1;
+    }
+}
+
+/**
+ * Your NumberContainers object will be instantiated and called as such:
+ * NumberContainers obj = new NumberContainers();
+ * obj.change(index,number);
+ * int param_2 = obj.find(number);
+ */
+
+// approach 2 using priority queue and maps
+class NumberContainers {
+
+    Map<Integer, Integer> indnum; // ind and num
+    Map<Integer, PriorityQueue<Integer>> numind; // num and index
+
+    public NumberContainers() {
+        numind = new HashMap<>();
+        indnum = new HashMap<>();
+    }
+    
+    public void change(int index, int number) {
+        indnum.put(index, number);
+        numind.putIfAbsent(number, new PriorityQueue<>());
+        numind.get(number).offer(index);
+    }
+    
+    public int find(int number) {
+        if(numind.containsKey(number)){
+            PriorityQueue<Integer> pq = numind.get(number);
+            while(!pq.isEmpty()){
+                int temp = pq.peek();
+                if(indnum.get(temp) == number) return temp;
+                pq.poll();
+            }
+        }
+        return -1;
+    }
+}
