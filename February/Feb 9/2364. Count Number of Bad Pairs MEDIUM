@@ -1,0 +1,85 @@
+// approach 1 O(n^2) TLE
+class Solution {
+    public long countBadPairs(int[] nums) {
+        long cnt = 0;
+        int n = nums.length;
+        for(int i=0; i<n; i++){
+            for(int j=i+1; j<n; j++){
+                if(nums[i]-i != nums[j]-j) cnt++;
+            }
+        }
+        return cnt;
+    }
+}
+
+// approach 2
+class Solution {
+    public long countBadPairs(int[] nums) {
+        long cnt = 0;
+        int n = nums.length;
+        int[] cumsum = new int[n];
+        
+        // find cumualative sum
+        for(int i=0; i<n; i++){
+            cumsum[i] = nums[i] - i;
+        }
+
+        // keep map to keep count
+        Map<Integer, Integer> map = new HashMap<>(); // num, count
+        for(int i:cumsum){
+            map.put(i, map.getOrDefault(i, 0) + 1); // increment the count
+        }
+
+        for(int i=0; i<n; i++){
+            // we use -- n - count of cumsum[i] - i
+            // then decrement count of cumsum[i]
+            long x = n - map.get(cumsum[i]) - i;
+            cnt += x;
+            map.put(cumsum[i], map.getOrDefault(cumsum[i], 0) - 1);
+        }
+
+        return cnt;
+    }
+}
+
+
+// approach 3 modified approach 2
+class Solution {
+    public long countBadPairs(int[] nums) {
+        long cnt = 0;
+        int n = nums.length;
+        int[] cumsum = new int[n];
+        
+        // find cumualative sum
+        for(int i=0; i<n; i++){
+            cumsum[i] = nums[i] - i;
+        }
+
+        // keep map to keep count
+        Map<Integer, Integer> map = new HashMap<>(); // num, count
+        for(int i=0; i<n; i++){
+            long x = i - map.getOrDefault(cumsum[i], 0);
+            map.put(cumsum[i], map.getOrDefault(cumsum[i], 0) + 1); // increment the count
+            cnt += x;
+        }
+
+        return cnt;
+    }
+}
+
+// approach 4 same as above -- just badpairs = totalpairs - goodpairs
+class Solution {
+    public long countBadPairs(int[] nums) {
+        long cnt = 0;
+        int n = nums.length;
+
+        // keep map to keep count
+        Map<Integer, Integer> map = new HashMap<>(); // num, count
+        for(int i=0; i<n; i++){
+            cnt += i - map.getOrDefault(nums[i]-i, 0);
+            map.put(nums[i]-i, map.getOrDefault(nums[i]-i, 0) + 1); // increment the count
+        }
+
+        return cnt;
+    }
+}
