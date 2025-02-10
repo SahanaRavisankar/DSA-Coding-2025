@@ -1,0 +1,52 @@
+// appraoch 1
+class Solution {
+    public String clearDigits(String s) {
+        StringBuilder str = new StringBuilder();
+        int n = s.length();
+        str.append(s.charAt(0));
+
+        for(int i=1; i<n; i++){
+            if(Character.isDigit(s.charAt(i))) str.deleteCharAt(str.length() - 1);
+            else str.append(s.charAt(i));
+        }
+        return str.toString();
+    }
+}
+
+// approach 2
+class Solution {
+    public String clearDigits(String s) {
+        StringBuilder str = new StringBuilder();
+        Stack<Character> stk = new Stack<>();
+        int n = s.length();
+        stk.push(s.charAt(0));
+
+        for(int i=1; i<n; i++){
+            if(Character.isDigit(s.charAt(i))) stk.pop();
+            else stk.push(s.charAt(i));
+        }
+
+        while(!stk.isEmpty()) str.append(stk.pop());
+        return str.reverse().toString();
+    }
+}
+
+// approach 3
+class Solution {
+    public String clearDigits(String s) {
+        int n = s.length();
+        char[] str = s.toCharArray();
+        int i=0, j=0;
+
+        while(i<n){
+            if(Character.isDigit(str[i])){
+                j = Math.max(j-1, 0);
+            } else{
+                str[j] = str[i];
+                j++;
+            }
+            i++;
+        }
+        return new String(str, 0, j);
+    }
+}
