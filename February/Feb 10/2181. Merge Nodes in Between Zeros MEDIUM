@@ -1,0 +1,42 @@
+// approach 1
+class Solution {
+    public ListNode mergeNodes(ListNode head) {
+        ListNode p1 = head;
+        ListNode p2 = p1;
+        int sum = 0;
+        while(p2 != null && p1 != null){
+            while(p2 != null && p2.val != 0){
+                sum += p2.val;
+                p2 = p2.next;
+            }
+            p1.val = sum;
+            p2 = p2.next;
+            sum = 0;
+            p1.next = p2;
+            p1 = p1.next;
+        }
+        return head.next;
+    }
+}
+
+// appraoch 2 recursion
+class Solution {
+    public ListNode mergeNodes(ListNode head) {
+        head = head.next;
+        
+        if(head == null) 
+            return head;
+        
+        ListNode temp = head;
+        int sum = 0;
+
+        while(temp != null && temp.val != 0){
+            sum += temp.val;
+            temp = temp.next;
+        }
+        head.val = sum;
+        head.next = mergeNodes(temp);
+            
+        return head;
+    }
+}
