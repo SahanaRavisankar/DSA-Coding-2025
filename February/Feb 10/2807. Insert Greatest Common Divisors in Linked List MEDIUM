@@ -1,0 +1,42 @@
+// approach 1 iterative
+class Solution {
+    public ListNode insertGreatestCommonDivisors(ListNode head) {
+        if(head.next == null) return head;
+        ListNode prev = head;
+        ListNode curr = head.next;
+        while(curr != null){
+            ListNode temp = new ListNode(gcd(prev.val, curr.val));
+            prev.next = temp;
+            temp.next = curr;
+            prev = curr;
+            curr = curr.next;
+        }
+        
+        return head;
+    }
+
+    int gcd(int a, int b){
+        if(b == 0) return a;
+        return gcd(b, a % b);
+    }
+}
+
+
+// approach 2 recursion leap of faith
+class Solution {
+    public ListNode insertGreatestCommonDivisors(ListNode head) {
+        if(head == null || head.next == null) return head;
+
+        ListNode temp = insertGreatestCommonDivisors(head.next);
+        ListNode gcdNode = new ListNode(gcd(head.val, head.next.val));
+        head.next = gcdNode;
+        gcdNode.next = temp;
+        
+        return head;
+    }
+
+    int gcd(int a, int b){
+        if(b == 0) return a;
+        return gcd(b, a % b);
+    }
+}
