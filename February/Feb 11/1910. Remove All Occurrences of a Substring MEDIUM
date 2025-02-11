@@ -1,0 +1,82 @@
+// approach 1
+class Solution {
+    public String removeOccurrences(String s, String part) {
+        while(s.contains(part)){
+            s = s.replaceFirst(part, "");
+        }
+        return s;
+    }
+}
+
+// appraoch 2 use string as stack
+class Solution {
+    public String removeOccurrences(String s, String part) {
+        StringBuilder res = new StringBuilder();
+        int i = 0;
+        while(i < s.length()){
+            res.append(s.charAt(i));
+            if(res.length() >= part.length()){
+                if(res.substring(res.length() - part.length(), res.length()).equals(part)){
+                    res.delete(res.length() - part.length(), res.length());
+                }
+            }
+            i++;
+        }
+        return res.toString();
+    }
+}
+
+// appraoch 3 kmp
+class Solution {
+    public String removeOccurrences(String s, String part) {
+        int[] lps = lpsKMP(part);
+        StringBuilder str = new StringBuilder();
+        str.append(s);
+        while(kmp(str.toString(), part, lps) != -1){
+            str.delete(kmp(str.toString(), part, lps), kmp(str.toString(), part, lps) + part.length());
+        }
+
+        return str.toString();
+    }
+
+    int[] lpsKMP(String pat){
+        int m = pat.length();
+        int[] lps = new int[m];
+        int i=1;
+        lps[0] = 0;
+        int len = 0;
+        while(i<m){
+            if(pat.charAt(i) == pat.charAt(len)){
+                len++;
+                lps[i] = len;
+                i++;
+            } else {
+                if(len != 0) len = lps[len - 1];
+                else {
+                    lps[i] = 0;
+                    i++;
+                }
+            }
+        }
+        return lps;
+    }
+
+    int kmp(String txt, String pat, int[] lps){
+        int m = pat.length();
+        int n = txt.length();
+        int i=0, j=0;
+        while(i<n){
+            if(txt.charAt(i) == pat.charAt(j)){
+                i++;
+                j++;
+            }
+            if(j==m){
+                return i-j;
+            } else if(i<n && (j==0 || pat.charAt(j) != txt.charAt(i))){
+                if(j != 0) j = lps[j-1];
+                else i++;
+            }
+        }
+        return -1;
+    }
+}
