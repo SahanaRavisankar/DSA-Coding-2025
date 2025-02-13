@@ -1,0 +1,52 @@
+// approach 1
+class Solution {
+    public int evalRPN(String[] tokens) {
+        Stack<Integer> stack = new Stack<>();
+        for(String s:tokens){
+            if(s.equals("+") || s.equals("-") || s.equals("*") || s.equals("/")) {
+                int num2 = stack.pop();
+                int num1 = stack.pop();
+
+                if(s.equals("+")) {
+                    stack.push(num1 + num2);
+                } else if(s.equals("-")) {
+                    stack.push(num1 - num2);
+                } else if(s.equals("*")) {
+                    stack.push(num1 * num2);
+                } else if(s.equals("/")) {
+                    stack.push(num1 / num2);
+                }
+            } else {
+                stack.push(Integer.valueOf(s));
+            }
+        }
+
+        return stack.pop();
+    }
+}
+
+// approach 2 lambda function -- BiFunction
+class Solution {
+    public int evalRPN(String[] tokens) {
+        Stack<Integer> stack = new Stack<>();
+        Map<String, BiFunction<Integer, Integer, Integer>> mp = new HashMap<>();
+        mp.put("+", (a, b) -> a + b);
+        mp.put("-", (a, b) -> a - b);
+        mp.put("*", (a, b) -> (int)((long) a * (long) b));
+        mp.put("/", (a, b) -> a / b);
+
+        for(String s:tokens){
+            if(mp.containsKey(s)) {
+                int num2 = stack.pop();
+                int num1 = stack.pop();
+
+                int x = mp.get(s).apply(num1, num2);
+                stack.push(x);
+            } else {
+                stack.push(Integer.valueOf(s));
+            }
+        }
+
+        return stack.pop();
+    }
+}
