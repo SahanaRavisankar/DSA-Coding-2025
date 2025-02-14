@@ -1,0 +1,53 @@
+// approach 1 arraylist
+class ProductOfNumbers {
+
+    ArrayList<Integer> list;
+
+    public ProductOfNumbers() {
+        list = new ArrayList<Integer>();
+    }
+    
+    public void add(int num) {
+        list.add(num);
+    }
+    
+    public int getProduct(int k) {
+        int x = 1;
+        int n = list.size() - 1;
+        for(int i = k - 1; i >= 0; i--) {
+            x *= list.get(n);
+            n--;
+        }
+        return x;
+    }
+}
+
+
+// approach 2
+class ProductOfNumbers {
+
+    ArrayList<Integer> list;
+
+    public ProductOfNumbers() {
+        list = new ArrayList<Integer>();
+    }
+    
+    public void add(int num) {
+        if(list.size() == 0 && num != 0) list.add(num);
+        else if(num == 0) list = new ArrayList<Integer>();
+        else list.add(list.get(list.size() - 1) * num);
+    }
+    
+    public int getProduct(int k) {
+        if(k == list.size()) return list.get(list.size() - 1);
+        else if (k > list.size()) return 0;
+        else return list.get(list.size() - 1) / list.get(list.size() - k - 1);
+    }
+}
+
+/**
+ * Your ProductOfNumbers object will be instantiated and called as such:
+ * ProductOfNumbers obj = new ProductOfNumbers();
+ * obj.add(num);
+ * int param_2 = obj.getProduct(k);
+ */
