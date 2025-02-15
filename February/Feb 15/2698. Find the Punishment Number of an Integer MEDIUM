@@ -1,0 +1,104 @@
+// approach 1
+class Solution {
+    public int punishmentNumber(int n) {
+        int res = 0;
+        for(int num = 1; num <= n; num++){
+            int sq = num * num;
+            if(check(String.valueOf(sq), num, 0, 0)) {
+                res += sq;
+                System.out.println(num);
+            }
+        }
+        return res;
+    }
+
+    boolean check(String sq, int num, int i, int currsum){
+        int n = sq.length();
+        if(i == n){
+            return currsum == num;
+        }
+
+        if(currsum > num) return false;
+
+        boolean flag = false;
+        for(int j = i; j<n; j++){
+            flag = check(sq, num, j + 1, currsum +  Integer.valueOf(sq.substring(i, j + 1))) || flag;
+            if(flag) return true;
+        }
+
+        return false;
+    }
+}
+
+
+// approach 2 memoization
+class Solution {
+    public int punishmentNumber(int n) {
+        int res = 0;
+
+        for(int num = 1; num <= n; num++){
+            int sq = num * num;
+            String s = String.valueOf(sq);
+            int[][] dp = new int[s.length()][num + 1];
+            for(int[] i:dp) Arrays.fill(i, -1);
+
+            if(check(s, num, 0, 0, dp)) {
+                res += sq;
+            }
+        }
+        return res;
+    }
+
+    boolean check(String sq, int num, int i, int currsum, int[][] dp){
+        int n = sq.length();
+        if(i == n){
+            return currsum == num;
+        }
+
+        if(currsum > num) return false;
+
+        if(dp[i][currsum] != -1) {
+            if(dp[i][currsum] == 1) return true;
+            else return false;
+        }
+
+        for(int j = i; j<n; j++){
+            boolean flag = check(sq, num, j + 1, currsum +  Integer.valueOf(sq.substring(i, j + 1)), dp);
+            if(flag){
+                dp[i][currsum] = 1;
+                return true;
+            }
+        }
+
+        dp[i][currsum] = 0;
+        return false;
+    }
+}
+
+
+// approach 3
+class Solution {
+    public int punishmentNumber(int n) {
+        int res = 0;
+
+        for (int num = 1; num <= n; num++) {
+            int given = num * num;
+
+            if (check(given, 0, num)) {
+                res += given;
+            }
+        }
+        return res;
+    }
+
+    boolean check(int given, int currsum, int num) {
+        if (given == 0) {
+            return currsum == num;
+        }
+        if (currsum > num)
+            return false;
+
+        return check(given / 10, given % 10 + currsum, num) || check(given / 100, given % 100 + currsum, num)
+                || check(given / 1000, given % 1000 + currsum, num) || check(given / 10000, given % 10000 + currsum, num);
+    }
+}
