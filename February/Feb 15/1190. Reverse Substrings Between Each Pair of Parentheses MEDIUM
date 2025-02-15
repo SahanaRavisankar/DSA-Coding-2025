@@ -1,0 +1,53 @@
+// approach 1
+class Solution {
+    public String reverseParentheses(String s) {
+        StringBuilder str = new StringBuilder();
+        Stack<Integer> st = new Stack<>();
+        int n = s.length();
+
+        for(int i = 0; i<n; i++){
+            if(s.charAt(i) == '(') st.push(str.length());
+            else if(s.charAt(i) == ')'){
+                int l = st.pop();
+                if(l == 0) str = str.reverse();
+                else {
+                    StringBuilder temp = new StringBuilder(str.substring(l, str.length()));
+                    str.delete(l, str.length());
+                    str.append(temp.reverse());
+                }
+            } else str.append(s.charAt(i));
+        }
+
+        return str.toString();
+    }
+}
+
+
+// approach 2
+class Solution {
+    public String reverseParentheses(String s) {
+        StringBuilder str = new StringBuilder();
+        Stack<Integer> stk = new Stack<>();
+        int n = s.length();
+        Map<Integer, Integer> map = new HashMap<>();
+
+        for(int i = 0; i<n; i++){
+            if(s.charAt(i) == '(') stk.push(i);
+            else if(s.charAt(i) == ')'){
+                int k = stk.pop();
+                map.put(i, k);
+                map.put(k, i);
+            }
+        }
+
+        int flag = 1;
+        for(int i = 0; i<n; i += flag){
+            if(s.charAt(i) == '(' || s.charAt(i) == ')'){
+                i = map.get(i);
+                flag = -flag;
+            } else str.append(s.charAt(i));
+        }
+
+        return str.toString();
+    }
+}
