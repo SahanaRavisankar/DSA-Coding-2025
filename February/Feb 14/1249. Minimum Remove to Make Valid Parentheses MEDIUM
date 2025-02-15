@@ -16,6 +16,7 @@ class Solution {
     }
 }
 
+
 // approach 2
 class Solution {
     public String minRemoveToMakeValid(String s) {
@@ -49,6 +50,7 @@ class Solution {
         return strnew.reverse().toString();
     }
 }
+
 
 // approach 3
 class Solution {
