@@ -1,0 +1,80 @@
+class Solution {
+    public int maximalRectangle(char[][] matrix) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+
+        int[] ht = new int[cols];
+
+        for(int i = 0; i < cols; i++) {
+            ht[i] = matrix[0][i] - '0';
+        }
+
+        int maxArea = largestRectangleArea(ht);
+
+        for(int i = 1; i < rows; i++) {
+            for(int j = 0; j < cols; j++) {
+                if(matrix[i][j] == '0') ht[j] = 0;
+                else ht[j]++;
+            }
+
+            maxArea = Math.max(maxArea, largestRectangleArea(ht));
+        }
+
+        return maxArea;
+    }
+
+    int[] get_nsl(int[] arr, int n) {
+        int[] nsl = new int[n];
+        Stack<Integer> st = new Stack<>();
+        for(int i = 0; i < n; i++) {
+            if(st.isEmpty()) nsl[i] = -1;
+            else {
+                while(!st.isEmpty() && arr[st.peek()] >= arr[i])
+                    st.pop();
+            }
+            if(st.isEmpty()) nsl[i] = -1;
+            else nsl[i] = st.peek();
+
+            st.push(i);
+        }
+
+        return nsl;
+    }
+    
+    int[] get_nsr(int[] arr, int n) {
+        int[] nsr = new int[n];
+        Stack<Integer> st = new Stack<>();
+        for(int i = n - 1; i >= 0; i--) {
+            if(st.isEmpty()) nsr[i] = n;
+            else {
+                while(!st.isEmpty() && arr[st.peek()] >= arr[i])
+                    st.pop();
+            }
+            if(st.isEmpty()) nsr[i] = n;
+            else nsr[i] = st.peek();
+
+            st.push(i);
+        }
+
+        return nsr;
+    }
+
+    int largestRectangleArea(int[] ht) {
+        int n = ht.length;
+        int[] nsl = get_nsl(ht, n);
+        int[] nsr = get_nsr(ht, n);
+        int[] width = new int[n];
+        int maxArea = 0;
+        for(int i = 0; i < n; i++) {
+            width[i] = nsr[i] - nsl[i] - 1;
+        }
+
+        for(int i = 0; i < n; i++) {
+            int area = width[i] * ht[i];
+            maxArea = Math.max(maxArea, area);
+        }
+
+        return maxArea;
+    }
+
+}
