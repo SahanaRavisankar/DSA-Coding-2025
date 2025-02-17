@@ -1,0 +1,57 @@
+// approach 1
+class Solution {
+
+    Set<String> ans = new HashSet<>();
+
+    public int numTilePossibilities(String tiles) {
+        int n = tiles.length();
+        boolean[] vis = new boolean[n];
+        Arrays.fill(vis, false);
+        StringBuilder curr = new StringBuilder();
+        solve(tiles, curr, vis);
+        return ans.size() - 1;
+    }
+
+    void solve(String s, StringBuilder curr, boolean[] used){
+        ans.add(curr.toString());
+        int n = s.length();
+
+        for(int i = 0; i < n; i++){
+            if(used[i]) continue;
+            used[i] = true;
+            curr.append(s.charAt(i));
+            solve(s, curr, used);
+            used[i] = false;
+            curr.deleteCharAt(curr.length() - 1);
+        }
+    }
+}
+
+
+// approach 2
+class Solution {
+
+    int n;
+    int cnt;
+
+    public int numTilePossibilities(String tiles) {
+        n = tiles.length();
+        int[] freq = new int[26];
+        for(char ch:tiles.toCharArray()) freq[ch - 'A']++;
+        
+        solve(freq);
+
+        return cnt - 1;
+    }
+
+    void solve(int[] freq){
+        cnt++;
+
+        for(int i = 0; i < 26; i++){
+            if(freq[i] == 0) continue;
+            freq[i]--;
+            solve(freq);
+            freq[i]++;
+        }
+    }
+}
