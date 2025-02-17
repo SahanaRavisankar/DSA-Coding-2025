@@ -1,0 +1,60 @@
+class Solution {
+    public String countOfAtoms(String form) {
+        int n = form.length();
+        int i = 0;
+        Stack<Map<String, Integer>> st = new Stack<>();
+        st.push(new HashMap<>());
+        while(i < n){
+            if(form.charAt(i) == '('){
+                st.push(new HashMap<String, Integer>());
+                i++;
+            } else if(form.charAt(i) == ')'){
+                Map<String, Integer> curr = st.pop();
+                i++;
+                StringBuilder sb = new StringBuilder();
+                while(i<n && Character.isDigit(form.charAt(i))){
+                    sb.append(form.charAt(i));
+                    i++;
+                }
+                
+                int k = (sb.length() > 0) ? Integer.valueOf(sb.toString()) : 1;
+                for(String key : curr.keySet()){
+                    curr.put(key, curr.get(key) * k);
+                }
+
+                for(String key : curr.keySet()){
+                    st.peek().put(key, st.peek().getOrDefault(key, 0) + curr.get(key));
+                }
+
+            } else {
+                StringBuilder elem = new StringBuilder();
+                elem.append(form.charAt(i));
+                i++;
+                while(i<n && Character.isLowerCase(form.charAt(i))){
+                    elem.append(form.charAt(i));
+                    i++;
+                }
+                StringBuilder sb = new StringBuilder();
+                while(i<n && Character.isDigit(form.charAt(i))){
+                    sb.append(form.charAt(i));
+                    i++;
+                }
+                
+                int k = (sb.length() > 0) ? Integer.valueOf(sb.toString()) : 1;
+                st.peek().put(elem.toString(), st.peek().getOrDefault(elem.toString(), 0) + k);
+            }
+        }
+
+        TreeMap<String, Integer> tmap = new TreeMap<>(st.peek());
+        StringBuilder str = new StringBuilder();
+        for(String key : tmap.keySet()){
+            str.append(key);
+            int cnt = tmap.get(key);
+            if(cnt > 1) str.append(cnt);
+        }
+
+        //System.out.println(tmap);
+
+        return str.toString();
+    }
+}
