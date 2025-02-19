@@ -1,0 +1,43 @@
+class Solution {
+    public boolean parseBoolExpr(String expr) {
+        Stack<Character> s1 = new Stack<>(); // operators
+        Stack<Character> s2 = new Stack<>(); // expression
+
+        for(char ch : expr.toCharArray()){
+            if(ch == '&' || ch == '|' || ch == '!'){
+                s1.push(ch);
+            } else if(ch == 't' || ch == 'f' || ch == '(') {
+                s2.push(ch);
+            } else if(ch == ')') {
+                boolean to_push = (s2.pop() == 't') ? true : false;
+                char op = s1.pop();
+                Set<Character> set = new HashSet<>();
+
+                while(s2.peek() != '(') {
+                    set.add(s2.pop());
+                }
+
+                if(op == '!'){
+                    to_push = !to_push;
+                } else if(op == '&') {
+                    for(char c:set){
+                        to_push = to_push && func(c);
+                    }
+                } else if(op == '|') {
+                    for(char c:set){
+                        to_push = to_push || func(c);
+                    }
+                }
+
+                s2.pop();
+                s2.push((to_push) ? 't' : 'f');
+            }
+        }
+
+        return func(s2.pop());
+    }
+
+    boolean func(char c){
+        return c == 't';
+    }
+}
