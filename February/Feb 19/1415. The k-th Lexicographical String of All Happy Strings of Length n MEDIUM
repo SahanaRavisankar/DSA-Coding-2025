@@ -1,0 +1,55 @@
+// approach 1
+class Solution {
+    public String getHappyString(int n, int k) {
+        StringBuilder curr = new StringBuilder();
+        ArrayList<String> res = new ArrayList<>();
+        solve(curr, res, n);
+        if(k > res.size()) return "";
+        return res.get(k - 1);
+    }
+
+    void solve(StringBuilder curr, ArrayList<String> res, int n){
+        if(curr.length() == n){
+            res.add(curr.toString());
+            return;
+        }
+
+        for(char ch = 'a'; ch <= 'c'; ch++){
+            if(curr.length() > 0 && curr.charAt(curr.length() - 1) == ch) continue;
+            curr.append(ch);
+            solve(curr, res, n);
+            curr.deleteCharAt(curr.length() - 1);
+        }
+    }
+}
+
+
+// approach 2
+class Solution {
+    String res = new String();
+    int cnt = 0;
+
+    public String getHappyString(int n, int k) {
+        StringBuilder curr = new StringBuilder();
+        solve(curr, k, n);
+        return res;
+    }
+
+    void solve(StringBuilder curr, int k, int n){
+        if(curr.length() == n){
+            cnt++;
+            if(cnt == k){
+                res = curr.toString();
+            }
+            return;
+        }
+
+        for(char ch = 'a'; ch <= 'c'; ch++){
+            if(curr.length() > 0 && curr.charAt(curr.length() - 1) == ch) continue;
+            curr.append(ch);
+            solve(curr, k, n);
+            curr.deleteCharAt(curr.length() - 1);
+            if(!res.isEmpty()) return;
+        }
+    }
+}
