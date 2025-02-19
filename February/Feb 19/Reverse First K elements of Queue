@@ -1,0 +1,26 @@
+// alternatively can use stacks
+
+class GfG {
+    
+    public Queue<Integer> modifyQueue(Queue<Integer> q, int k) {
+        Vector<Integer> vec = new Vector<>();
+        int rem = q.size() - k;
+        while(k > 0){
+            vec.add(q.remove());
+            k--;
+        }
+        
+        Collections.reverse(vec);
+        
+        for(int i = 0; i < vec.size(); i++){
+            q.add(vec.get(i));
+        }
+        
+        while(rem > 0){
+            q.add(q.remove());
+            rem--;
+        }
+        
+        return q;
+    }
+}
