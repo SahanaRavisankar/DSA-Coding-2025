@@ -1,0 +1,33 @@
+class Solution {
+    public int minSwaps(String s) {
+        Stack<Character> st = new Stack<>();
+        int open = 0;
+        for(char ch:s.toCharArray()){
+            if(ch == '[') st.push('[');
+            else if(ch == ']' && (st.isEmpty() || st.peek() == ']')) st.push(ch);
+            else st.pop();
+        }
+
+        while(!st.isEmpty()) {
+            if(st.pop() == '[') open++;
+        }
+
+        return (open + 1)/2;
+    }
+}
+
+
+// writing better
+class Solution {
+    public int minSwaps(String s) {
+        Stack<Character> st = new Stack<>();
+        
+        for(char ch:s.toCharArray()){
+            if(ch == '[') st.push('[');
+            else if(ch == ']' && (st.isEmpty() || st.peek() == ']')) st.push(ch);
+            else st.pop();
+        }
+
+        return (st.size() / 2 + 1)/2;
+    }
+}
