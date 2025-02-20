@@ -1,0 +1,35 @@
+class Solution {
+    public int[] getOrder(int[][] tasks) {
+        int n = tasks.length;
+        int[][] sorted = new int[n][3];
+        for(int i = 0; i < n; i++) {
+            sorted[i][0] = tasks[i][0];
+            sorted[i][1] = tasks[i][1];
+            sorted[i][2] = i;
+        }
+
+        Arrays.sort(sorted, Comparator.comparingInt(a -> a[0]));
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) ->
+        a[0] == b[0] ? Integer.compare(a[1], b[1]) : Integer.compare(a[0], b[0])
+        );
+
+        List<Integer> res = new ArrayList<>();
+        int idx = 0;
+        int currt = 0;
+        while(idx < n || !pq.isEmpty()) {
+            if(pq.isEmpty() && currt < sorted[idx][0])
+                currt = sorted[idx][0];
+            
+            while(idx < n && sorted[idx][0] <= currt) {
+                pq.offer(new int[]{sorted[idx][1], sorted[idx][2]});
+                idx++;
+            }
+
+            int[] currtask = pq.poll();
+            currt += currtask[0];
+            res.add(currtask[1]);
+        }
+
+        return res.stream().mapToInt(i -> i).toArray();
+    }
+}
