@@ -1,0 +1,60 @@
+// approach 1
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        PriorityQueue<Map.Entry<Integer, Integer>> pq = new PriorityQueue<>(
+            Comparator.comparingInt(Map.Entry::getValue)
+        );
+
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int i : nums) {
+            map.put(i, map.getOrDefault(i, 0) + 1);
+        }
+
+        for(Map.Entry<Integer, Integer> entry : map.entrySet()){
+            pq.offer(entry);
+            if(pq.size() > k) pq.poll();
+        }
+
+        int[] res = new int[k];
+        for(int i = 0; i < k; i++){
+            Map.Entry<Integer, Integer> tmp = pq.poll();
+            res[i] = tmp.getKey();
+        }
+
+        return res;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int i : nums) {
+            map.put(i, map.getOrDefault(i, 0) + 1);
+        }
+
+        int n = nums.length;
+        List<List<Integer>> bucket = new ArrayList<>(Collections.nCopies(n + 1, null));
+
+        for(Map.Entry<Integer, Integer> entry : map.entrySet()){
+            int val = entry.getKey();
+            int freq = entry.getValue();
+            if(bucket.get(freq) == null) bucket.set(freq, new ArrayList<>());
+            bucket.get(freq).add(val);
+        }
+
+        List<Integer> result = new ArrayList<>();
+        for (int i = n; i >= 0 && k > 0; i--) {
+            if (bucket.get(i) != null) {
+                for (int num : bucket.get(i)) {
+                    result.add(num);
+                    k--;
+                    if (k == 0) break;
+                }
+            }
+        }
+
+        return result.stream().mapToInt(i -> i).toArray();
+    }
+}
