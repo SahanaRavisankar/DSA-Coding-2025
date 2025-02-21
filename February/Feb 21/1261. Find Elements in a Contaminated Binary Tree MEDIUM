@@ -1,0 +1,77 @@
+// approach dfs
+class FindElements {
+    Set<Integer> set;
+
+    void dfs(TreeNode root, int x) {
+        if(root == null) return;
+        root.val = x;
+        set.add(x);
+        dfs(root.left, 2*x + 1);
+        dfs(root.right, 2*x + 2);
+    }
+
+    public FindElements(TreeNode root) {
+        set = new HashSet<>();
+        dfs(root, 0);
+    }
+    
+    public boolean find(int target) {
+        return set.contains(target);
+    }
+}
+
+// approach bfs
+class FindElements {
+    Set<Integer> set;
+
+    void bfs(TreeNode root, int x) {
+        Queue<TreeNode> que = new LinkedList<>();
+        root.val = x;
+        que.offer(root);
+        while(!que.isEmpty()){
+            TreeNode temp = que.poll();
+            set.add(temp.val);
+            
+            if(temp.left != null){
+                temp.left.val = 2*temp.val + 1;
+                que.offer(temp.left);
+            }
+            
+            if(temp.right != null){
+                temp.right.val = 2*temp.val + 2;
+                que.offer(temp.right);
+            }
+        }
+    }
+
+    public FindElements(TreeNode root) {
+        set = new HashSet<>();
+        bfs(root, 0);
+    }
+    
+    public boolean find(int target) {
+        return set.contains(target);
+    }
+}
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+/**
+ * Your FindElements object will be instantiated and called as such:
+ * FindElements obj = new FindElements(root);
+ * boolean param_1 = obj.find(target);
+ */
