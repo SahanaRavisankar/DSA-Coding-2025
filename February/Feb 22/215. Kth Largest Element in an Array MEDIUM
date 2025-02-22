@@ -33,3 +33,47 @@ class Solution {
         return pq.peek();
     }
 }
+
+
+// approach 4 quick select partition / hoare's partition
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        int n = nums.length;
+        int l = 0;
+        int r = n - 1;
+        int pvt = 0;
+        while(true){
+            pvt = partition(nums, l, r);
+            if(pvt == k-1) break;
+            else if(pvt > k-1) r = pvt-1;
+            else l = pvt+1;
+        }
+
+        return nums[pvt];
+    }
+
+    void swap(int[] nums, int i, int j){
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+
+    int partition(int[] nums, int l, int r){
+        int pvt = nums[l];
+        int i = l+1;
+        int j = r;
+
+        while(i <= j){
+            if(nums[i] < pvt && nums[j] > pvt){
+                swap(nums, i, j);
+                i++;
+                j--;
+            } 
+            if(nums[i] >= pvt) i++;
+            if(nums[j] <= pvt) j--;
+        }
+
+        swap(nums, j, l);
+        return j;
+    }
+}
