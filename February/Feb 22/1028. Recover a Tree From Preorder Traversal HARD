@@ -1,0 +1,30 @@
+class Solution {
+    int n;
+    int i;
+
+    public TreeNode recoverFromPreorder(String traversal) {
+        int d = 0;
+        n = traversal.length();
+        i = 0;
+        return solve(traversal, d);
+    }
+
+    TreeNode solve(String s, int d){
+        if(i >= n) return null;
+        int j = i;
+        while(j < n && s.charAt(j) == '-') j++;
+        int dash = j - i;
+        if(d != dash) return null;
+        i = j;
+        int num = 0;
+        while(i < n && Character.isDigit(s.charAt(i))){
+            num = (num * 10) + (s.charAt(i) - '0');
+            i++;
+        }
+        TreeNode root = new TreeNode(num);
+        root.left = solve(s, d + 1);
+        root.right = solve(s, d + 1);
+
+        return root;
+    }
+}
