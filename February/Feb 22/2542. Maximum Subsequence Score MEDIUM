@@ -1,0 +1,67 @@
+// approach 1 dp
+class Solution {
+    int n;
+    int k;
+    PriorityQueue<Integer> pq;
+
+    public long maxScore(int[] nums1, int[] nums2, int size) {
+        n = nums1.length;
+        k = size;
+        pq = new PriorityQueue<>();
+        return solve(nums1, nums2, 0, Integer.MAX_VALUE, 0, 0);
+    }
+
+    long solve(int[] nums1, int[] nums2, int sum, int min, int ind, int count) {
+        if (count == k)
+            return (long) sum * min;
+        if (ind >= n)
+            return 0;
+        pq.offer(nums2[ind]);
+        long take = solve(nums1, nums2, sum + nums1[ind], pq.peek(), ind + 1, count + 1);
+        pq.remove(nums2[ind]);
+        long skip = solve(nums1, nums2, sum, min, ind + 1, count);
+        return (long) Math.max(take, skip);
+    }
+}
+
+
+// approach 2
+class Solution {
+
+    class Pair {
+        int first, second;
+        Pair(int first, int second){
+            this.first = first;
+            this.second = second;
+        }
+    }
+
+    public long maxScore(int[] nums1, int[] nums2, int k) {
+        int n = nums1.length;
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        List<Pair> list = new ArrayList<>();
+
+        for(int i = 0; i < n; i++){
+            list.add(new Pair(nums1[i], nums2[i]));
+        }
+
+        list.sort((a, b) -> Integer.compare(b.second, a.second));
+
+        long ksum = 0;
+        for(int i = 0; i < k; i++){
+            ksum += list.get(i).first;
+            pq.offer(list.get(i).first);
+        }
+
+        long res = ksum * list.get(k - 1).second;
+
+        for(int i = k; i < n; i++){
+            ksum += list.get(i).first - pq.poll();
+            pq.offer(list.get(i).first);
+            res = Math.max(res, ksum * list.get(i).second);
+        }
+
+        return res;
+    }
+
+}
