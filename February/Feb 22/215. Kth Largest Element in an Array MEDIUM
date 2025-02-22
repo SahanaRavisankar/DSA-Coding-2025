@@ -1,0 +1,21 @@
+// approach 1 sorting
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        Arrays.sort(nums);
+        return nums[nums.length - k];
+    }
+}
+
+
+// approach 2 heap
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+        for(int i : nums) pq.offer(i);
+        while(k-1 > 0){
+            pq.poll();
+            k--;
+        }
+        return pq.peek();
+    }
+}
