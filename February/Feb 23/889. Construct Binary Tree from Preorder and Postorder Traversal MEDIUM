@@ -1,0 +1,50 @@
+// approach 1
+class Solution {
+    int n;
+    public TreeNode constructFromPrePost(int[] preorder, int[] postorder) {
+        n = preorder.length;
+        return solve(0, 0, n - 1, preorder, postorder);
+    }
+
+    TreeNode solve(int prest, int post, int preend, int[] preorder, int[] postorder){
+        if(prest > preend) return null;
+        TreeNode root = new TreeNode(preorder[prest]);
+        if(preend == prest) return root;
+        int nxt = preorder[prest + 1];
+        int j = post;
+        while(postorder[j] != nxt) j++;
+        int num = j - post + 1;
+        root.left = solve(prest + 1, post, prest + num, preorder, postorder);
+        root.right = solve(prest + num + 1, j + 1, preend, preorder, postorder);
+
+        return root;
+    }
+}
+
+
+// approach 2 used a map instead of while loop
+class Solution {
+
+    public TreeNode constructFromPrePost(int[] preorder, int[] postorder) {
+        int n = preorder.length;
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int i = 0; i < n; i++){
+            map.put(postorder[i], i);
+        }
+
+        return solve(0, 0, n - 1, preorder, postorder, map);
+    }
+
+    TreeNode solve(int prest, int post, int preend, int[] preorder, int[] postorder, Map<Integer, Integer> map){
+        if(prest > preend) return null;
+        TreeNode root = new TreeNode(preorder[prest]);
+        if(preend == prest) return root;
+        int nxt = preorder[prest + 1];
+        int j = map.get(nxt);
+        int num = j - post + 1;
+        root.left = solve(prest + 1, post, prest + num, preorder, postorder, map);
+        root.right = solve(prest + num + 1, j + 1, preend, preorder, postorder, map);
+
+        return root;
+    }
+}
