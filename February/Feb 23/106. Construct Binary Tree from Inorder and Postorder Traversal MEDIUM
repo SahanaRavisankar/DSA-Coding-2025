@@ -1,0 +1,59 @@
+// approach 1
+class Solution {
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        int inst = 0, postst = 0;
+        int n = inorder.length;
+        int inend = n - 1, postend = n - 1;
+        return solve(inorder, postorder, inst, inend, postst, postend);
+    }
+
+    TreeNode solve(int[] inorder, int[] postorder, int inst, int inend, int postst, int postend){
+        if(inst > inend || postst > postend) return null;
+        TreeNode root = new TreeNode(postorder[postend]);
+        int val = postorder[postend];
+        int i = inst;
+
+        for(; i<= inend; i++){
+            if(inorder[i] == val) break;
+        }
+
+        int lsize = i - inst;
+        int rsize = inend - i;
+
+        root.left = solve(inorder, postorder, inst, i - 1, postst, postst + lsize - 1);
+        root.right = solve(inorder, postorder, i + 1, inend, postend - rsize, postend - 1);
+
+        return root;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        int inst = 0, postst = 0;
+        int n = inorder.length;
+        int inend = n - 1, postend = n - 1;
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int i = 0; i<n; i++){
+            map.put(inorder[i], i);
+        }
+
+        return solve(inorder, postorder, inst, inend, postst, postend, map);
+    }
+
+    TreeNode solve(int[] inorder, int[] postorder, int inst, int inend, int postst, int postend, Map<Integer, Integer> map){
+        if(inst > inend || postst > postend) return null;
+        TreeNode root = new TreeNode(postorder[postend]);
+        int val = postorder[postend];
+        int i = map.get(val);
+
+        int lsize = i - inst;
+        int rsize = inend - i;
+
+        root.left = solve(inorder, postorder, inst, i - 1, postst, postst + lsize - 1, map);
+        root.right = solve(inorder, postorder, i + 1, inend, postend - rsize, postend - 1, map);
+
+        return root;
+    }
+}
