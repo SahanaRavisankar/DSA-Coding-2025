@@ -1,0 +1,77 @@
+// approach 1
+class Solution {
+    public String reorganizeString(String s) {
+        int n = s.length();
+        Map<Integer, Integer> map = new HashMap<>();
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (b[1] - a[1]));
+        for(char ch : s.toCharArray()){
+            map.put(ch - 'a', map.getOrDefault(ch - 'a', 0) + 1);
+            if(map.get(ch - 'a') > (n + 1) / 2) return "";
+        }
+
+        for(Map.Entry<Integer, Integer> entry : map.entrySet()){
+            pq.offer(new int[]{entry.getKey(), entry.getValue()});
+        }
+
+        StringBuilder str = new StringBuilder();
+        while(pq.size() >= 2) {
+            int[] curr1 = pq.poll();
+            str.append((char)(curr1[0] + 'a'));
+            curr1[1]--;
+            
+            int[] curr2 = pq.poll();
+            str.append((char)(curr2[0] + 'a'));
+            curr2[1]--;
+
+            if(curr1[1] > 0) pq.offer(curr1);
+            if(curr2[1] > 0) pq.offer(curr2);
+        }
+
+        if(!pq.isEmpty()){
+            int[] curr = pq.poll();
+            str.append((char)(curr[0] + 'a'));
+        }
+
+        return str.toString();
+    }
+}
+
+
+// approach 2 put alternatively
+class Solution {
+    public String reorganizeString(String s) {
+        int n = s.length();
+        int[] freq = new int[26];
+        int maxl = 0;
+        char maxch = 'a';
+
+        for(char ch : s.toCharArray()){
+            freq[ch - 'a']++;
+            if(freq[ch - 'a'] > (n + 1) / 2) return "";
+            if(freq[ch - 'a'] > maxl){
+                maxl = freq[ch - 'a'];
+                maxch = ch;
+            }
+        }
+
+        char[] str = new char[n];
+        int j = 0;
+        while(maxl > 0){
+            freq[maxch - 'a']--;
+            str[j] = maxch;
+            j += 2;
+            maxl--;
+        }
+
+        for(char i = 'a'; i <= 'z'; i++){
+            while(freq[i - 'a'] > 0){
+                if(j > n - 1) j = 1;
+                str[j] = i;
+                j += 2;
+                freq[i - 'a']--;
+            }
+        }
+
+        return new String(str);
+    }
+}
