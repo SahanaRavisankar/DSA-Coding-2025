@@ -1,0 +1,117 @@
+// approach 1 dfs
+class Solution {
+    Map<Integer, ArrayList<Integer>> adj = new HashMap<>();
+    Map<Integer, Integer> bobmp = new HashMap<>();
+    int income;
+    int a;
+
+    public int mostProfitablePath(int[][] edges, int bob, int[] amount) {
+        int n = amount.length;
+        a = Integer.MIN_VALUE;
+        for(int[] ed : edges){
+            int u = ed[0], v = ed[1];
+            adj.computeIfAbsent(u, k -> new ArrayList<>()).add(v);
+            adj.computeIfAbsent(v, k -> new ArrayList<>()).add(u);
+        }
+
+        boolean[] vis = new boolean[n];
+        Arrays.fill(vis, false);
+        int time = 0;
+        dfsBob(bob, time, vis);
+
+        Arrays.fill(vis, false);
+        income = 0;
+        dfsAlice(0, 0, income, amount, vis);
+
+        return a;
+    }
+
+    void dfsAlice(int curr, int t, int income, int[] amount, boolean[] vis){
+        vis[curr] = true;
+        if(!bobmp.containsKey(curr) || t < bobmp.get(curr)) income += amount[curr];
+        else if(t == bobmp.get(curr)) income += amount[curr]/2;
+
+        if(adj.get(curr).size() == 1 && curr != 0) a = Math.max(a, income);
+
+        for(int n : adj.get(curr)){
+            if(!vis[n]){
+                dfsAlice(n, t + 1, income, amount, vis);
+            }
+        }
+    }
+
+    boolean dfsBob(int curr, int t, boolean[] vis){
+        vis[curr] = true;
+        bobmp.put(curr, t);
+        if(curr == 0) return true;
+
+        for(int n : adj.get(curr)){
+            if(!vis[n]){
+                if(dfsBob(n, t + 1, vis)) return true;
+            }
+        }
+        bobmp.remove(curr);
+        return false;
+    }
+}
+
+
+// approach 2 bfs
+class Solution {
+    Map<Integer, ArrayList<Integer>> adj = new HashMap<>();
+    Map<Integer, Integer> bobmp = new HashMap<>();
+
+    public int mostProfitablePath(int[][] edges, int bob, int[] amount) {
+        int n = amount.length;
+        int a = Integer.MIN_VALUE;
+        for(int[] ed : edges){
+            int u = ed[0], v = ed[1];
+            adj.computeIfAbsent(u, k -> new ArrayList<>()).add(v);
+            adj.computeIfAbsent(v, k -> new ArrayList<>()).add(u);
+        }
+
+        boolean[] vis = new boolean[n];
+        Arrays.fill(vis, false);
+        int time = 0;
+        dfsBob(bob, time, vis);
+
+        Arrays.fill(vis, false);
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[]{0, 0, 0});
+        while(!q.isEmpty()){
+            int curr = q.peek()[0];
+            int t = q.peek()[1];
+            int income = q.peek()[2];
+            q.poll();
+
+            if(!bobmp.containsKey(curr) || bobmp.get(curr) > t) income += amount[curr];
+            else if(t == bobmp.get(curr)) income += amount[curr]/2;
+
+            if(adj.get(curr).size() == 1 && curr != 0) a = Math.max(a, income);
+
+            for(int nbr:adj.get(curr)){
+                if(!vis[nbr]){
+                    q.offer(new int[]{nbr, t + 1, income});
+                }
+            }
+
+            vis[curr] = true;
+        }
+
+        return a;
+    }
+
+    boolean dfsBob(int curr, int t, boolean[] vis){
+        vis[curr] = true;
+        bobmp.put(curr, t);
+        if(curr == 0) return true;
+
+        for(int n : adj.get(curr)){
+            if(!vis[n]){
+                if(dfsBob(n, t + 1, vis)) return true;
+            }
+        }
+        bobmp.remove(curr);
+        return false;
+    }
+}
