@@ -1,0 +1,64 @@
+// approach 1
+class Solution {
+    public int numOfSubarrays(int[] arr) {
+        int n = arr.length;
+        int cnt = 0;
+        for (int i = 0; i < n; i++){
+            for (int j = i; j < n; j++){
+                int sum = 0;
+                for (int k = i; k <= j; k++)
+                    sum += arr[k];
+
+                if (sum % 2 != 0)
+                    cnt++;
+            }
+        }
+
+        return cnt;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int numOfSubarrays(int[] arr) {
+        int n = arr.length;
+        int cnt = 0;
+        for (int i = 0; i < n; i++){
+            int sum = 0;
+            for (int j = i; j < n; j++){
+                sum += arr[j];
+
+                if (sum % 2 != 0)
+                    cnt++;
+            }
+        }
+
+        return cnt;
+    }
+}
+
+
+// approach 3
+class Solution {
+    public int numOfSubarrays(int[] arr) {
+        int res = 0;
+        int sum = 0;
+        int odd = 0;
+        int even = 1;
+        int mod = (int) 1e9 + 7;
+
+        for (int i : arr){
+            sum += i;
+            if (sum % 2 == 0){
+                res = (res + odd) % mod;
+                even++;
+            } else {
+                res = (res + even) % mod;
+                odd++;
+            }
+        }
+
+        return res;
+    }
+}
