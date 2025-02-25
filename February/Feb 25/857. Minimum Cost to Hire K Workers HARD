@@ -1,0 +1,110 @@
+// approach 1
+class Solution {
+    public double mincostToHireWorkers(int[] quality, int[] wage, int k) {
+        double res = Double.MAX_VALUE;
+        int n = wage.length;
+
+        for(int i = 0; i < n; i++){
+            ArrayList<Double> list = new ArrayList<>();
+            double manager = (double) wage[i]/quality[i];
+            for(int j = 0; j < n; j++){
+                double cost = manager * quality[j];
+                if(cost >= wage[j]) list.add(cost);
+            }
+
+            if(list.size() >= k){
+                Collections.sort(list);
+                double sortval = 0;
+                for(int x = 0; x < k; x++) sortval += list.get(x);
+                res = Math.min(res, sortval);
+            }
+        }
+        
+        return res;
+    }
+}
+
+
+// approach 2
+class Solution {
+
+    class Pair {
+        double first, second;
+        Pair(double first, double second){
+            this.first = first;
+            this.second = second;
+        }
+    }
+
+    public double mincostToHireWorkers(int[] quality, int[] wage, int k) {
+        double res = Double.MAX_VALUE;
+        int n = wage.length;
+
+        Pair[] ratio = new Pair[n];
+        for(int i = 0; i < n; i++){
+            ratio[i] = new Pair((double) wage[i] / quality[i], (double) quality[i]);
+        }
+
+        Arrays.sort(ratio, (a, b) -> Double.compare(a.first, b.first));
+
+        for(int m = k - 1; m < n; m++){
+            ArrayList<Double> list = new ArrayList<>();
+            double manager_ratio = ratio[m].first;
+            double sum = 0;
+
+            for(int w = 0; w <= m; w++){
+                double worker_ratio = manager_ratio * ratio[w].second;
+                list.add(worker_ratio);
+            }
+
+            Collections.sort(list);
+            for(int i = 0; i < k; i++) sum += list.get(i);
+
+            res = Math.min(res, sum);
+        }
+
+        return res;
+    }
+}
+
+
+// approach 3
+class Solution {
+
+    class Pair {
+        double first, second;
+        Pair(double first, double second){
+            this.first = first;
+            this.second = second;
+        }
+    }
+
+    public double mincostToHireWorkers(int[] quality, int[] wage, int k) {
+        double res = Double.MAX_VALUE;
+        int n = wage.length;
+        PriorityQueue<Double> pq = new PriorityQueue<>(Collections.reverseOrder());
+
+        Pair[] ratio = new Pair[n];
+        for(int i = 0; i < n; i++){
+            ratio[i] = new Pair((double) wage[i] / quality[i], (double) quality[i]);
+        }
+
+        Arrays.sort(ratio, (a, b) -> Double.compare(a.first, b.first));
+        double qsum = 0;
+
+        for(int m = 0; m < k - 1; m++){
+           pq.offer(ratio[m].second);
+           qsum += ratio[m].second;
+        }
+
+        for(int m = k - 1; m < n; m++){
+            double mr = ratio[m].first;
+            pq.offer(ratio[m].second);
+            qsum += ratio[m].second;
+            if(pq.size() > k) qsum -= pq.poll();
+            res = Math.min(res, qsum * mr);
+        }
+
+        return res;
+    }
+}
