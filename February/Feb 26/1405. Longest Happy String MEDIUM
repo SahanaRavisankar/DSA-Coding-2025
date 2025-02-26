@@ -1,0 +1,50 @@
+class Solution {
+
+    class Pair {
+        char first;
+        int second;
+        Pair(char first, int second){
+            this.first = first;
+            this.second = second;
+        }
+    }
+
+    public String longestDiverseString(int a, int b, int c) {
+        StringBuilder str = new StringBuilder();
+        PriorityQueue<Pair> pq = new PriorityQueue<>((p1, p2) -> Integer.compare(p2.second, p1.second));
+        if(a > 0) pq.offer(new Pair('a', a));
+        if(b > 0) pq.offer(new Pair('b', b));
+        if(c > 0) pq.offer(new Pair('c', c));
+
+        while(pq.size() > 1){
+            Pair p1 = pq.poll();
+            int l = str.length();
+            if(l >= 2 && p1.first == str.charAt(l - 1) && p1.first == str.charAt(l - 2)){
+                if(!pq.isEmpty()){
+                    Pair p2 = pq.poll();
+                    str.append(p2.first);
+                    p2.second--;
+
+                    if(p2.second > 0) pq.offer(p2);
+                    pq.offer(p1);
+                } else {
+                    return str.toString();
+                }
+            } else {
+                int cnt = Math.min(p1.second, 2);
+                for(int i=0; i<cnt; i++) str.append(p1.first);
+                p1.second -= cnt;
+                if(p1.second > 0) pq.offer(p1);
+            }
+        }
+
+        if (!pq.isEmpty()) {
+            Pair last = pq.poll();
+            int cnt = Math.min(last.second, 2);
+            for(int i = 0; i < cnt; i++)
+                str.append(last.first);
+        }
+
+        return str.toString();
+    }
+}
