@@ -1,0 +1,41 @@
+// approach 1
+class Solution {
+    public int maxAbsoluteSum(int[] nums) {
+        int res = Integer.MIN_VALUE;
+        int curr = 0;
+        for(int n : nums){
+            curr += n;
+            res = Math.max(res, curr);
+            if(curr < 0) curr = 0;
+        }
+        
+        curr = 0;
+        for(int n : nums){
+            curr += n;
+            res = Math.max(res, Math.abs(curr));
+            if(curr > 0) curr = 0;
+        }
+
+        return res;
+    }
+}
+
+// approach 2
+class Solution {
+    public int maxAbsoluteSum(int[] nums) {
+        int res = Integer.MIN_VALUE;
+        int currmin = 0;
+        int currmax = 0;
+
+        for(int n : nums){
+            currmin += n;
+            currmax += n;
+            res = Math.max(res, currmax);
+            res = Math.max(res, Math.abs(currmin));
+            if(currmax < 0) currmax = 0;
+            if(currmin > 0) currmin = 0;
+        }
+
+        return res;
+    }
+}
