@@ -1,0 +1,58 @@
+// approach 1
+class Solution {
+    public int rangeSum(int[] nums, int n, int left, int right) {
+        int mod = (int) 1e9 + 7;
+
+        ArrayList<Integer> temp = new ArrayList<>();
+        for(int i = 0; i < n; i++){
+            int sum = 0;
+            for(int j = i; j < n; j++){
+                sum += nums[j];
+                temp.add(sum);
+            }
+        }
+
+        Collections.sort(temp);
+        int res = 0;
+        for(int i = left - 1; i < right; i++) res = (res + temp.get(i)) % mod;
+
+        return res;
+    }
+}
+
+
+// approach 2
+class Solution {
+
+    class Pair {
+        int first, second;
+        Pair(int f, int s){
+            first = f;
+            second = s;
+        }
+    }
+
+    public int rangeSum(int[] nums, int n, int left, int right) {
+        int mod = (int) 1e9 + 7;
+
+        PriorityQueue<Pair> pq = new PriorityQueue<>((a, b) -> Integer.compare(a.first, b.first));
+        for(int i = 0; i < n; i++){
+            pq.offer(new Pair(nums[i], i));
+        }
+
+        int res = 0;
+
+        for(int cnt = 1; cnt <= right; cnt++){
+            Pair p = pq.poll();
+            int sum = p.first;
+            int idx = p.second;
+            if(cnt >= left) res = (res + sum) % mod;
+            int idx_ = idx + 1;
+            if(idx_ < n){
+                pq.offer(new Pair(sum + nums[idx_], idx_));
+            }
+        }
+
+        return res;
+    }
+}
