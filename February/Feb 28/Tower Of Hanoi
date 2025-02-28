@@ -1,0 +1,17 @@
+class Solution {
+
+    public int towerOfHanoi(int n, int from, int to, int aux) {
+        if(n == 0) return 0;
+        
+        if(n == 1){
+            //System.out.println("move disk " + n + " from rod " + from + " to rod " + to);
+            return 1;
+        }
+        
+        int count = towerOfHanoi(n - 1, from, aux, to);
+        //System.out.println("move disk " + n + " from rod " + from + " to rod " + to);
+        count += towerOfHanoi(n - 1, aux, to, from);
+        
+        return count + 1;
+    }
+}
