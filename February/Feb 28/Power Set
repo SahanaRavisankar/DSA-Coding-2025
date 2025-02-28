@@ -1,9 +1,7 @@
-class Solution
-{
+class Solution {
     static List<String> list = new ArrayList<>();
     
-    public List<String> AllPossibleStrings(String s)
-    {
+    public List<String> AllPossibleStrings(String s) {
         list.clear();
         solve(s, "", 0);
         Collections.sort(list);
