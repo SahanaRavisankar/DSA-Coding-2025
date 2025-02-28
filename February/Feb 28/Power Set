@@ -1,0 +1,25 @@
+class Solution
+{
+    static List<String> list = new ArrayList<>();
+    
+    public List<String> AllPossibleStrings(String s)
+    {
+        list.clear();
+        solve(s, "", 0);
+        Collections.sort(list);
+        return list;
+    }
+    
+    static void solve(String s, String curr, int idx) {
+        if(idx >= s.length()){
+            if(!curr.equals("")) {
+                list.add(curr);
+            }
+            return;
+        }
+        
+        solve(s, curr + s.charAt(idx), idx+1);
+        
+        solve(s, curr, idx+1);
+    }
+}
