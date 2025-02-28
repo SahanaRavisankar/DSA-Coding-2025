@@ -1,0 +1,32 @@
+class Solution {
+    
+    static ArrayList<String> res = new ArrayList<>();
+    
+    public ArrayList<String> findPath(ArrayList<ArrayList<Integer>> mat) {
+        res.clear();
+        String path = "";
+        int n = mat.size();
+        solve(0, 0, mat, path, n);
+        return res;
+    }
+    
+    static void solve(int i, int j, ArrayList<ArrayList<Integer>> mat, String path, int n) {
+        if(i<0 || i>=n || j>=n || j<0 || mat.get(i).get(j) != 1) return;
+        if(i==n-1 && j==n-1){
+            res.add(path);
+            return;
+        }
+        
+        mat.get(i).set(j, 0);
+
+        solve(i+1,j,mat,path+"D",n);
+        
+        solve(i,j-1,mat, path+"L",n);
+        
+        solve(i,j+1,mat,path+"R",n);
+        
+        solve(i-1,j,mat,path+"U",n);
+        
+        mat.get(i).set(j, 1);
+    }
+}
