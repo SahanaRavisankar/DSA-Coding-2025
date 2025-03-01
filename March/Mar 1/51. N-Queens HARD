@@ -1,0 +1,108 @@
+// approach 1
+class Solution {
+    
+    List<List<String>> res = new ArrayList<>();
+    int n;
+
+    public List<List<String>> solveNQueens(int k) {
+        n = k;
+        res.clear();
+        if(n == 1){
+            List<String> q = new ArrayList<>();
+            q.add("Q");
+            res.add(q);
+            return res;
+        }
+
+        char[][] board = new char[n][n];
+        for(char[] b : board) Arrays.fill(b, '.');
+        if(n <= 3){
+            return res;
+        } else solve(board, 0);
+
+        return res;
+    }
+
+    void solve(char[][] board, int row){
+        if(row >= n){
+            List<String> temp = new ArrayList<>();
+            for(char[] b : board) temp.add(new String(b));
+            res.add(temp);
+            return;
+        }
+
+        for(int col = 0; col < n; col++){
+            if(safe(board, row, col)){
+                board[row][col] = 'Q';
+                solve(board, row + 1);
+                board[row][col] = '.';
+            }
+        }
+    }
+
+    boolean safe(char[][] board, int row, int col){
+        for(int r = 0; r < row; r++)
+            if(board[r][col] == 'Q')
+                return false;
+        for(int r = row, c = col; r >= 0 && c < n; r--, c++)
+            if(board[r][c] == 'Q')
+                return false;
+        for(int r = row, c = col; r >= 0 && c >= 0; r--, c--)
+            if(board[r][c] == 'Q')
+                return false;
+        return true;
+    }
+}
+
+
+// approach 2
+class Solution {
+    
+    List<List<String>> res = new ArrayList<>();
+    Set<Integer> colset = new HashSet<>();
+    Set<Integer> rdiagset = new HashSet<>();
+    Set<Integer> ldiagset = new HashSet<>();
+    int n;
+
+    public List<List<String>> solveNQueens(int k) {
+        n = k;
+        res.clear();
+        if(n == 1){
+            List<String> q = new ArrayList<>();
+            q.add("Q");
+            res.add(q);
+            return res;
+        }
+
+        char[][] board = new char[n][n];
+        for(char[] b : board) Arrays.fill(b, '.');
+        if(n <= 3){
+            return res;
+        } else solve(board, 0);
+
+        return res;
+    }
+
+    void solve(char[][] board, int row){
+        if(row >= n){
+            List<String> temp = new ArrayList<>();
+            for(char[] b : board) temp.add(new String(b));
+            res.add(temp);
+            return;
+        }
+
+        for(int col = 0; col < n; col++){
+            if(!colset.contains(col) && !rdiagset.contains(row + col) && !ldiagset.contains(col - row)){
+                colset.add(col);
+                rdiagset.add(row + col);
+                ldiagset.add(col - row);
+                board[row][col] = 'Q';
+                solve(board, row + 1);
+                board[row][col] = '.';
+                colset.remove(col);
+                rdiagset.remove(row + col);
+                ldiagset.remove(col - row);
+            }
+        }
+    }
+}
