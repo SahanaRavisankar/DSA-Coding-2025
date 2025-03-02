@@ -1,0 +1,20 @@
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root == null)
+            return null;
+
+        if(root == p || root == q)
+            return root;
+
+        TreeNode rightN = lowestCommonAncestor(root.right, p, q);
+        TreeNode leftN = lowestCommonAncestor(root.left, p, q);
+
+        if(rightN != null && leftN != null)
+            return root;
+
+        if(rightN != null && leftN == null)
+            return rightN;
+
+        return leftN;
+    }
+}
