@@ -39,3 +39,58 @@ class Solution {
         return res;
     }
 }
+
+
+// approach 2
+class Solution {
+    public int[][] mergeArrays(int[][] nums1, int[][] nums2) {
+        Map<Integer, Integer> map = new HashMap<>();
+
+        for(int[] n1 : nums1){
+            map.put(n1[0], map.getOrDefault(n1[0], 0) + n1[1]);
+        }
+        
+        for(int[] n2 : nums2){
+            map.put(n2[0], map.getOrDefault(n2[0], 0) + n2[1]);
+        }
+
+        List<Map.Entry<Integer, Integer>> list = new ArrayList<>(map.entrySet());
+        list.sort(Map.Entry.comparingByKey());
+
+        int[][] res = new int[map.size()][2];
+        int k = 0;
+        for(Map.Entry<Integer, Integer> entry : list){
+            res[k][0] = entry.getKey();
+            res[k][1] = entry.getValue();
+            k++;
+        }
+
+        return res;
+    }
+}
+
+
+// approach 3
+class Solution {
+    public int[][] mergeArrays(int[][] nums1, int[][] nums2) {
+        TreeMap<Integer, Integer> map = new TreeMap<>();
+
+        for(int[] n1 : nums1){
+            map.put(n1[0], map.getOrDefault(n1[0], 0) + n1[1]);
+        }
+        
+        for(int[] n2 : nums2){
+            map.put(n2[0], map.getOrDefault(n2[0], 0) + n2[1]);
+        }
+
+        int[][] res = new int[map.size()][2];
+        int k = 0;
+        for(Map.Entry<Integer, Integer> entry : map.entrySet()){
+            res[k][0] = entry.getKey();
+            res[k][1] = entry.getValue();
+            k++;
+        }
+
+        return res;
+    }
+}
