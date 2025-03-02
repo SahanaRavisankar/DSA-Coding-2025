@@ -1,0 +1,52 @@
+// approach 1
+class Solution {
+    public List<Integer> rightSideView(TreeNode root) {
+        if(root == null){
+            return new ArrayList<Integer>();
+        }
+        
+        List<Integer> res = new ArrayList<>();
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
+
+        while(!q.isEmpty()){
+            int n = q.size();
+            TreeNode node = new TreeNode();
+            while(n-- > 0){
+                node = q.poll();
+
+                if(node.left != null) q.offer(node.left);
+                if(node.right != null) q.offer(node.right);
+            }
+            res.add(node.val);
+        }
+
+        return res;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public List<Integer> rightSideView(TreeNode root) {
+        if(root == null){
+            return new ArrayList<Integer>();
+        }
+
+        List<Integer> res = new ArrayList<>();
+        solve(root, 1, res);
+
+        return res;
+    }
+
+    void solve(TreeNode root, int level, List<Integer> res){
+        if(root == null)
+            return;
+
+        if(res.size() < level)
+            res.add(root.val);
+
+        solve(root.right, level + 1, res);
+        solve(root.left, level + 1, res);
+    }
+}
