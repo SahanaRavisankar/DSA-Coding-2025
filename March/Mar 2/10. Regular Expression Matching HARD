@@ -1,0 +1,83 @@
+// approach 1
+class Solution {
+    public boolean isMatch(String s, String p) {
+        if(p.length() == 0){
+            return s.length() == 0;
+        }
+
+        boolean dont = false;
+        boolean take = false;
+        boolean check = (s.length() > 0 && (p.charAt(0) == s.charAt(0) || p.charAt(0) == '.'));
+
+        if(p.length() > 1 && p.charAt(1) == '*'){
+            dont = isMatch(s, p.substring(2));
+            take = (check && isMatch(s.substring(1), p));
+        } else {
+            return (check && isMatch(s.substring(1), p.substring(1)));
+        }
+
+        return dont || take;
+    }
+}
+
+
+// approach 2
+class Solution {
+
+    public boolean isMatch(String s, String p) {
+        return solve(s, p, 0, 0);
+    }
+
+    boolean solve(String s, String p, int i, int j) {
+        if(p.length() == j){
+            return s.length() == i;
+        }
+
+        boolean dont = false;
+        boolean take = false;
+        boolean check = (s.length() > 0 && s.length() > i && p.length() > j && (p.charAt(j) == s.charAt(i) || p.charAt(j) == '.'));
+
+        if(p.length() > j + 1 && p.charAt(j + 1) == '*'){
+            dont = solve(s, p, i, j + 2);
+            take = (check && solve(s, p, i + 1, j));
+        } else {
+            return (check && solve(s, p, i + 1, j + 1));
+        }
+
+        return dont || take;
+    }
+}
+
+
+// approach 3
+class Solution {
+
+    public boolean isMatch(String s, String p) {
+        int[][] bool = new int[21][21];
+        for(int[] b : bool) Arrays.fill(b, -1);
+        return solve(s, p, 0, 0, bool);
+    }
+
+    boolean solve(String s, String p, int i, int j, int[][] bool) {
+        if(p.length() == j){
+            return s.length() == i;
+        }
+
+        if(bool[i][j] != -1) return bool[i][j] == 1;
+
+        boolean dont = false;
+        boolean take = false;
+        boolean check = (s.length() > 0 && s.length() > i && p.length() > j && (p.charAt(j) == s.charAt(i) || p.charAt(j) == '.'));
+
+        if(p.length() > j + 1 && p.charAt(j + 1) == '*'){
+            dont = solve(s, p, i, j + 2, bool);
+            take = (check && solve(s, p, i + 1, j, bool));
+        } else {
+            bool[i][j] = (check && solve(s, p, i + 1, j + 1, bool)) ? 1 : 0;
+            return check && solve(s, p, i + 1, j + 1, bool);
+        }
+
+        bool[i][j] = (dont || take) ? 1 : 0;
+        return dont || take;
+    }
+}
