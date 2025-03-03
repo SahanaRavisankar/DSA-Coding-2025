@@ -1,0 +1,110 @@
+// approach 1.1
+class Solution {
+    public int climbStairs(int n) {
+        return climb(0, n);
+    }
+
+    int climb(int curr, int n){
+        if(curr == n) return 1;
+        else if(curr > n) return 0;
+
+        return climb(curr + 1, n) + climb(curr + 2, n);
+    }
+}
+
+
+// approach 1.2
+class Solution {
+    public int climbStairs(int n) {
+        int[] dp = new int[n];
+        Arrays.fill(dp, -1);
+
+        return climb(0, n, dp);
+    }
+
+    int climb(int curr, int n, int[] dp){
+        if(curr == n) return 1;
+        else if(curr > n) return 0;
+
+        if(dp[curr] != -1) return dp[curr];
+
+        return dp[curr] = climb(curr + 1, n, dp) + climb(curr + 2, n, dp);
+    }
+}
+
+
+// approach 2.1
+class Solution {
+    public int climbStairs(int n) {
+        int[] dp = new int[n];
+        Arrays.fill(dp, -1);
+
+        return climb(n, dp);
+    }
+
+    int climb(int n, int[] dp){
+        if(n == 0) return 1;
+        else if(n < 0) return 0;
+
+        //if(dp[curr] != -1) return dp[curr];
+
+        return  climb(n - 1, dp) + climb(n - 2, dp);
+    }
+}
+
+
+// aproach 2.2
+class Solution {
+    public int climbStairs(int n) {
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, -1);
+
+        return climb(n, dp);
+    }
+
+    int climb(int n, int[] dp){
+        if(n == 0) return 1;
+        else if(n < 0) return 0;
+
+        if(dp[n] != -1) return dp[n];
+
+        return dp[n] = climb(n - 1, dp) + climb(n - 2, dp);
+    }
+}
+
+
+// approach 3
+class Solution {
+    public int climbStairs(int n) {
+        if(n == 1 || n == 2) return n;
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, 0);
+        dp[1] = 1;
+        dp[2] = 2;
+
+        for(int i = 3; i <= n; i++){
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+
+        return dp[n];
+    }
+}
+
+
+// approach 4
+class Solution {
+    public int climbStairs(int n) {
+        if(n == 1 || n == 2) return n;
+        int a = 1;
+        int b = 2;
+        int c = 0;
+
+        for(int i = 3; i <= n; i++){
+            c = a + b;
+            a = b;
+            b = c;
+        }
+
+        return c;
+    }
+}
