@@ -1,0 +1,22 @@
+class Solution {
+
+    Map<Integer, ArrayList<Integer>> map = new HashMap<>();
+
+    public Map<Integer, ArrayList<Integer>> findLeaves(TreeNode root) {
+        solve(root);
+        return map;
+    }
+
+    int solve(TreeNode root) {
+        if(root == null)
+            return 0;
+
+        int lh = solve(root.left);
+        int rh = solve(root.right);
+        int ht = 1 + Math.max(lh, rh);
+
+        map.computeIfAbsent(ht, k -> new ArrayList<>()).add(root.val);
+
+        return ht;
+    }
+}
