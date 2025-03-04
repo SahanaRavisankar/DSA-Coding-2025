@@ -1,0 +1,53 @@
+// approach 1
+class Solution {
+    public boolean checkPowersOfThree(int n) {
+        int p = 0;
+        while(n >= (int)Math.pow(3, p)){
+            p++;
+        }
+        p--;
+
+        while(n > 0 && p >= 0){
+            if(Math.pow(3, p) <= n){
+                n = n - (int)Math.pow(3, p);
+            }
+
+            if(Math.pow(3, p) <= n){
+                return false;
+            }
+
+            p--;
+        }
+
+        return n == 0;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public boolean checkPowersOfThree(int n) {
+        while(n > 0){
+            int q = n % 3;
+            if(q == 2) return false;
+            n /= 3;
+        }
+
+        return true;
+    }
+}
+
+
+// approach 3
+class Solution {
+    public boolean checkPowersOfThree(int n) {
+        return solve(n, 0);
+    }
+
+    boolean solve(int n, int p){
+        if(n == 0) return true;
+        if(n < Math.pow(3, p)) return false;
+
+        return solve(n - (int)Math.pow(3, p), p + 1) || solve(n, p + 1);
+    }
+}
