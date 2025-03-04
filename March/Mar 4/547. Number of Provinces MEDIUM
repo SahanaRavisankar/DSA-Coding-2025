@@ -1,0 +1,49 @@
+// approach 1
+class Solution {
+    public int findCircleNum(int[][] mat) {
+        int n = mat.length;
+        boolean[] vis = new boolean[n];
+        Arrays.fill(vis, false);
+
+        int count = 0;
+
+        Map<Integer, ArrayList<Integer>> adj = new HashMap<>();
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                if(mat[i][j] == 1){
+                    adj.computeIfAbsent(i, k -> new ArrayList<>()).add(j);
+                    adj.computeIfAbsent(j, k -> new ArrayList<>()).add(i);
+                }
+            }
+        }
+
+        for(int i = 0; i < n; i++){
+            if(!vis[i]) {
+                bfs(i, adj, vis);
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    void bfs(int u, Map<Integer, ArrayList<Integer>> adj, boolean[] vis){
+        Queue<Integer> que = new LinkedList<>();
+        que.offer(u);
+        vis[u] = true;
+
+        while(!que.isEmpty()){
+            u = que.poll();
+            
+            for(int v : adj.getOrDefault(u, new ArrayList<>())){
+                if(!vis[v]){
+                    que.offer(v);
+                    vis[v] = true;
+                }
+            }
+        }
+
+    }
+}
+
+// approach 2
