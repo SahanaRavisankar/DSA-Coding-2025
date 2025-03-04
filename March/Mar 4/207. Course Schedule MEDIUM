@@ -1,0 +1,71 @@
+// approach 1
+class Solution {
+    public boolean canFinish(int n, int[][] pre) {
+        Map<Integer, ArrayList<Integer>> map = new HashMap<>();
+        Queue<Integer> que = new LinkedList<>();
+        ArrayList<Integer> res = new ArrayList<>();
+        int[] in = new int[n];
+
+        for(int[] ed : pre){
+            int u = ed[0];
+            int v = ed[1];
+            map.computeIfAbsent(u, k -> new ArrayList<>()).add(v);
+            in[v]++;
+        }
+
+        for(int i = 0; i < n; i++)
+            if(in[i] == 0)
+                que.offer(i);
+
+        while(!que.isEmpty()) {
+            int u = que.poll();
+            res.add(u);
+
+            for(int v : map.getOrDefault(u, new ArrayList<Integer>())){
+                in[v]--;
+                if(in[v] == 0)
+                    que.offer(v);
+            }
+        }
+
+        return res.size() == n;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public boolean canFinish(int n, int[][] pre) {
+        Map<Integer, ArrayList<Integer>> map = new HashMap<>();
+        boolean[] recur = new boolean[n];
+        boolean[] vis = new boolean[n];
+        Arrays.fill(recur, false);
+        Arrays.fill(vis, false);
+
+        for(int[] ed : pre){
+            int v = ed[0];
+            int u = ed[1];
+            map.computeIfAbsent(u, k -> new ArrayList<>()).add(v);
+        }
+
+        for(int i = 0; i < n; i++)
+            if(!vis[i] && cycleDfs(map, recur, vis, i))
+                return false;
+
+        
+        return true;
+    }
+
+    boolean cycleDfs(Map<Integer, ArrayList<Integer>> map, boolean[] recur, boolean[] vis, int u){
+        recur[u] = true;
+        vis[u] = true;
+        for(int v : map.getOrDefault(u, new ArrayList<>())){
+            if(!vis[v] && cycleDfs(map, recur, vis, v))
+                return true;
+            if(recur[v])
+                return true;
+        }
+        recur[u] = false;
+        return false;
+    }
+}
