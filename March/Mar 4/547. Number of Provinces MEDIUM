@@ -47,3 +47,39 @@ class Solution {
 }
 
 // approach 2
+class Solution {
+    public int findCircleNum(int[][] mat) {
+        int n = mat.length;
+        boolean[] vis = new boolean[n];
+        Arrays.fill(vis, false);
+
+        int count = 0;
+        
+        for(int i = 0; i < n; i++){
+            if(!vis[i]) {
+                bfs(i, mat, vis, n);
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    void bfs(int u, int[][] mat, boolean[] vis, int n){
+        Queue<Integer> que = new LinkedList<>();
+        que.offer(u);
+        vis[u] = true;
+
+        while(!que.isEmpty()){
+            u = que.poll();
+
+            for(int v = 0; v < n; v++){
+                if(!vis[v] && mat[u][v] == 1){
+                    que.offer(v);
+                    vis[v] = true;
+                }
+            }
+        }
+
+    }
+}
