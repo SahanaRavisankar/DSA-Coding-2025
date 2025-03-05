@@ -1,0 +1,92 @@
+// approach 1
+class Solution {
+    public int[] findOrder(int n, int[][] pre) {
+        Map<Integer, ArrayList<Integer>> adj = new HashMap<>();
+        int[] inorder = new int[n];
+        for(int[] ed : pre){
+            int v = ed[0];
+            int u = ed[1];
+            adj.computeIfAbsent(u, k -> new ArrayList<>()).add(v);
+            inorder[v]++;
+        }
+
+        Queue<Integer> que = new LinkedList<>();
+        ArrayList<Integer> res = new ArrayList<>();
+
+        for(int i = 0; i < n; i++){
+            if(inorder[i] == 0)
+                que.offer(i);
+        }
+
+        while(!que.isEmpty()){
+            int u = que.poll();
+            res.add(u);
+            for(int v : adj.getOrDefault(u, new ArrayList<>())){
+                inorder[v]--;
+                if(inorder[v] == 0) que.offer(v);
+            }
+        }
+
+        if(res.size() != n){
+            return new int[]{};
+        }
+        
+        return res.stream().mapToInt(i -> i).toArray();
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int[] findOrder(int n, int[][] prereq) {
+        Map<Integer, ArrayList<Integer>> adj = new HashMap<>();
+        for(int[] ed : prereq){
+            int u = ed[0];
+            int v = ed[1];
+            adj.computeIfAbsent(v, k -> new ArrayList<>()).add(u);
+        }
+        boolean[] vis = new boolean[n];
+        Arrays.fill(vis, false);
+        boolean[] recur = new boolean[n];
+        Arrays.fill(recur, false);
+        int[] res = new int[n];
+        Arrays.fill(res, 0);
+        for(int i=0; i<n; i++){
+            if(!vis[i] && cycleDfs(adj, vis, recur, i)) return new int[]{};
+        }
+        Stack<Integer> stk = new Stack<>();
+        Arrays.fill(vis, false);
+        for(int i=0; i<n; i++){
+            if(!vis[i]) dfs(adj, stk, i, vis);
+        }
+        int idx=0;
+        while(!stk.isEmpty()){
+            res[idx] = stk.pop();
+            idx++;
+        }
+        return res;
+    }
+
+    void dfs(Map<Integer, ArrayList<Integer>> adj, Stack<Integer> stk, int u, boolean[] vis){
+        vis[u] = true;
+        for(int v:adj.getOrDefault(u, new ArrayList<>())){
+            if(!vis[v]){
+                dfs(adj, stk, v, vis);
+            }
+        }
+        stk.push(u);
+    }
+
+    boolean cycleDfs(Map<Integer, ArrayList<Integer>> adj, boolean[] vis, boolean[] recur, int u){
+        recur[u] = true;
+        vis[u] = true;
+        for(int v : adj.getOrDefault(u, new ArrayList<>())){
+            if(!vis[v] && cycleDfs(adj, vis, recur, v))
+                return true;
+            if(recur[v])
+                return true;
+        }
+        recur[u] = false;
+        return false;
+    }
+}
