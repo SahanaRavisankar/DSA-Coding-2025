@@ -1,0 +1,71 @@
+// approach 1
+class Solution {
+    public int[] closestPrimes(int left, int rt) {
+        boolean[] prime = new boolean[rt + 1];
+        Arrays.fill(prime, true);
+        prime[0] = false;
+        prime[1] = false;
+
+        ArrayList<Integer> list = new ArrayList<>();
+        for(int i = 2; i * i <= rt; i++){
+            if(prime[i]){
+                for(int j=2; i*j <= rt; j++){
+                    prime[i*j] = false;
+                }
+            }
+        }
+
+        for(int i = left; i <= rt; i++){
+            if(prime[i]) list.add(i);
+        }
+
+        int a = Integer.MIN_VALUE/2, b = Integer.MAX_VALUE/2;
+        for(int i = 0; i < list.size() - 1; i++){
+            if(list.get(i+1) - list.get(i) < b - a){
+                b = list.get(i + 1);
+                a = list.get(i);
+            }
+        }
+
+        if(a == Integer.MIN_VALUE/2) a = -1;
+        if(b == Integer.MAX_VALUE/2) b = -1;
+        return new int[]{a, b};
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int[] closestPrimes(int left, int rt) {
+        boolean[] prime = new boolean[rt + 1];
+        Arrays.fill(prime, true);
+        prime[0] = false;
+        prime[1] = false;
+
+        ArrayList<Integer> list = new ArrayList<>();
+        for(int i = 2; i * i <= rt; i++){
+            if(prime[i]){
+                for(int j=2; i*j <= rt; j++){
+                    prime[i*j] = false;
+                }
+            }
+        }
+
+        for(int i = left; i <= rt; i++){
+            if(prime[i]) list.add(i);
+        }
+
+        int a = Integer.MIN_VALUE/2, b = Integer.MAX_VALUE/2;
+        for(int i = 0; i < list.size() - 1; i++){
+            if(list.get(i+1) - list.get(i) < b - a){
+                b = list.get(i + 1);
+                a = list.get(i);
+                if(b - a <= 2) return new int[]{a, b};
+            }
+        }
+
+        if(a == Integer.MIN_VALUE/2) a = -1;
+        if(b == Integer.MAX_VALUE/2) b = -1;
+        return new int[]{a, b};
+    }
+}
