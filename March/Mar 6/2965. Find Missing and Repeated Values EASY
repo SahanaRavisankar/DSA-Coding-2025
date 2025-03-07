@@ -21,3 +21,28 @@ class Solution {
         return new int[]{num1, num2};
     }
 }
+
+
+// approach 2
+class Solution {
+    public int[] findMissingAndRepeatedValues(int[][] grid) {
+        long gridsum = 0, sum = 0, gridsq = 0, sumsq = 0;
+        long k = grid.length;
+        for (int i = 0; i < k; i++) {
+            for (int j = 0; j < k; j++) {
+                gridsum += grid[i][j];
+                gridsq += (grid[i][j] * grid[i][j]);
+            }
+        }
+        
+        long n = k * k;
+        sum = n * (n + 1) / 2;
+        sumsq = n * (n + 1) * (2 * n + 1) / 6;
+        long diff = gridsum - sum;
+        long diffsq = gridsq - sumsq;
+
+        int a = (int) ((diffsq / diff) + diff) / 2;
+        int b = (int) ((diffsq / diff) - diff) / 2;
+        return new int[] { a, b };
+    }
+}
