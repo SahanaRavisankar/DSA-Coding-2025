@@ -1,0 +1,87 @@
+// approach 1
+class Solution {
+    public int numberOfAlternatingGroups(int[] colors, int k) {
+        ArrayList<Integer> list = new ArrayList<>();
+        for(int i : colors) list.add(i);
+        for(int i = 0; i < k - 1; i++) list.add(colors[i]);
+        System.out.println(list);
+        int res = 0;
+
+        for(int i = 0; i < colors.length; i++){
+            boolean check = true;
+            for(int j = i; j < i + k - 1; j++){
+                if(list.get(j).equals(list.get(j + 1))) {
+                    check = false;
+                    break;
+                }
+            }
+            if(check) res++;
+        }
+
+        return res;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int numberOfAlternatingGroups(int[] colors, int k) {
+        ArrayList<Integer> list = new ArrayList<>();
+        
+        for(int i : colors) list.add(i);
+        for(int i = 0; i < k - 1; i++) list.add(colors[i]);
+        
+        int res = 0, j = 1, i = 0;
+        int n = list.size();
+
+        while(j < n){
+            if(list.get(j) == list.get(j - 1)){
+                i = j;
+                j++;
+                continue;
+            }
+
+            if(j - i + 1 == k){
+                res++;
+                i++;
+            }
+
+            j++;
+        }
+
+        return res;
+    }
+}
+
+
+// approach 3
+class Solution {
+    public int numberOfAlternatingGroups(int[] colors, int k) {
+        int n = colors.length;
+        int res = 0, last = colors[0], len = 1;
+
+        for(int i=1; i<n; i++){
+            if(colors[i]==last){
+                len = 1;
+                last = colors[i];
+                continue;
+            }
+            len++;
+            if(len >= k) res++;
+            last = colors[i];
+        }
+        
+        for(int i=0; i<k-1; i++){
+            if(colors[i]==last){
+                len = 1;
+                last = colors[i];
+                continue;
+            }
+            len++;
+            if(len >= k) res++;
+            last = colors[i];
+        }
+
+        return res;
+    }
+}
