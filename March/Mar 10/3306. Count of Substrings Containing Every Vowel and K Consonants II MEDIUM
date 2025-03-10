@@ -1,0 +1,80 @@
+// approach 1
+class Solution {
+    public long countOfSubstrings(String word, int k) {
+        long res = 0;
+        int n = word.length();
+        for(int i = 0; i < n; i++){
+            for(int j = i; j < n; j++){
+                if(check(word.substring(i, j + 1), k)) res++;
+            }
+        }
+
+        return res;
+    }
+
+    boolean check(String s, int k){
+        boolean a = false, e = false, i = false, o = false, u = false;
+        int cnt = 0;
+        for(char ch : s.toCharArray()){
+            if(ch == 'a') a = true;
+            else if(ch == 'e') e = true;
+            else if(ch == 'i') i = true;
+            else if(ch == 'o') o = true;
+            else if(ch == 'u') u = true;
+            else cnt++;
+        }
+
+        return a && e && i && o && u && k == cnt;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public long countOfSubstrings(String word, int k) {
+        long res = 0;
+        int n = word.length();
+        Map<Character, Integer> map = new HashMap<>();
+        char[] s = word.toCharArray();
+
+        int[] nextConso = new int[n];
+        int nxt = n;
+        for(int i = n - 1; i >= 0; i--){
+            nextConso[i] = nxt;
+            if(!check(s[i])) nxt = i;
+        }
+
+        int j = 0, i = 0, conso = 0;
+
+        while(j < n && i < n){
+            if(check(s[j])){ //vowel
+                map.put(s[j], map.getOrDefault(s[j], 0) + 1);
+            } else conso++;
+            
+            while(conso > k && i < j){
+                if(check(s[i])){
+                    map.put(s[i], map.get(s[i]) - 1);
+                    if(map.get(s[i]) == 0) map.remove(s[i]);
+                } else conso--;
+                i++;
+            }
+
+            while(i < n && map.size() == 5 && conso == k){
+                res += (nextConso[j] - j);
+                if(check(s[i])){
+                    map.put(s[i], map.get(s[i]) - 1);
+                    if(map.get(s[i]) == 0) map.remove(s[i]);
+                } else conso--;
+                i++;
+            }
+            
+            j++;
+        }
+
+        return res;
+    }
+
+    boolean check(char ch){
+        return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
+    }
+}
