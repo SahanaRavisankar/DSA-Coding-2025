@@ -1,0 +1,63 @@
+// approach 1
+class Solution {
+    public int maximumCount(int[] nums) {
+        // Brute force
+        int pos = 0, neg = 0;
+        for(int n : nums){
+            if(n < 0)
+                neg++;
+            else if(n > 0)
+                pos++;
+        }
+        return Math.max(neg, pos);
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int maximumCount(int[] nums) {
+        IntPredicate lambdaP = num -> num > 0;
+        int pos = (int) Arrays.stream(nums).filter(lambdaP).count();
+        IntPredicate lambdaN = num -> num < 0;
+        int neg = (int) Arrays.stream(nums).filter(lambdaN).count();
+        return Math.max(neg, pos);
+    }
+}
+
+
+// approach 3
+class Solution {
+    public int maximumCount(int[] nums) {
+        int low = 0;
+        int n = nums.length;
+        int high = n - 1;
+        int pos = n - binaryPos(nums, low, high);
+        int neg = binaryNeg(nums, low, high) + 1;
+        return Math.max(neg, pos);
+    }
+
+    int binaryPos(int[] nums, int low, int high){
+        while(low <= high){
+            int mid = low + (high - low) / 2;
+            if(nums[mid] > 0){
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return low;
+    }
+    
+    int binaryNeg(int[] nums, int low, int high){
+        while(low <= high){
+            int mid = low + (high - low) / 2;
+            if(nums[mid] < 0){
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return high;
+    }
+}
