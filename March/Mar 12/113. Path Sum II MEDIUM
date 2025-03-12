@@ -1,0 +1,33 @@
+class Solution {
+    List<List<Integer>> res = new ArrayList<>();
+    public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+        res.clear();
+        if(root == null)
+            return res;
+        List<Integer> temp = new ArrayList<>();
+        int sum = 0;
+        solve(root, targetSum, sum, temp);
+        return res;
+    }
+
+    void solve(TreeNode root, int target, int sum, List<Integer> temp){
+        if(root == null){
+            return;
+        }
+
+        sum += root.val;
+        temp.add(root.val);
+
+        if(root.left == null && root.right == null){
+            if(sum == target){
+                res.add(new ArrayList<>(temp));
+            }
+        } else{
+            solve(root.left, target, sum, temp);
+            solve(root.right, target, sum, temp);
+        }
+        
+        
+        temp.remove(temp.size()-1);
+    }
+}
