@@ -1,0 +1,124 @@
+// approach 1
+class Solution {
+    public int minZeroArray(int[] nums, int[][] queries) {
+        int q = queries.length;
+        int cnt = 0;
+        int n = nums.length;
+        boolean[] vis = new boolean[n];
+        Arrays.fill(vis, false);
+
+        for(int i = 0; i < n; i++){
+            if(nums[i] == 0) {
+                cnt++;
+                vis[i] = true;
+            }
+        }
+        if(cnt == n) return 0;
+        int i = 0;
+
+        for(; i < q; i++){
+            if(cnt == n){
+                return i;
+            }
+
+            int st = queries[i][0];
+            int end = queries[i][1];
+            int diff = queries[i][2];
+            
+            for(int j = st; j <= end; j++){
+                if(!vis[j] && nums[j] != 0){
+                    if(nums[j] <= diff){
+                        vis[j] = true;
+                        cnt++;
+                    } else {
+                        nums[j] -= diff;
+                    }
+                }
+            }
+        }
+
+        if(cnt == n) return i;
+        else return -1;
+    }
+}
+
+// approach 2
+class Solution {
+    public int minZeroArray(int[] nums, int[][] queries) {
+        int q = queries.length;
+        int n = nums.length;
+
+        if(Arrays.stream(nums).filter(num -> num == 0).count() == n) return 0;
+        
+        for(int i = 0; i < q; i++){
+            if(check(nums, queries, n, i)) return i + 1;
+        }
+
+        return -1;
+    }
+
+    boolean check(int[] nums, int[][] queries, int n, int idx){
+        int[] diff = new int[n];
+        Arrays.fill(diff, 0);
+
+        for(int i = 0; i <= idx; i++){
+            int st = queries[i][0];
+            int end = queries[i][1];
+            int val = queries[i][2];
+            diff[st] += val;
+            if(end + 1 < n) diff[end + 1] -= val;
+        }
+
+        int cumsum = 0;
+        for(int i = 0; i < n; i++){
+            cumsum += diff[i];
+            diff[i] = cumsum;
+            if(nums[i] > diff[i]) return false;
+        }
+        return true;
+    }
+}
+
+// approach 3
+class Solution {
+    public int minZeroArray(int[] nums, int[][] queries) {
+        int q = queries.length;
+        int n = nums.length;
+
+        if(Arrays.stream(nums).filter(num -> num == 0).count() == n) return 0;
+        
+        int l = 0;
+        int r = q - 1;
+        int res = -1;
+        while(l <= r) {
+            int mid = l + (r - l)/2;
+            if(check(nums, queries, n, mid)){
+                res = mid + 1;
+                r = mid - 1;
+            } else l = mid + 1;
+        }
+
+        return res;
+    }
+
+    boolean check(int[] nums, int[][] queries, int n, int idx){
+        int[] diff = new int[n];
+        Arrays.fill(diff, 0);
+
+        for(int i = 0; i <= idx; i++){
+            int st = queries[i][0];
+            int end = queries[i][1];
+            int val = queries[i][2];
+            diff[st] += val;
+            if(end + 1 < n) diff[end + 1] -= val;
+        }
+
+        int cumsum = 0;
+        for(int i = 0; i < n; i++){
+            cumsum += diff[i];
+            diff[i] = cumsum;
+            if(nums[i] > diff[i]) return false;
+        }
+        return true;
+    }
+}
