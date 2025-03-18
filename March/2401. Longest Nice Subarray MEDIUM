@@ -1,0 +1,68 @@
+// approach 1
+class Solution {
+    public int longestNiceSubarray(int[] nums) {
+        int n = nums.length;
+        int res = 0;
+        for(int i = 0; i < n; i++){
+            for(int j = i; j < n; j++){
+                if(nice(nums, i, j)) res = Math.max(res, j - i + 1);
+                else break;
+            }
+        }
+        return res;
+    }
+
+    boolean nice(int[] nums, int i, int j){
+        int mask = 0;
+        for(int st = i; st <= j; st++){
+            int temp = mask & nums[st];
+            if(temp != 0) return false;
+            mask = mask | nums[st];
+        }
+        return true;
+    }
+}
+
+// approach 2
+class Solution {
+    public int longestNiceSubarray(int[] nums) {
+        int n = nums.length;
+        int res = 0;
+        for(int i = 0; i < n; i++){
+            int mask = 0;
+            for(int j = i; j < n; j++){
+                int temp = mask & nums[j];
+                if(temp != 0) break;
+                mask = mask | nums[j];
+                res = Math.max(res, j - i + 1);
+            }
+        }
+        return res;
+    }
+}
+
+// approach 3
+class Solution {
+    public int longestNiceSubarray(int[] nums) {
+        int n = nums.length;
+        int res = 0;
+        int mask = 0;
+        int j = 0, i = 0;
+
+        while(j < n){
+            int temp = mask & nums[j];
+            while(temp != 0) {
+                mask = mask ^ nums[i];
+                i++;
+                temp = mask & nums[j];
+            }
+                        
+            res = Math.max(res, j - i + 1);
+            mask = mask | nums[j];
+                        
+            j++;
+        }
+
+        return res;
+    }
+}
