@@ -1,0 +1,22 @@
+// same as 995. Minimum Number of K Consecutive Bit Flips
+class Solution {
+    public int minOperations(int[] nums) {
+        int n = nums.length;
+        boolean[] isFlip = new boolean[n];
+        Arrays.fill(isFlip, false);
+        int flipcnt = 0, res = 0;
+        int k = 3;
+
+        for(int i = 0; i < n; i++){
+            if(i >= k && isFlip[i - k]) flipcnt--;
+            if(flipcnt % 2 == nums[i]){
+                if(i + k > n) return -1;
+                flipcnt++;
+                res++;
+                isFlip[i] = true;
+            }
+        }
+
+        return res;
+    }
+}
