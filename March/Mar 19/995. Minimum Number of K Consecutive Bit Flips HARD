@@ -1,0 +1,64 @@
+// approach 1
+class Solution {
+    public int minKBitFlips(int[] nums, int k) {
+        int n = nums.length;
+        boolean[] isFlip = new boolean[n];
+        Arrays.fill(isFlip, false);
+        int flipcnt = 0, res = 0;
+
+        for(int i = 0; i < n; i++){
+            if(i >= k && isFlip[i - k]) flipcnt--;
+            if(flipcnt % 2 == nums[i]){
+                if(i + k > n) return -1;
+                flipcnt++;
+                res++;
+                isFlip[i] = true;
+            }
+        }
+
+        return res;
+    }
+}
+
+
+// approach 2 used inplace change if allowed for ques
+class Solution {
+    public int minKBitFlips(int[] nums, int k) {
+        int n = nums.length;
+        int flipcnt = 0, res = 0;
+
+        for(int i = 0; i < n; i++){
+            if(i >= k && nums[i - k] == -1) flipcnt--;
+            if(flipcnt % 2 == nums[i]){
+                if(i + k > n) return -1;
+                flipcnt++;
+                res++;
+                nums[i] = -1;
+            }
+        }
+
+        return res;
+    }
+}
+
+
+// approach 3
+class Solution {
+    public int minKBitFlips(int[] nums, int k) {
+        int n = nums.length;
+        int flipcnt = 0, res = 0;
+        Queue<Integer> que = new LinkedList<Integer>();
+
+        for(int i = 0; i < n; i++){
+            if(i >= k) flipcnt -= que.poll();
+            if(flipcnt % 2 == nums[i]){
+                if(i + k > n) return -1;
+                flipcnt++;
+                res++;
+                que.offer(1);
+            } else que.offer(0);
+        }
+
+        return res;
+    }
+}
