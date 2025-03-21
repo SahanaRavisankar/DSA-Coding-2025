@@ -1,0 +1,79 @@
+// approach 1
+class Solution {
+    public List<String> findAllRecipes(String[] recipes, List<List<String>> ingredients, String[] supplies) {
+        List<String> res = new ArrayList<>();
+        int n = recipes.length;
+        
+        Set<String> set = new HashSet<>();
+        for(String s : supplies) set.add(s);
+        int count = n;
+        boolean[] done = new boolean[n];
+        Arrays.fill(done, false);
+        
+        while(count-- > 0){
+            for(int i = 0; i < n; i++){
+                if(done[i]) continue;
+                boolean pos = true;
+                for(int j = 0; j < ingredients.get(i).size(); j++){
+                    if(!set.contains(ingredients.get(i).get(j))){
+                        pos = false;
+                        break;
+                    }
+                }
+
+                if(pos){
+                    res.add(recipes[i]);
+                    set.add(recipes[i]);
+                    done[i] = true;
+                }
+            }
+        }
+        
+        return res;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public List<String> findAllRecipes(String[] recipes, List<List<String>> ingredients, String[] supplies) {
+        List<String> res = new ArrayList<>();
+        int n = recipes.length;
+        
+        Set<String> set = new HashSet<>();
+        for(String s : supplies) set.add(s);
+
+        Map<String, ArrayList<Integer>> adj = new HashMap<>();
+        int[] indeg = new int[n];
+        
+        for(int i = 0; i < n; i++){
+            for(String ing : ingredients.get(i)){
+                if(!set.contains(ing)){
+                    adj.computeIfAbsent(ing, k -> new ArrayList<Integer>()).add(i);
+                    indeg[i]++;
+                }
+            }
+        }
+
+        Queue<Integer> que = new LinkedList<>();
+
+        for(int i = 0; i < n; i++){
+            if(indeg[i] == 0){
+                que.offer(i);
+            }
+        }
+
+        while(!que.isEmpty()){
+            String temp = recipes[que.poll()];
+            res.add(temp);
+            for(int idx : adj.getOrDefault(temp, new ArrayList<>())){
+                indeg[idx]--;
+                if(indeg[idx] == 0){
+                    que.offer(idx);
+                }
+            }
+        }
+        
+        return res;
+    }
+}
