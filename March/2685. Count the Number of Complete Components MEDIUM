@@ -1,0 +1,156 @@
+// approach 1
+class Solution {
+    public int countCompleteComponents(int n, int[][] edges) {
+        int res = 0;
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+        for (int [] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            adj.computeIfAbsent(u, k -> new ArrayList<>()).add(v);
+            adj.computeIfAbsent(v, k -> new ArrayList<>()).add(u);
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (!adj.containsKey(i)) {
+                adj.put(i, new ArrayList<>());
+            }
+        }
+
+        boolean[] visited = new boolean[n];
+        Arrays.fill(visited, false);
+
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]){
+                int[] data = new int[2];
+                dfs(adj, i, visited, data);
+                if (data[0] * (data[0] - 1) == data[1]) 
+                    res++;
+            }
+        }
+
+        return res;
+    }
+
+    void dfs(Map<Integer, List<Integer>> adj, int u, boolean[] visited, int[] data) {
+        visited[u] = true;
+        data[0]++;
+        data[1] += adj.getOrDefault(u, new ArrayList<>()).size();
+        for (int v : adj.getOrDefault(u, new ArrayList<>())){
+            if (!visited[v])
+                dfs(adj, v, visited, data);
+        }
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int countCompleteComponents(int n, int[][] edges) {
+        int res = 0;
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+        for (int [] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            adj.computeIfAbsent(u, k -> new ArrayList<>()).add(v);
+            adj.computeIfAbsent(v, k -> new ArrayList<>()).add(u);
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (!adj.containsKey(i)) {
+                adj.put(i, new ArrayList<>());
+            }
+        }
+
+        boolean[] visited = new boolean[n];
+        Arrays.fill(visited, false);
+
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]){
+                int[] data = new int[2];
+                bfs(adj, i, visited, data);
+                if (data[0] * (data[0] - 1) == data[1]) 
+                    res++;
+            }
+        }
+
+        return res;
+    }
+
+    void bfs(Map<Integer, List<Integer>> adj, int u, boolean[] visited, int[] data) {
+        visited[u] = true;
+        Queue<Integer> que = new LinkedList<>();
+        que.offer(u);
+
+        while (!que.isEmpty()) {
+            u = que.poll();
+            data[0]++;
+            data[1] += adj.getOrDefault(u, new ArrayList<Integer>()).size();
+            
+            for (int v : adj.getOrDefault(u, new ArrayList<Integer>())) {
+                if (!visited[v]) {
+                    visited[v] = true;
+                    que.offer(v);
+                }
+            }
+        }
+    }
+}
+
+
+// approach 3
+class Solution {
+    public int countCompleteComponents(int n, int[][] edges) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int res = 0;
+
+        int[] parent = new int[n];
+        int[] size = new int[n];
+        Arrays.fill(size, 1);
+
+        for (int i = 0; i < n; i++) {
+            parent[i] = i;
+        }
+
+        for (int [] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            union(parent, u, v, size);
+        }
+
+        for(int[] edge : edges){
+            int upar = find(parent, edge[0]);
+            int vpar = find(parent, edge[1]);
+            map.put(upar, map.getOrDefault(upar, 0) + 1);
+        }
+
+        for(int i = 0; i < n; i++){
+            if(parent[i] == i){
+                if(map.containsKey(i)){
+                    int e = map.get(i);
+                    int v = size[i];
+                    if((v*(v-1)/2) == e) res++;
+                } else res++;
+            }
+        }
+
+        return res;
+    }
+
+    int find(int[] parent, int x){
+        if(x == parent[x]) return x;
+        return parent[x] = find(parent, parent[x]);
+    }
+
+    void union(int[] parent, int x, int y, int[] size){
+        int xpar = find(parent, x);
+        int ypar = find(parent, y);
+        if(xpar == ypar) return;
+        if(size[xpar] > size[ypar]) {
+            parent[ypar] = xpar;
+            size[xpar] += size[ypar];
+        } else {
+            parent[xpar] = ypar;
+            size[ypar] += size[xpar];
+        }
+    }
+}
