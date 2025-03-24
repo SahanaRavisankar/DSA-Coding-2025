@@ -1,0 +1,91 @@
+// approach 1
+class Solution {
+    public int longestStrChain(String[] words) {
+        Arrays.sort(words, (a, b) -> Integer.compare(a.length(), b.length()));
+        int size = words.length;
+        
+        int[][] dp = new int[size][size];
+        for(int[] t : dp)
+            Arrays.fill(t, -1);
+
+        return solve(words, -1, 0, size, dp);
+    }
+
+    int solve(String[] words, int prev, int curr, int size, int[][] dp) {
+        if(curr >= size)
+            return 0;
+
+        if(prev != -1 && dp[prev][curr] != -1)
+            return dp[prev][curr];
+
+        int take = 0;
+        if(prev == -1 || check(words[prev], words[curr])) {
+            take = solve(words, curr, curr + 1, size, dp) + 1;
+        }
+        int skip = solve(words, prev, curr + 1, size, dp);
+
+        int val = Math.max(take, skip);
+        if(prev != -1)
+            dp[prev][curr] = val;
+
+        return val;
+    }
+
+    boolean check(String s1, String s2) {
+        int m = s1.length();
+        int n = s2.length();
+        
+        if(n - m != 1)
+            return false;
+
+        int i = 0, j = 0;
+        while(i < m && j < n){
+            if(s1.charAt(i) == s2.charAt(j))
+                i++;
+            j++;
+        }
+
+        return i == m;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int longestStrChain(String[] words) {
+        Arrays.sort(words, (a, b) -> Integer.compare(a.length(), b.length()));
+        int n = words.length;
+        
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, 1);
+        int max = 1;
+
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < i; j++){
+                if(check(words[j], words[i])) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                    max = Math.max(max, dp[i]);
+                }
+            }
+        }
+
+        return max;
+    }
+    
+    boolean check(String s1, String s2) {
+        int m = s1.length();
+        int n = s2.length();
+        
+        if(n - m != 1)
+            return false;
+
+        int i = 0, j = 0;
+        while(i < m && j < n){
+            if(s1.charAt(i) == s2.charAt(j))
+                i++;
+            j++;
+        }
+
+        return i == m;
+    }
+}
