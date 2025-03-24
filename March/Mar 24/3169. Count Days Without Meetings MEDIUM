@@ -1,0 +1,22 @@
+class Solution {
+    public int countDays(int days, int[][] meet) {
+        Arrays.sort(meet, (a, b) -> Integer.compare(a[0], b[0]));
+        int end = 0;
+        int n = meet.length;
+
+        int res = 0;
+
+        for(int i = 0; i < n; i++) {
+            if(meet[i][0] > end) {
+                res += meet[i][0] - end - 1;
+            }
+
+            end = Math.max(meet[i][1], end);
+        }
+
+        if(end < days)
+            res += days - end;
+
+        return res;
+    }
+}
