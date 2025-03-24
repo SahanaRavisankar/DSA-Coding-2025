@@ -1,0 +1,28 @@
+class Solution {
+    public int[][] merge(int[][] inter) {
+        int n = inter.length;
+        if(n == 0 || n == 1) return inter;
+        
+        Arrays.sort(inter, (a, b) -> Integer.compare(a[0], b[0]));
+        
+        ArrayList<int[]> list = new ArrayList<>();
+        int end = inter[0][1];
+        int st = inter[0][0];
+        int i = 1;
+        
+        while(i < n) {
+            while(i < n && inter[i][0] <= end){
+                end = Math.max(end, inter[i][1]);
+                i++;
+            }
+            list.add(new int[]{st, end});
+            if(i < n) {
+                st = inter[i][0];
+                end = inter[i][1];
+            }
+        }
+
+        int[][] res = list.stream().toArray(int[][]::new);
+        return res;
+    }
+}
