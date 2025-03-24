@@ -1,0 +1,28 @@
+class Solution {
+    public int findLongestChain(int[][] pairs) {
+        int n = pairs.length;
+        Arrays.sort(pairs, (a, b) -> Integer.compare(a[0], b[0]));
+        int[][] dp = new int[n][n];
+
+        for(int[] t : dp) Arrays.fill(t, -1);
+        
+        return solve(pairs, -1, 0, n, dp);
+    }
+
+    int solve(int[][] pairs, int prev, int curr, int n, int[][] dp) {
+        if(curr >= n) return 0;
+
+        if(prev != -1 && dp[prev][curr] != -1) return dp[prev][curr];
+
+        int take = 0;
+        if(prev == -1 || pairs[prev][1] < pairs[curr][0]){
+            take = 1 + solve(pairs, curr, curr + 1, n, dp);
+        }
+        int skip = solve(pairs, prev, curr + 1, n, dp);
+        
+        int temp = Math.max(take, skip);
+        if(prev != -1) dp[prev][curr] = temp;
+        
+        return temp;
+    }
+}
