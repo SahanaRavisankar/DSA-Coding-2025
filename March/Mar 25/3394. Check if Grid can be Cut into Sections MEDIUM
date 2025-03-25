@@ -1,0 +1,40 @@
+class Solution {
+    public boolean checkValidCuts(int k, int[][] rect) {
+        int n = rect.length;
+        List<int[]> xaxis = new ArrayList<>();
+        List<int[]> yaxis = new ArrayList<>();
+
+        for(int i = 0; i < n; i++){
+            xaxis.add(new int[]{rect[i][0], rect[i][2]});
+            yaxis.add(new int[]{rect[i][1], rect[i][3]});
+        }
+
+        xaxis.sort(Comparator.comparingInt(a -> a[0]));
+        yaxis.sort(Comparator.comparingInt(a -> a[0]));
+        
+        if(merge(xaxis)) return true;
+        return  merge(yaxis);
+    }
+
+    boolean merge(List<int[]> inter){
+        int count = 0;
+        int st = inter.get(0)[0];
+        int end = inter.get(0)[1];
+        int i = 1;
+        int n = inter.size();
+
+        while(i < n) {
+            while(i < n && inter.get(i)[0] < end) {
+                end = Math.max(end, inter.get(i)[1]);
+                i++;
+            }
+            count++;
+            if(i < n) {
+                st = inter.get(i)[0];
+                end = inter.get(i)[1];
+            }
+        }
+
+        return count >= 3;
+    }
+}
