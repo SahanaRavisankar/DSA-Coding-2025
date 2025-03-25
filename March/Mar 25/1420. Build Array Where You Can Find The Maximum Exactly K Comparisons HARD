@@ -1,0 +1,38 @@
+class Solution {
+    public int numOfArrays(int n, int m, int k) {
+        int idx = 0, cost = 0, maxv = -1;
+        int[][][] dp = new int[101][101][101];
+        for(int[][] t1 : dp){
+            for(int[] t2 : t1){
+                Arrays.fill(t2, -1);
+            }
+        }
+
+        return solve(idx, cost, maxv, n, m, k, dp);
+    }
+
+    int mod = 1_000_000_007;
+
+    int solve(int idx, int cost, int maxv, int n, int m, int k, int[][][] dp){
+        if(idx >= n){
+            if(cost == k) return 1;
+            return 0;
+        }
+
+        if(maxv != -1 && dp[idx][cost][maxv] != -1)
+            return dp[idx][cost][maxv];
+
+        int res = 0;
+        for(int i = 0; i < m; i++) {
+            if(i > maxv) {
+                res = (res + solve(idx + 1, cost + 1, i, n, m, k, dp)) % mod;
+            } else {
+                res = (res + solve(idx + 1, cost, maxv, n, m, k, dp)) % mod;
+            }
+        }
+
+        if(maxv != -1) dp[idx][cost][maxv] = res;
+
+        return res;
+    }
+}
