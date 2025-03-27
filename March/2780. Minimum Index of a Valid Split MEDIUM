@@ -1,0 +1,67 @@
+class Solution {
+    public int minimumIndex(List<Integer> nums) {
+        int n = nums.size();
+        Map<Integer, Integer> map1 = new HashMap<>();
+        Map<Integer, Integer> map2 = new HashMap<>();
+
+        for(int i : nums) {
+            map1.put(i, map1.getOrDefault(i, 0) + 1);
+        }
+
+        for(int i = 0; i < n; i++) {
+            int n1 = n - i - 1;
+            int n2 = i + 1;
+            
+            map2.put(nums.get(i), map2.getOrDefault(nums.get(i), 0) + 1);
+            map1.put(nums.get(i), map1.get(nums.get(i)) - 1);
+            
+            if(map1.get(nums.get(i)) > n1/2 && map2.get(nums.get(i)) > n2/2) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int minimumIndex(List<Integer> nums) {
+        int candidate = nums.get(0);
+        int count = 1;
+        int i = 1;
+        int n = nums.size();
+
+        while(i < n) {
+            if(nums.get(i) == candidate) {
+                count++;
+            } else {
+                if(count == 0) {
+                    candidate = nums.get(i);
+                    count += 1;
+                } else count--;
+            }
+            i++;
+        }
+
+        count = 0;
+        for(int num : nums) {
+            if(num == candidate) count++;
+        }
+
+        if(count <= n/2) return -1;
+        int temp = 0;
+        for(int j = 0; j < n; j++){
+            if(nums.get(j) == candidate) {
+                temp++;
+                count--;
+            }
+            int n1 = n - j - 1;
+            int n2 = j + 1;
+            if(count * 2 > n1 && temp * 2 > n2) return j;
+        }
+
+        return -1;
+    }
+}
