@@ -1,0 +1,130 @@
+// approach 1
+class Solution {
+    int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    public int[] maxPoints(int[][] grid, int[] queries) {
+        int q = queries.length;
+        int[] res = new int[q];
+        int n = grid[0].length;
+        int m = grid.length;
+
+
+        for(int i = 0; i < q; i++) {
+            boolean[][] vis = new boolean[m][n];
+            for(boolean[] v : vis) Arrays.fill(v, false);
+            res[i] = bfs(grid, queries[i], m, n, vis);
+        }
+
+        return res;
+    }
+
+    int bfs(int[][] grid, int num, int m, int n, boolean[][] vis) {
+        if(grid[0][0] >= num) return 0;
+
+        Queue<int[]> queue = new LinkedList<>();
+        queue.offer(new int[]{0, 0});
+        vis[0][0] = true;
+        int cnt = 0;
+
+        while(!queue.isEmpty()) {
+            int i = queue.peek()[0];
+            int j = queue.peek()[1];
+            queue.poll();
+            cnt++;
+            for(int[] dir : directions) {
+                int inew = i + dir[0];
+                int jnew = j + dir[1];
+                if(inew < m && jnew < n && inew >= 0 && jnew >= 0 && grid[inew][jnew] < num && !vis[inew][jnew]) {
+                    queue.offer(new int[]{inew, jnew});
+                    vis[inew][jnew] = true;
+                }
+            }
+        }
+
+        return cnt;
+    }
+}
+
+
+// approach 2
+class Solution {
+    int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    public int[] maxPoints(int[][] grid, int[] queries) {
+        int q = queries.length;
+        int[] res = new int[q];
+        int n = grid[0].length;
+        int m = grid.length;
+
+
+        for(int i = 0; i < q; i++) {
+            boolean[][] vis = new boolean[m][n];
+            for(boolean[] v : vis) Arrays.fill(v, false);
+            res[i] = dfs(grid, queries[i], 0, 0, m, n, vis);
+        }
+
+        return res;
+    }
+
+    int dfs(int[][] grid, int num, int i, int j, int m, int n, boolean[][] vis) {
+        if(i < 0 || j < 0 || i >= m || j >= n || grid[i][j] >= num || vis[i][j]) return 0;
+
+        int cnt = 1;
+        vis[i][j] = true;
+
+        for(int[] dir : directions) {
+            int inew = i + dir[0];
+            int jnew = j + dir[1];
+            cnt += dfs(grid, num, inew, jnew, m, n, vis);
+        }
+
+        return cnt;
+    }
+}
+
+
+// approach 3
+class Solution {
+    int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    public int[] maxPoints(int[][] grid, int[] queries) {
+        int q = queries.length;
+        int[] res = new int[q];
+        int n = grid[0].length;
+        int m = grid.length;
+
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));
+        pq.offer(new int[]{grid[0][0], 0, 0});
+
+        ArrayList<int[]> list = new ArrayList<>();
+        for(int i = 0; i < q; i++) {
+            list.add(new int[]{queries[i], i});
+        }
+        Collections.sort(list, (a, b) -> Integer.compare(a[0], b[0]));
+
+
+        boolean[][] vis = new boolean[m][n];
+        for(boolean[] v : vis) Arrays.fill(v, false);
+        vis[0][0] = true;
+        int cnt = 0;
+        
+        for(int k = 0; k < q; k++) {
+            while(!pq.isEmpty() && pq.peek()[0] < list.get(k)[0]) {
+                int i = pq.peek()[1];
+                int j = pq.peek()[2];
+                pq.poll();
+                cnt++;
+
+                for(int[] dir : directions) {
+                    int inew = i + dir[0];
+                    int jnew = j + dir[1];
+                    if(inew < m && inew >= 0 && jnew < n && jnew >= 0 && !vis[inew][jnew]){
+                        vis[inew][jnew] = true;
+                        pq.offer(new int[]{grid[inew][jnew], inew, jnew});
+                    }
+                }
+            }
+
+            res[list.get(k)[1]] = cnt;
+        }
+
+        return res;
+    }
+}
