@@ -1,0 +1,120 @@
+class Solution {
+    int mod = (int) 1e9 + 7;
+    public int maximumScore(List<Integer> nums, int k) {
+        int n = nums.size();
+        int[] primes = primeScore(nums);
+
+        ArrayList<int[]> sortednums = new ArrayList<>();
+        for(int i = 0; i < n; i++) {
+            sortednums.add(new int[]{nums.get(i), i});
+        }
+
+        sortednums.sort((a, b) -> b[0] - a[0]);
+
+        long[] subarray = findSubarray(primes, n);
+        
+        long score = 1;
+        int idx = 0;
+
+        while(k > 0){
+            int i = sortednums.get(idx)[1];
+            int num = sortednums.get(idx)[0];
+            long op = Math.min((long) k, subarray[i]);
+            score = (score * power(num, op)) % mod;
+            k -= op;
+            idx++;
+        }
+
+        return (int) score;
+    }
+
+    int[] primeScore(List<Integer> nums) {
+        int n = nums.size();
+        int max = 0;
+
+        for(int num : nums) max = Math.max(max, num);
+        ArrayList<Integer> primeNum = generatePrime(max);
+        int[] primes = new int[n];
+        for(int i = 0; i < n; i++) {
+            int temp = nums.get(i);
+            for(int p : primeNum) {
+                if(p * p > temp) break;
+
+                if (temp % p != 0) continue;
+                primes[i]++;
+                while (temp % p == 0) {
+                    temp /= p;
+                }
+            
+            }
+
+            if(temp > 1) primes[i]++;
+        }
+
+        return primes;
+    }
+
+    long power(long a, long b) {
+        if(b == 0) return 1;
+        long half = power(a, b / 2);
+        long res = (half * half) % mod;
+        if(b % 2 == 1) res = (res * a) % mod;
+        return res;
+    }
+
+    ArrayList<Integer> generatePrime(int max) {
+        boolean[] seive = new boolean[max + 1];
+        Arrays.fill(seive, true);
+        seive[0] = false;
+        seive[1] = false;
+
+        for(int i = 2; i * i <= max; i++){
+            if(seive[i]) {
+                for(int j = i * i; j <= max; j += i) {
+                    seive[j] = false;
+                }
+            }
+        }
+
+        ArrayList<Integer> list = new ArrayList<>();
+        for(int i = 2; i <= max; i++) {
+            if(seive[i]) list.add(i);
+        }
+
+        return list;
+    }
+
+    long[] findSubarray(int[] nums, int n) {
+        int[] next = NGR(nums, n);
+        int[] prev = PGL(nums, n);
+        long[] subarr = new long[n];
+
+        for(int i = 0; i < n; i++) {
+            long temp = (long)(next[i] - i) * (i - prev[i]);
+            subarr[i] = temp;
+        }
+        return subarr;
+    }
+
+    int[] NGR(int[] nums, int n) {
+        int[] ngr = new int[n];
+        Stack<Integer> st = new Stack<>();
+        for(int i = n - 1; i >= 0; i--) {
+            while(!st.isEmpty() && nums[st.peek()] <= nums[i]) st.pop();
+            ngr[i] = st.isEmpty() ? n : st.peek();
+            st.push(i);
+        }
+        return ngr;
+    }
+    
+    int[] PGL(int[] nums, int n) {
+        int[] pgl = new int[n];
+        Stack<Integer> st = new Stack<>();
+        for(int i = 0; i < n; i++) {
+            while(!st.isEmpty() && nums[st.peek()] < nums[i]) st.pop();
+            pgl[i] = st.isEmpty() ? -1 : st.peek();
+            st.push(i);
+        }
+        return pgl;
+    }
+}
