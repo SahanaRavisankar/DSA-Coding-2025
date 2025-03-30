@@ -1,0 +1,23 @@
+class Solution {
+    public List<Integer> partitionLabels(String s) {
+        List<Integer> res = new ArrayList<>();
+        int n = s.length();
+        int[] freq = new int[26];
+        for(int i = 0; i < n; i++) {
+            freq[s.charAt(i) - 'a'] = i;
+        }
+
+        int i = 0, j = 0, end = freq[s.charAt(0) - 'a'];
+        while(i < n && j < n && end < n) {
+            if(j == end) {
+                res.add(j - i + 1);
+                i = j + 1;
+                if(i < n) end = freq[s.charAt(i) - 'a'];
+            }
+            end = Math.max(end, freq[s.charAt(j) - 'a']);
+            j++;
+        }
+
+        return res;
+    }
+}
