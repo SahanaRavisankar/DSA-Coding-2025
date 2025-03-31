@@ -1,0 +1,141 @@
+// approach 1
+class Solution {
+    
+    public static int shortestCommonSupersequence(String s1, String s2) {
+        return solve(s1, s2, 0, 0, s1.length(), s2.length());
+    }
+    
+    static int solve(String s1, String s2, int i, int j, int n1, int n2) {
+        if(i >= n1) {
+            return n2 - j;
+        }
+        if(j >= n2) {
+            return n1 - i;
+        }
+        
+        if(s1.charAt(i) == s2.charAt(j)){
+            return 1 + solve(s1, s2, i + 1, j + 1, n1, n2);
+        }
+        
+        return 1 + Math.min(solve(s1, s2, i + 1, j, n1, n2), solve(s1, s2, i, j + 1, n1, n2));
+    }
+}
+
+
+// approach 2 memoize
+class Solution {
+    
+    public static int shortestCommonSupersequence(String s1, String s2) {
+        int[][] dp = new int[s1.length()][s2.length()];
+        for(int[] t : dp) Arrays.fill(t, -1);
+        return solve(s1, s2, 0, 0, s1.length(), s2.length(), dp);
+    }
+    
+    static int solve(String s1, String s2, int i, int j, int n1, int n2, int[][] dp) {
+        if(i >= n1) {
+            return n2 - j;
+        }
+        if(j >= n2) {
+            return n1 - i;
+        }
+        
+        if(dp[i][j] != -1) return dp[i][j];
+        
+        if(s1.charAt(i) == s2.charAt(j)){
+            return dp[i][j] = 1 + solve(s1, s2, i + 1, j + 1, n1, n2, dp);
+        }
+        
+        return dp[i][j] = 1 + Math.min(solve(s1, s2, i + 1, j, n1, n2, dp), solve(s1, s2, i, j + 1, n1, n2, dp));
+    }
+}
+
+class Solution {
+    
+    public static int shortestCommonSupersequence(String s1, String s2) {
+        int[][] dp = new int[s1.length() + 1][s2.length() + 1];
+        for(int[] t : dp) Arrays.fill(t, -1);
+        return solve(s1, s2, s1.length(), s2.length(), dp);
+    }
+    
+    static int solve(String s1, String s2, int i, int j, int[][] dp) {
+        if(i <= 0) {
+            return j;
+        }
+        if(j <= 0) {
+            return i;
+        }
+        
+        if(dp[i][j] != -1) return dp[i][j];
+        
+        if(s1.charAt(i - 1) == s2.charAt(j - 1)){
+            return dp[i][j] = 1 + solve(s1, s2, i - 1, j - 1, dp);
+        }
+        
+        return dp[i][j] = 1 + Math.min(solve(s1, s2, i - 1, j, dp), solve(s1, s2, i, j - 1, dp));
+    }
+}
+
+
+// approach 3 bottom up
+class Solution {
+    
+    public static int shortestCommonSupersequence(String s1, String s2) {
+        int[][] dp = new int[s1.length() + 1][s2.length() + 1];
+        for(int i = 0; i <= s1.length(); i++) {
+            for(int j = 0; j <= s2.length(); j++){
+                if(i == 0 || j == 0){
+                    dp[i][j] = i + j;
+                } else if(s1.charAt(i - 1) == s2.charAt(j - 1)) {
+                    dp[i][j] = 1 + dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[s1.length()][s2.length()];
+    }
+}
+
+
+// approach 4
+class Solution {
+    
+    public static int shortestCommonSupersequence(String s1, String s2) {
+        int[][] dp = new int[s1.length() + 1][s2.length() + 1];
+        for(int[] t : dp) Arrays.fill(t, -1);
+        
+        int lcs = lcs(s1, s2, s1.length(), s2.length(), s1.length(), s2.length(), dp);
+        return s1.length() + s2.length() - lcs;
+    }
+    
+    static int lcs(String s1, String s2, int i, int j, int n1, int n2, int[][] dp){
+        if(i == 0 || j == 0) return 0;
+        
+        if(dp[i][j] != -1) return dp[i][j];
+        
+        if(s1.charAt(i - 1) == s2.charAt(j - 1))
+            return dp[i][j] = 1 + lcs(s1, s2, i - 1, j - 1, n1, n2, dp);
+        return dp[i][j] = Math.max(lcs(s1, s2, i - 1, j, n1, n2, dp), lcs(s1, s2, i, j - 1, n1, n2, dp));
+    }
+}
+
+class Solution {
+    
+    public static int shortestCommonSupersequence(String s1, String s2) {
+        int[][] dp = new int[s1.length() + 1][s2.length() + 1];
+        for(int[] t : dp) Arrays.fill(t, -1);
+        for(int i = 0; i <= s1.length(); i++) {
+            for(int j = 0; j <= s2.length(); j++){
+                if(i == 0 || j == 0){
+                    dp[i][j] = 0;
+                } else if(s1.charAt(i - 1) == s2.charAt(j - 1)) {
+                    dp[i][j] = 1 + dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        int lcs = dp[s1.length()][s2.length()];
+        return s1.length() + s2.length() - lcs;
+    }
+}
