@@ -1,0 +1,38 @@
+// approach 1 recur + memo
+class Solution {
+    public long mostPoints(int[][] ques) {
+        int n = ques.length;
+        long[] dp = new long[n];
+        Arrays.fill(dp, -1);
+        return solve(ques, 0, n, dp);
+    }
+
+    long solve(int[][] ques, int i, int n, long[] dp) {
+        if(i >= n) return 0;
+        
+        if(dp[i] != -1)
+            return dp[i];
+
+        long skip = solve(ques, i + 1, n, dp);
+        long take = ques[i][0] + solve(ques, i + ques[i][1] + 1, n, dp);
+
+        return dp[i] = Math.max(skip, take);
+    }
+}
+
+
+// approach 2 bottom up
+class Solution {
+    public long mostPoints(int[][] ques) {
+        int n = ques.length;
+        long[] dp = new long[n + 1];
+        Arrays.fill(dp, 0);
+
+        for(int i = n - 1; i >= 0; i--) {
+            long x = (1 + i + ques[i][1] <= n) ? dp[1 + i + ques[i][1]] : 0;
+            dp[i] = Math.max(dp[i + 1], ques[i][0] + x);
+        }
+
+        return dp[0];
+    }
+}
