@@ -1,0 +1,65 @@
+// approach 1 recur + memo
+class Solution {
+    public int longestPalindromeSubseq(String s) {
+        int n = s.length();
+        int[][] dp = new int[n][n];
+        for(int[] t : dp) Arrays.fill(t, -1);
+
+        return solve(s, 0, n - 1, dp);
+    }
+
+    int solve(String s, int i, int j, int[][] dp){
+        if(i > j) return 0;
+        if(i == j) return 1;
+
+        if(dp[i][j] != -1) return dp[i][j];
+        
+        if(s.charAt(i) == s.charAt(j))
+            return dp[i][j] = 2 + solve(s, i + 1, j - 1, dp);
+        
+        return dp[i][j] = Math.max(solve(s, i + 1, j, dp), solve(s, i, j - 1, dp));
+    }
+}
+
+
+// approach 2 bottom up
+class Solution {
+    public int longestPalindromeSubseq(String s) {
+        int n = s.length();
+        int[][] dp = new int[n][n];
+        for(int[] t : dp) Arrays.fill(t, 0);
+        for(int i = 0; i < n; i++) dp[i][i] = 1;
+
+        for(int l = 2; l <= n; l++){
+            for(int i = 0; i + l - 1 < n; i++){
+                int j = i + l - 1;
+                if(s.charAt(i) == s.charAt(j)) dp[i][j] = 2 + dp[i + 1][j - 1];
+                else dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);
+            }
+        }
+
+        return dp[0][n - 1];
+    }
+}
+
+
+// approach 3 lcs
+class Solution {
+    public int longestPalindromeSubseq(String s) {
+        int n = s.length();
+        int[][] dp = new int[n + 1][n + 1];
+        for(int[] t : dp) Arrays.fill(t, -1);
+
+        StringBuilder str = new StringBuilder();
+        str.append(s).reverse();
+
+        return lcs(s, str.toString(), n, n, dp);
+    }
+
+    int lcs(String s1, String s2, int i, int j, int[][] dp){
+        if(i == 0 || j == 0) return 0;
+        if(dp[i][j] != -1) return dp[i][j];
+        if(s1.charAt(i - 1) == s2.charAt(j - 1)) return dp[i][j] = 1 + lcs(s1, s2, i - 1, j - 1, dp);
+        return dp[i][j] = Math.max(lcs(s1, s2, i - 1, j, dp), lcs(s1, s2, i, j - 1, dp));
+    }
+}
