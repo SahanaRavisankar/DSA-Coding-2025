@@ -1,0 +1,59 @@
+// approach 1
+class Solution {
+    
+    Map<Integer, Integer> map = new HashMap<>();
+    int max = 0;
+
+    public TreeNode lcaDeepestLeaves(TreeNode root) {
+        depth(root, 0);
+        return lcs(root);
+    }
+
+    TreeNode lcs(TreeNode root){
+        if(root == null || map.get(root.val) == max) return root;
+
+        TreeNode l = lcs(root.left);
+        TreeNode r = lcs(root.right);
+
+        if(l != null && r != null) return root;
+        return l == null ? r : l;
+    }
+
+    void depth(TreeNode root, int d) {
+        if(root == null) return;
+        max = Math.max(max, d);
+        map.put(root.val, d);
+        depth(root.right, d + 1);
+        depth(root.left, d + 1);
+    }
+}
+
+
+// approach 2
+class Solution {
+    
+    class Pair {
+        int first;
+        TreeNode second;
+
+        Pair(int first, TreeNode second){
+            this.first = first;
+            this.second = second;
+        }
+    }
+
+    public TreeNode lcaDeepestLeaves(TreeNode root) {
+        return lcs(root).second;
+    }
+
+    Pair lcs(TreeNode root){
+        if(root == null) return new Pair(0, root);
+
+        Pair l = lcs(root.left);
+        Pair r = lcs(root.right);
+
+        if(l.first == r.first) return new Pair(l.first + 1, root);
+        else if(l.first > r.first) return new Pair(l.first + 1, l.second);
+        return new Pair(r.first + 1, r.second);
+    }
+}
