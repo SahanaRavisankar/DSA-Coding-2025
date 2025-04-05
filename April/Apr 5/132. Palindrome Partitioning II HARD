@@ -1,0 +1,104 @@
+// approach 1
+class Solution {
+    public int minCut(String s) {
+        int n = s.length();
+        int[][] dp = new int[n + 1][n + 1];
+        for(int[] t : dp) Arrays.fill(t, -1);
+        return solve(s, 0, n - 1, dp);
+    }
+
+    int solve(String s, int i, int j, int[][] dp){
+        if(check(s, i, j)) return 0;
+        if(dp[i][j] != -1) return dp[i][j];
+        int res = Integer.MAX_VALUE;
+        for(int k = i; k < j; k++) {
+            int tmp = 1 + solve(s, i, k, dp) + solve(s, k + 1, j, dp);
+            res = Math.min(res, tmp);
+        }
+        return dp[i][j] = res;
+    }
+
+    boolean check(String s, int i, int j) {
+        while(j > i) {
+            if(s.charAt(i) == s.charAt(j)) {
+                i++;
+                j--;
+            } else return false;
+        }
+        return true;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int minCut(String s) {
+        int n = s.length();
+        int[][] dp = new int[n + 1][n + 1];
+        for(int[] d : dp) Arrays.fill(d, -1);
+        int[][] t = new int[n + 1][n + 1];
+        for(int[] d : t) Arrays.fill(d, -1);
+        return solve(s, 0, n - 1, dp, t);
+    }
+
+    int solve(String s, int i, int j, int[][] dp, int[][] t){
+        if(check(s, i, j, t)) return 0;
+        if(dp[i][j] != -1) return dp[i][j];
+        int res = Integer.MAX_VALUE;
+        for(int k = i; k < j; k++) {
+            int tmp = 1 + solve(s, i, k, dp, t) + solve(s, k + 1, j, dp, t);
+            res = Math.min(res, tmp);
+        }
+        return dp[i][j] = res;
+    }
+
+    boolean check(String s, int i, int j, int[][] t) {
+        if(t[i][j] != -1) return t[i][j] == 1;
+        if(i >= j) {
+            return true;
+        }
+        if(s.charAt(i) == s.charAt(j)) {
+            boolean b = check(s, i + 1, j - 1, t);
+            t[i][j] = b ? 1 : 0;
+            return b;
+        }
+        t[i][j] = 0;
+        return false;
+    }
+}
+
+
+// approach 3
+class Solution {
+    public int minCut(String s) {
+        int n = s.length();
+        boolean[][] dp = new boolean[n][n];
+        for(boolean[] d : dp) Arrays.fill(d, false);
+        for(int i = 0; i < n; i++) dp[i][i] = true;
+        int[] t = new int[n];
+        Arrays.fill(t, Integer.MAX_VALUE);
+
+        for(int l = 2; l <= n; l++) {
+            for(int i = 0; i + l - 1 < n; i++) {
+                int j = i + l - 1;
+                if(s.charAt(i) == s.charAt(j)) {
+                    if(l == 2) dp[i][j] = true;
+                    else dp[i][j] = dp[i + 1][j - 1];
+                }
+            }
+        }
+
+        for(int i = 0; i < n; i++) {
+            if(dp[0][i]) t[i] = 0;
+            else {
+                for(int k = 0; k < i; k++) {
+                    if(dp[k + 1][i] && 1 + t[k] < t[i]) {
+                        t[i] = 1 + t[k];
+                    }
+                }
+            }
+        }
+        
+        return t[n - 1];
+    }
+}
