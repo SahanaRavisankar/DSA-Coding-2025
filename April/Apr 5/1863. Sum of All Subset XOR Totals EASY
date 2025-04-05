@@ -1,0 +1,62 @@
+// approach 1
+class Solution {
+    List<List<Integer>> res = new ArrayList<>();
+    public int subsetXORSum(int[] nums) {
+        int sum = 0;
+        int n = nums.length;
+        res.clear();
+        List<Integer> temp = new ArrayList<>();
+        solve(nums, 0, temp, n);
+        
+        for(List<Integer> list : res) {
+            int xor = 0;
+            for(int num : list) xor ^= num;
+            sum += xor;
+        }
+
+        return sum;
+    }
+
+    void solve(int[] nums, int i, List<Integer> temp, int n) {
+        if(i >= n) {
+            res.add(new ArrayList<>(temp));
+            return;
+        }
+
+        temp.add(nums[i]);
+        solve(nums, i + 1, temp, n);
+        temp.remove(temp.size() - 1);
+        solve(nums, i + 1, temp, n);
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int subsetXORSum(int[] nums) {
+        int n = nums.length;
+        return solve(nums, 0, n, 0);
+    }
+
+    int solve(int[] nums, int i, int n, int xor) {
+        if(i >= n) {
+            return xor;
+        }
+
+        int incl = solve(nums, i + 1, n, xor ^ nums[i]);
+        int excl = solve(nums, i + 1, n, xor);
+
+        return incl + excl;
+    }
+}
+
+
+// approach 3
+class Solution {
+    public int subsetXORSum(int[] nums) {
+        int n = nums.length;
+        int res = 0;
+        for(int i : nums) res |= i;
+        return res << n - 1;
+    }
+}
