@@ -1,0 +1,34 @@
+class Solution {
+    public boolean canPartition(int[] nums) {
+        int sum = 0;
+        for(int n : nums) sum += n;
+        int n = nums.length;
+
+        if(sum % 2 == 1) return false;
+
+        int[][] dp = new int[n][sum];
+        for(int[] t : dp) Arrays.fill(t, -1);
+        
+        return solve(nums, dp, 0, sum / 2, n);
+    }
+
+    boolean solve(int[] nums, int[][] dp, int i, int sum, int n) {
+        if(sum == 0) {
+            return true;
+        }
+        if(i >= n) {
+            return false;
+        }
+
+        if(dp[i][sum] != -1) return dp[i][sum] == 1;
+
+        boolean take = false, skip = false;
+        if(sum >= nums[i]) {
+            take = solve(nums, dp, i + 1, sum - nums[i], n);
+        }
+        skip = solve(nums, dp, i + 1, sum, n);
+
+        dp[i][sum] = take || skip ? 1 : 0;
+        return dp[i][sum] == 1;
+    }
+}
