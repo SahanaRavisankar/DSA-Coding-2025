@@ -1,0 +1,58 @@
+// approach 1
+class Solution {
+    public long numberOfPowerfulInt(long start, long finish, int limit, String s) {
+        long count = 0;
+        long num = Long.valueOf(s);
+        if(num > finish) return 0;
+
+        long n = s.length();
+        long add = (long) Math.pow(10, n);
+
+        while(num < start) {
+            num += add;
+        }
+        //System.out.println(num);
+
+        while(num <= finish) {
+            if(check(num, limit)) count++;
+            num += add;
+        }
+        return count;
+    }
+
+    boolean check(long num, int limit) {
+        String temp = String.valueOf(num);
+        for(char ch : temp.toCharArray()) {
+            if(ch - '0' > limit) return false;
+        }
+        return true;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public long numberOfPowerfulInt(long start, long finish, int limit, String s) {
+        String finstr = String.valueOf(finish);
+        String startstr = String.valueOf(start - 1);
+        return solve(finstr, s, limit) - solve(startstr, s, limit);
+    }
+
+    long solve(String str, String ipsuff, int limit) {
+        if(str.length() < ipsuff.length()) return 0;
+        long cnt = 0;
+        String trail = str.substring(str.length() - ipsuff.length());
+        int rem = str.length() - ipsuff.length();
+        for(int i = 0; i < rem; i++) {
+            long digit = str.charAt(i) - '0';
+            if(digit <= limit) {
+                cnt += digit * (long) Math.pow(limit + 1, rem - i - 1);
+            } else {
+                cnt += (long) Math.pow(limit + 1, rem - i);
+                return cnt;
+            }
+        }
+        if(trail.compareTo(ipsuff) >= 0) cnt++;
+        return cnt;
+    }
+}
