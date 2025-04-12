@@ -23,35 +23,40 @@ class Solution {
             }
         }
 
+        long[] fact = new long[11];
+        for(int i = 0; i < 11; i++) {
+            fact[i] = factorial(i);
+        }
+
         long res = 0;
         for(String s : set) {
-            res += permutation(s);
+            res += permutation(s, fact);
         }
 
         return res;
     }
 
-    long permutation(String s) {
+    long permutation(String s, long[] fact) {
         int[] freq = new int[10];
         for(char ch : s.toCharArray()) {
             freq[ch - '0']++;
         }
         if(freq[0] == 0) {
-            long res = fact(s.length());
+            long res = fact[s.length()];
             for(int i : freq) {
-                res /= fact(i);
+                res /= fact[i];
             }
             return res;
         } else {
-            long res = fact(s.length() - 1) * (s.length() - freq[0]);
+            long res = fact[s.length() - 1] * (s.length() - freq[0]);
             for(int i : freq) {
-                res /= fact(i);
+                res /= fact[i];
             }
             return res;
         }
     }
 
-    long fact(int n) {
+    long factorial(int n) {
         if(n == 0 || n == 1) return 1;
         long res = 1;
         for(int i = 2; i <= n; i++) {
