@@ -1,3 +1,21 @@
+// approach 1
+class Solution {
+    public String shiftingLetters(String s, int[][] shifts) {
+        char[] ch = s.toCharArray();
+        for(int[] arr : shifts) {
+            int st = arr[0];
+            int end = arr[1];
+            int shf = arr[2] == 1 ? 1 : -1;
+            for(int i = st; i <= end; i++) {
+                ch[i] = (char)((((ch[i] - 'a' + shf) % 26 + 26) % 26) + 97);
+            }
+        }
+        return new String(ch);
+    }
+}
+
+
+// approach 2
 class Solution {
     public String shiftingLetters(String s, int[][] shifts) {
         int n = s.length();
