@@ -1,4 +1,4 @@
-BRUTE FORCE
+// approach 1 BRUTE FORCE
 class Solution {
     public int[] minOperations(String s) {
         int n = s.length();
@@ -15,6 +15,43 @@ class Solution {
 }
 
 
+// approach 2
+class Solution {
+    public int[] minOperations(String box) {
+        int n = box.length();
+        int[] res = new int[n];
+        Arrays.fill(res, 0);
+
+        int[] lsum = new int[n];
+        int[] lcumsum = new int[n];
+        lsum[0] = box.charAt(0) - '0';
+        lcumsum[0] = 0;
+
+        for(int i = 1; i < n; i++) {
+            lsum[i] = lsum[i - 1] + box.charAt(i) - '0';
+            lcumsum[i] = lsum[i - 1] + lcumsum[i - 1];
+        }
+
+        int[] rsum = new int[n];
+        int[] rcumsum = new int[n];
+        rsum[n - 1] = box.charAt(n - 1) - '0';
+        rcumsum[n - 1] = 0;
+
+        for(int i = n - 2; i >= 0; i--) {
+            rsum[i] = rsum[i + 1] + box.charAt(i) - '0';
+            rcumsum[i] = rsum[i + 1] + rcumsum[i + 1];
+        }
+
+        for(int i = 0; i < n; i++) {
+            res[i] = lcumsum[i] + rcumsum[i];
+        }
+
+        return res;
+    }
+}
+
+
+// approach 3.1 -- 2 pass solution
 class Solution {
     public int[] minOperations(String s) {
         int n = s.length();
@@ -36,6 +73,29 @@ class Solution {
             cv += s.charAt(i)=='0'?0:1;
             cvs += cv;
         }
+        return res;
+    }
+}
+
+// approach 3.2 -- 1 pass solution
+class Solution {
+    public int[] minOperations(String box) {
+        int n = box.length();
+        int[] res = new int[n];
+        Arrays.fill(res, 0);
+
+        int lsum = 0, rsum = 0;
+        int lcumsum = 0, rcumsum = 0;
+
+        for(int i = 0; i < n; i++) {
+            res[i] += lcumsum;
+            lsum += box.charAt(i) - '0';
+            lcumsum += lsum;
+            res[n - 1 - i] += rcumsum;
+            rsum += box.charAt(n - 1 - i) - '0';
+            rcumsum += rsum;
+        }
+
         return res;
     }
 }
