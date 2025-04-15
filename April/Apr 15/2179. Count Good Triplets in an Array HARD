@@ -1,0 +1,47 @@
+class Solution {
+
+    long query(int st, int end, int i, int l, int r, long[] segtree) {
+        if(r < st || l > end) return 0;
+        if(l >= st && r <= end) return segtree[i];
+        int mid = l + (r - l) / 2;
+        long left = query(st, end, 2*i + 1, l, mid, segtree);
+        long right = query(st, end, 2*i + 2, mid + 1, r, segtree);
+        return left + right;
+    }
+
+    void update(int i, int l, int r, int idx, long[] segtree) {
+        if(l == r) {
+            segtree[i] = 1;
+            return;
+        }
+        int mid = l + (r - l) / 2;
+        if(idx <= mid) {
+            update(2*i + 1, l, mid, idx, segtree);
+        } else {
+            update(2*i + 2, mid + 1, r, idx, segtree);
+        }
+
+        segtree[i] = segtree[2*i+1] + segtree[2*i+2];
+    }
+
+    public long goodTriplets(int[] nums1, int[] nums2) {
+        int n = nums1.length;
+        long[] segtree = new long[4*n];
+        long res = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int i = 0; i < n; i++) {
+            map.put(nums2[i], i);
+        }
+        update(0, 0, n - 1, map.get(nums1[0]), segtree);
+        for(int i = 1; i < n; i++) {
+            int idx = map.get(nums1[i]);
+            long leftcommoncount = query(0, idx, 0, 0, n - 1, segtree);
+            long leftuncommoncount = i - leftcommoncount;
+            long elementidx2 = (n - 1) - idx;
+            long rightcommoncount = elementidx2 - leftuncommoncount;
+            res += leftcommoncount * rightcommoncount;
+            update(0, 0, n - 1, idx, segtree);
+        }
+        return res;
+    }
+}
