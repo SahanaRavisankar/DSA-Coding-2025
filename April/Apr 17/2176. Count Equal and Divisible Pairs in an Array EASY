@@ -1,0 +1,60 @@
+// approach 1
+class Solution {
+    public int countPairs(int[] nums, int k) {
+        int count = 0;
+        int n = nums.length;
+        for(int i = 0; i < n - 1; i++) {
+            for(int j = i + 1; j < n; j++) {
+                if(nums[i] == nums[j] && i * j % k == 0)
+                    count++;
+            }
+        }
+
+        return count;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int countPairs(int[] nums, int k) {
+        int count = 0;
+        int n = nums.length;
+        Map<Integer, List<Integer>> map = new HashMap<>();
+
+        for(int i = 0; i < n; i++) {
+            map.computeIfAbsent(nums[i], x -> new ArrayList<>()).add(i);
+        }
+
+        Set<Integer> kdiv = new HashSet<>();
+        for(int i = 1; i * i <= k; i++) {
+            if(k % i == 0){
+                kdiv.add(k / i);
+                kdiv.add(i);
+            }
+        }
+
+
+        for(Map.Entry<Integer, List<Integer>> entry : map.entrySet()) {
+            Map<Integer, Integer> store = new HashMap<>();
+            for(int i : entry.getValue()) {
+                int gcd = gcd(k, i);
+                int j = k / gcd;
+                count += store.getOrDefault(j, 0);
+                
+                for(int c : kdiv) {
+                    if(i % c == 0) {
+                        store.put(c, store.getOrDefault(c, 0) + 1);
+                    }
+                }
+            }
+        }
+
+        return count;
+    }
+
+    int gcd(int a, int b) {
+        if(b == 0) return a;
+        return gcd(b, a % b);
+    }
+}
