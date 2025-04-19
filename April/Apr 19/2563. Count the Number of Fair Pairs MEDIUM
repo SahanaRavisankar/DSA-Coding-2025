@@ -1,0 +1,50 @@
+// approach 1 brute force O(n^2)
+class Solution {
+    public long countFairPairs(int[] nums, int lower, int upper) {
+        long count = 0;
+        int n = nums.length;
+
+        for (int i = 0; i < n - 1; i++) {
+            for(int j = i + 1; j < n; j++) {
+                if(lower <= nums[i] + nums[j] && nums[i] + nums[j] <= upper)
+                    count++;
+            }
+        }
+
+        return count;
+    }
+}
+
+
+// approach 2 O(nlogm)
+class Solution {
+    public long countFairPairs(int[] nums, int lower, int upper) {
+        long count = 0;
+        int n = nums.length;
+        Arrays.sort(nums);
+
+        for (int i = 0; i < n - 1; i++) {
+            count += upperbound(i + 1, n - 1, upper - nums[i], nums) - lowerbound(i + 1, n - 1, lower - nums[i], nums);
+        }
+
+        return count;
+    }
+
+    int lowerbound(int low, int high, int target, int[] nums) {
+        if(low > high) return low;
+        int mid = low + (high - low) / 2;
+        if(nums[mid] >= target) {
+            return lowerbound(low, mid - 1, target, nums);
+        }
+        return lowerbound(mid + 1, high, target, nums);
+    }
+
+    int upperbound(int low, int high, int target, int[] nums){
+        if(low > high || low == nums.length) return low;
+        int mid = low + (high - low) / 2;
+        if(nums[mid] <= target) {
+            return upperbound(mid + 1, high, target, nums);
+        }
+        return upperbound(low, mid - 1, target, nums);
+    }
+}
