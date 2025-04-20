@@ -1,0 +1,16 @@
+class Solution {
+    public int numRabbits(int[] answers) {
+        int res = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int i : answers){
+            map.put(i, map.getOrDefault(i, 0) + 1);
+        }
+
+        for(Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            int mul = (int) Math.ceil((double) entry.getValue() / (entry.getKey() + 1));
+            res += ((entry.getKey() + 1) * mul);
+        }
+
+        return res;
+    }
+}
