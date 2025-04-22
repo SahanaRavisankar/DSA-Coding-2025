@@ -1,0 +1,127 @@
+// approach 1 brute force
+class Solution {
+    int mod = (int) 1e9 + 7;
+    public int idealArrays(int n, int max) {
+        long res = 0;
+        for(int st = 1; st <= max; st++) {
+            res = (res + solve(st, 1, n, max)) % mod;
+        }
+        return (int) res;
+    }
+
+    int solve(int st, int cnt, int n, int max) {
+        if(cnt == n) return 1;
+        long res = 0;
+        for(int mul = 1; mul * st <= max; mul++) {
+            res = (res + solve(st * mul, cnt + 1, n, max)) % mod;
+        }
+        return (int) res;
+    }
+}
+
+
+// approach 2 memoize
+class Solution {
+    int mod = (int) 1e9 + 7;
+    public int idealArrays(int n, int max) {
+        long res = 0;
+        int[][] dp = new int[max + 1][n + 1];
+        for(int[] t : dp)
+            Arrays.fill(t, -1);
+
+        for(int st = 1; st <= max; st++) {
+            res = (res + solve(st, 1, n, max, dp)) % mod;
+        }
+        return (int) res;
+    }
+
+    int solve(int st, int cnt, int n, int max, int[][] dp) {
+        if(cnt == n) return 1;
+        if(dp[st][cnt] != -1)
+            return dp[st][cnt];
+
+        long res = 0;
+        for(int mul = 1; mul * st <= max; mul++) {
+            res = (res + solve(st * mul, cnt + 1, n, max, dp)) % mod;
+        }
+
+        return dp[st][cnt] = (int) res;
+    }
+}
+
+
+// appraoch 3
+class Solution {
+    final int mod = (int) 1e9 + 7;
+    public int idealArrays(int n, int max) {
+        int[][] dp = new int[max + 1][15];
+        int[] count = new int[15];
+        long[] fact = new long[n + 1];
+        
+        // precompute factorials
+        fact[0] = 1;
+        for(int i = 1; i <= n; i++) {
+            fact[i] = (i * fact[i - 1]) % mod;
+        }
+
+        // find set O(max * log(max))
+        for(int val = 1; val <= max; val++) {
+            findSet(val, count, dp);
+        }
+
+        // modular nCr
+        long res = 0;
+        for(int l = 1; l < 15; l++) {
+            if(l > n)
+                break;
+            if(count[l] != 0) {
+                long pos = modularnCr(n - 1, l - 1, fact);
+                res = (res + (pos * count[l]) % mod) % mod;
+            }
+        }
+
+        return (int) res;
+    }
+
+    int modularnCr(int n, int r, long[] fact) {
+        if(r < 0 || r > n)
+            return 0;
+        
+        long a = fact[n];
+        long b = (fact[r] * fact[n - r]) % mod;
+
+        return (int) ((a * findPower(b, mod - 2)) % mod);
+    }
+
+    long findPower(long a, long b) {
+        if(b == 0)
+            return 1;
+        long half = findPower(a, b / 2);
+        long res = (half * half) % mod;
+        if(b % 2 == 1)
+            res = (res * a) % mod;
+        return res;
+    }
+
+    void findSet(int m, int[] count, int[][] dp) {
+        if(dp[m][1] != 0)
+            return;
+        
+        dp[m][1] = 1;
+        count[1] += 1;
+
+        for(int div = 2; div <= m; div++) {
+            if(m % div == 0) {
+                findSet(m / div, count, dp);
+
+                for(int l = 1; l < 15; l++) {
+                    if(dp[m / div][l] != 0) {
+                        dp[m][l + 1] = (dp[m][l + 1] + dp[m / div][l]) % mod;
+                        count[l + 1] = (count[l + 1] + dp[m / div][l]) % mod;
+                    }
+                }
+
+            }
+        }
+    }
+}
