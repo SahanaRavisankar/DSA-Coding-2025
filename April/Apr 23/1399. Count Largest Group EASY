@@ -1,0 +1,68 @@
+// approach 1
+class Solution {
+    public int countLargestGroup(int n) {
+        int[] map = new int[37];
+        int maxCount = 0;
+
+        for (int i = 1; i <= n; i++) {
+            int ds = digitSum(i);
+            map[ds]++;
+            maxCount = Math.max(maxCount, map[ds]);
+        }
+
+        int count = 0;
+        for(int num : map) {
+            if(num == maxCount)
+                count++;
+        }
+
+        return count;
+    }
+
+    int digitSum(int n) {
+        if(n < 10)
+            return n;
+        int sum = 0;
+        while(n > 0) {
+            sum += n % 10;
+            n /= 10;
+        }
+
+        return sum;
+    }
+}
+
+
+// approach 2 - same but find count there itself
+class Solution {
+    public int countLargestGroup(int n) {
+        int[] map = new int[37];
+        int maxCount = 0;
+        int count = 0;
+
+        for (int i = 1; i <= n; i++) {
+            int ds = digitSum(i);
+            map[ds]++;
+            if(maxCount == map[ds])
+                count++;
+            else if(maxCount < map[ds]) {
+                maxCount =  map[ds];
+                count = 1;
+            }
+        }
+
+        return count;
+    }
+
+    int digitSum(int n) {
+        if(n < 10)
+            return n;
+        int sum = 0;
+        while(n > 0) {
+            sum += n % 10;
+            n /= 10;
+        }
+
+        return sum;
+    }
+}
