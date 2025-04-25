@@ -1,0 +1,67 @@
+// approach 1
+class Solution {
+    public int subarraysDivByK(int[] nums, int k) {
+        int n = nums.length;
+        int cnt = 0;
+
+        for(int i = 0; i < n; i++) {
+            for(int j = i; j < n; j++) {
+                int sum = 0;
+                for(int l = i; l <= j; l++) {
+                    sum += nums[l];
+                }
+
+                if(sum % k == 0)
+                    cnt++;
+            }
+        }
+
+        return cnt;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int subarraysDivByK(int[] nums, int k) {
+        int n = nums.length;
+        int cnt = 0;
+
+        for(int i = 1; i < n; i++) {
+            nums[i] += nums[i - 1];
+        }
+
+        for(int i = 0; i < n; i++) {
+            for(int j = i; j < n; j++) {
+                int sum = (i == 0) ? nums[j] : nums[j] - nums[i - 1];
+                
+                if(sum % k == 0)
+                    cnt++;
+            }
+        }
+
+        return cnt;
+    }
+}
+
+
+// approach 3 instead of hashmap use array of k size
+class Solution {
+    public int subarraysDivByK(int[] nums, int k) {
+        int[] map = new int[k];
+        Arrays.fill(map, 0);
+        int cnt = 0;
+        int sum = 0;
+
+        map[sum] = 1;
+
+        for(int i : nums) {
+            sum += i;
+            int rem = ((sum % k) + k) % k;
+            cnt += map[rem];
+            map[rem]++;
+        }
+
+        return cnt;
+    }
+}
