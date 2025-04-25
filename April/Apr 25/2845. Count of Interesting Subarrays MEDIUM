@@ -1,0 +1,26 @@
+class Solution {
+    public long countInterestingSubarrays(List<Integer> nums, int m, int k) {
+        Map<Integer, Integer> map = new HashMap<>(); // use map to avoid memory limit exceed
+        map.put(0, 1);
+
+        long res = 0;
+        int n = nums.size();
+        
+        // can modify input
+        for(int i = 0; i < n; i++) {
+            int x = (nums.get(i) % m == k) ? 1 : 0;
+            nums.set(i, x);
+        }
+
+        int sum = 0;
+        for(int i = 0; i < n; i++) {
+            sum += nums.get(i);
+            int r1 = sum % m;
+            int r2 = (r1 - k + m) % m;
+            res += map.getOrDefault(r2, 0);
+            map.put(r1, map.getOrDefault(r1, 0) + 1);
+        }
+
+        return res;
+    }
+}
