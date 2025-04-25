@@ -24,3 +24,26 @@ class Solution {
         return res;
     }
 }
+
+
+// without changing the input
+class Solution {
+    public long countInterestingSubarrays(List<Integer> nums, int m, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);
+
+        long res = 0;
+
+        int sum = 0;
+        for(int i : nums) {
+            int x = (i % m == k) ? 1 : 0;
+            sum += x;
+            int r1 = sum % m;
+            int r2 = (r1 - k + m) % m;
+            res += map.getOrDefault(r2, 0);
+            map.put(r1, map.getOrDefault(r1, 0) + 1);
+        }
+
+        return res;
+    }
+}
