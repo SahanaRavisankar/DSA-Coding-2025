@@ -1,0 +1,21 @@
+class Solution {
+    public long countSubarrays(int[] nums, int min, int max) {
+        long res = 0;
+        int n = nums.length;
+        int minpos = -1, maxpos = -1, cui = -1;
+
+        for(int i = 0; i < n; i++) {
+            if(nums[i] == min)
+                minpos = i;
+            if(nums[i] == max)
+                maxpos = i;
+            if(nums[i] > max || nums[i] < min)
+                cui = i;
+
+            int small = Math.min(minpos, maxpos);
+            res += Math.max(0, small - cui);
+        }
+
+        return res;
+    }
+}
