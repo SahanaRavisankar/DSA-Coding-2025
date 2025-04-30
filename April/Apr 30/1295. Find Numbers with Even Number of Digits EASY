@@ -1,0 +1,85 @@
+// approach 1
+class Solution {
+    public int findNumbers(int[] nums) {
+        int res = 0;
+
+        for(int i : nums) {
+            int cnt = 0;
+            while(i > 0) {
+                cnt++;
+                i /= 10;
+            }
+            if(cnt % 2 == 0)
+                res++;
+        }
+
+        return res;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int findNumbers(int[] nums) {
+        int res = 0;
+
+        for(int i : nums) {
+            if(check(i))
+                res++;
+        }
+
+        return res;
+    }
+
+    boolean check(int i) {
+        String s = String.valueOf(i);
+        return s.length() % 2 == 0;
+    }
+}
+
+
+// approach 3
+class Solution {
+    public int findNumbers(int[] nums) {
+        int res = 0;
+
+        for(int i : nums) {
+            if((10 <= i && i <= 99) || (1000 <= i && i <= 9999) || i == 100000)
+                res++;
+        }
+
+        return res;
+    }
+}
+
+
+// approach 4
+class Solution {
+    public int findNumbers(int[] nums) {
+        int res = 0;
+
+        for(int i : nums) {
+            int cnt = (int) Math.floor(Math.log10((double) i)) + 1;
+            if(cnt % 2 == 0)
+                res++;
+        }
+
+        return res;
+    }
+}
+
+
+// approach 5
+class Solution {
+    public int findNumbers(int[] nums) {
+        int res = 0;
+
+        for(int i : nums) {
+            int cnt = (int) Math.ceil(Math.log10((double) i + 1));
+            if(cnt % 2 == 0)
+                res++;
+        }
+
+        return res;
+    }
+}
