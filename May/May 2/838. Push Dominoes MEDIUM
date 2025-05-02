@@ -1,0 +1,115 @@
+// approach 1
+class Solution {
+    public String pushDominoes(String dom) {
+        int n = dom.length();
+        int[] leftClosestR = new int[n];
+        int[] rightClosestL = new int[n];
+//ll.rr.llrrll..
+        if(dom.charAt(0) == 'R') leftClosestR[0] = 0;
+        else leftClosestR[0] = -1;
+        for(int i = 1; i < n; i++) {
+            if(dom.charAt(i) == 'R') leftClosestR[i] = i;
+            else if(dom.charAt(i) == 'L') leftClosestR[i] = -1;
+            else leftClosestR[i] = leftClosestR[i - 1];
+        }
+        
+        if(dom.charAt(n - 1) != 'L') rightClosestL[n - 1] = -1;
+        else rightClosestL[n - 1] = n - 1;
+        for(int i = n - 2; i >= 0; i--) {
+            if(dom.charAt(i) == 'L') rightClosestL[i] = i;
+            else if(dom.charAt(i) == 'R') rightClosestL[i] = -1;
+            else rightClosestL[i] = rightClosestL[i + 1];
+        }
+
+        // System.out.println("left closest r" + Arrays.toString(leftClosestR));
+        // System.out.println("right closest l" + Arrays.toString(rightClosestL));
+
+        String res = new String();
+        for(int i = 0; i < n; i++) {
+            if(leftClosestR[i] == -1 && rightClosestL[i] == -1) res += '.';
+            else if(leftClosestR[i] == -1 && rightClosestL[i] != -1) res += 'L';
+            else if(leftClosestR[i] != -1 && rightClosestL[i] == -1) res += 'R';
+            else {
+                int distR = Math.abs(i - leftClosestR[i]);
+                int distL = Math.abs(i - rightClosestL[i]);
+                if(distL == distR) res += '.';
+                else if(distL < distR) res += 'L';
+                else res += 'R';
+            }
+
+        }
+
+        return res;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public String pushDominoes(String dom) {
+        int n = dom.length();
+        int[] arr = new int[n];
+
+        int f = 0;
+        for(int i = 0; i < n; i++) {
+            if(dom.charAt(i) == 'R') f = n;
+            else if(dom.charAt(i) == 'L') f = 0;
+            else f = Math.max(0, f - 1);
+            arr[i] = f;
+        }
+        
+        f = 0;
+        for(int i = n - 1; i>= 0; i--) {
+            if(dom.charAt(i) == 'L') f = n;
+            else if(dom.charAt(i) == 'R') f = -1;
+            else f = Math.max(0, f - 1);
+            arr[i] -= f;
+        }
+
+        String res = new String();
+        for(int i = 0; i < n; i++) {
+            if(arr[i] < 0)
+                res += 'L';
+            else if(arr[i] > 0)
+                res += 'R';
+            else
+                res += '.';
+        }
+
+        return res;
+    }
+}
+
+
+// approach 3
+class Solution {
+    public String pushDominoes(String dom) {
+        String s = "L" + dom + "R";
+        int n = s.length();
+        StringBuilder res = new StringBuilder();
+
+        for(int i = 0, j = 1; j < n; j++) {
+            if(s.charAt(j) == '.') continue;
+            int mid = j - i - 1;
+
+            if(i > 0){
+                res.append(s.charAt(i));
+            }
+
+            if(s.charAt(i) == s.charAt(j)){
+                res.append(String.valueOf(s.charAt(i)).repeat(mid));
+            } else if(s.charAt(i) == 'L' && s.charAt(j) == 'R'){
+                res.append(".".repeat(mid));
+            } else {
+                int hf = mid / 2;
+                res.append("R".repeat(hf));
+                if(mid % 2 == 1) res.append(".");
+                res.append("L".repeat(hf));
+            }
+
+            i = j;
+        }
+
+        return res.toString();
+    }
+}
