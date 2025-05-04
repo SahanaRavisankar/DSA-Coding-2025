@@ -1,0 +1,95 @@
+// approach 1
+class Solution {
+    public int numEquivDominoPairs(int[][] dominoes) {
+        int res = 0;
+        Map<List<Integer>, Integer> map = new HashMap<>();
+
+        for(int[] dom : dominoes) {
+            if(dom[0] > dom[1]) {
+                int temp = dom[0];
+                dom[0] = dom[1];
+                dom[1] = temp;
+            }
+
+            List<Integer> key = Arrays.asList(dom[0], dom[1]);
+            map.put(key, map.getOrDefault(key, 0) + 1);
+        }
+
+        for(Map.Entry<List<Integer>, Integer> entry : map.entrySet()) {
+            if(entry.getValue() > 1) {
+                for(int i = entry.getValue() - 1; i > 0; i--)
+                    res += i;
+            }
+        }
+
+        return res;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int numEquivDominoPairs(int[][] dominoes) {
+        int res = 0;
+        Map<List<Integer>, Integer> map = new HashMap<>();
+
+        for(int[] dom : dominoes) {
+            if(dom[0] > dom[1]) {
+                int temp = dom[0];
+                dom[0] = dom[1];
+                dom[1] = temp;
+            }
+
+            List<Integer> key = Arrays.asList(dom[0], dom[1]);
+            map.put(key, map.getOrDefault(key, 0) + 1);
+            res += map.get(key) - 1;
+        }
+
+        return res;
+    }
+}
+
+
+// approach 3
+class Solution {
+    public int numEquivDominoPairs(int[][] dominoes) {
+        int res = 0;
+        Map<String, Integer> map = new HashMap<>();
+
+        for(int[] dom : dominoes) {
+            if(dom[0] > dom[1]) {
+                int temp = dom[0];
+                dom[0] = dom[1];
+                dom[1] = temp;
+            }
+
+            String key = String.valueOf(dom[0]) + String.valueOf(dom[1]);
+            map.put(key, map.getOrDefault(key, 0) + 1);
+            res += map.get(key) - 1;
+        }
+
+        return res;
+    }
+}
+
+
+// approach 4
+class Solution {
+    public int numEquivDominoPairs(int[][] dominoes) {
+        int res = 0;
+        int[] arr = new int[100];
+
+        for(int[] dom : dominoes) {
+            if(dom[0] > dom[1]) {
+                int temp = dom[0];
+                dom[0] = dom[1];
+                dom[1] = temp;
+            }
+
+            res += arr[10 * dom[0] + dom[1]];
+            arr[10 * dom[0] + dom[1]]++;
+        }
+
+        return res;
+    }
+}
