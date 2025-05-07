@@ -1,0 +1,41 @@
+class Solution {
+    int[][] dir = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    public int minTimeToReach(int[][] move) {
+        int n = move.length;
+        int m = move[0].length;
+
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));
+        pq.offer(new int[]{0, 0, 0});
+
+        int[][] res = new int[n][m];
+        for(int[] r : res) 
+            Arrays.fill(r, Integer.MAX_VALUE);
+
+        while(!pq.isEmpty()) {
+            int time = pq.peek()[0];
+            int i = pq.peek()[1];
+            int j = pq.peek()[2];
+            pq.poll();
+
+            if(i == n - 1 && j == m - 1)
+                return time;
+            
+            for(int[] d : dir) {
+                int i_ = i + d[0];
+                int j_ = j + d[1];
+
+                if(i_ >= 0 && i_ < n && j_ >= 0 && j_ < m) {
+                    int wait = Math.max(0, move[i_][j_]- time);
+                    int fin = time + wait + 1;
+
+                    if(res[i_][j_] > fin) {
+                        res[i_][j_] = fin;
+                        pq.offer(new int[]{fin, i_, j_});
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+}
