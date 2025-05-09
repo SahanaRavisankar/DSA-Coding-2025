@@ -1,0 +1,146 @@
+// approach 1
+class Solution {
+    int n;
+    int sum;
+    int mod = (int) 1e9 + 7;
+    long totalperm = 0;
+    
+    public int countBalancedPermutations(String num) {
+        sum = 0;
+        n = num.length();
+        int[] freq = new int[10];
+        for(char c : num.toCharArray()) {
+            sum += c - '0';
+            freq[c - '0']++;
+        }
+
+        if(sum % 2 == 1) return 0;
+
+        long[] fact = new long[n + 1];
+        long[] fermat = new long[n + 1];
+        fact[0] = 1;
+        for(int i = 1; i <= n; i++) {
+            fact[i] = (fact[i - 1] * i) % mod;
+        }
+
+        for(int i = 0; i <= n; i++) {
+            fermat[i] = power(fact[i], mod - 2) % mod;
+        }
+
+        totalperm = (fact[(n + 1) / 2] * fact[n / 2]) % mod;
+
+        int digit = 0;
+        int evendigitcount = 0;
+        int currsum = 0;
+
+        return (int) solve(digit, evendigitcount, currsum, freq, fermat) % mod;
+    }
+
+    long solve(int digit, int evendigitcount, int currsum, int[] freq, long[] fermat) {
+        if(digit == 10) {
+            if(evendigitcount == (n + 1)/ 2 && currsum == sum / 2) {
+                return totalperm;
+            }
+            return 0;
+        }
+
+        long ways = 0;
+        for(int count = 0; count <= Math.min(freq[digit], (n + 1) / 2 - evendigitcount); count++) {
+            int evenpos = count;
+            int oddpos = freq[digit] - count;
+            long div = (fermat[evenpos] * fermat[oddpos]) % mod;
+
+            long val = solve(digit + 1, evendigitcount + evenpos, currsum + digit * count, freq, fermat);
+
+            ways = (ways + (div * val) % mod) % mod;
+        }
+
+        return ways % mod;
+    }
+
+    long power(long a, long b) {
+        if(b == 0) return 1;
+        long half = power(a, b / 2);
+        long res = (half * half) % mod;
+        if(b % 2 == 1) res = (res * a) % mod;
+        return res;
+    }
+}
+
+
+// approach 2
+class Solution {
+    int n;
+    int sum;
+    int mod = (int) 1e9 + 7;
+    long totalperm = 0;
+    
+    public int countBalancedPermutations(String num) {
+        sum = 0;
+        n = num.length();
+        int[] freq = new int[10];
+        for(char c : num.toCharArray()) {
+            sum += c - '0';
+            freq[c - '0']++;
+        }
+
+        if(sum % 2 == 1) return 0;
+
+        long[] fact = new long[n + 1];
+        long[] fermat = new long[n + 1];
+        fact[0] = 1;
+        for(int i = 1; i <= n; i++) {
+            fact[i] = (fact[i - 1] * i) % mod;
+        }
+
+        for(int i = 0; i <= n; i++) {
+            fermat[i] = power(fact[i], mod - 2) % mod;
+        }
+
+        totalperm = (fact[(n + 1) / 2] * fact[n / 2]) % mod;
+
+        int digit = 0;
+        int evendigitcount = 0;
+        int currsum = 0;
+
+        int[][][] dp = new int[10][((n + 1) / 2) + 1][sum + 1];
+        for(int[][] t1 : dp)
+            for(int[] t : t1)
+                Arrays.fill(t, -1);
+
+        return (int) solve(digit, evendigitcount, currsum, freq, fermat, dp) % mod;
+    }
+
+    long solve(int digit, int evendigitcount, int currsum, int[] freq, long[] fermat, int[][][] dp) {
+        if(digit == 10) {
+            if(evendigitcount == (n + 1)/ 2 && currsum == sum / 2) {
+                return totalperm;
+            }
+            return 0;
+        }
+
+        if(dp[digit][evendigitcount][currsum] != -1)
+            return dp[digit][evendigitcount][currsum];
+
+        long ways = 0;
+        for(int count = 0; count <= Math.min(freq[digit], (n + 1) / 2 - evendigitcount); count++) {
+            int evenpos = count;
+            int oddpos = freq[digit] - count;
+            long div = (fermat[evenpos] * fermat[oddpos]) % mod;
+
+            long val = solve(digit + 1, evendigitcount + evenpos, currsum + digit * count, freq, fermat, dp);
+
+            ways = (ways + (div * val) % mod) % mod;
+        }
+
+        return dp[digit][evendigitcount][currsum] = (int) ways;
+    }
+
+    long power(long a, long b) {
+        if(b == 0) return 1;
+        long half = power(a, b / 2);
+        long res = (half * half) % mod;
+        if(b % 2 == 1) res = (res * a) % mod;
+        return res;
+    }
+}
