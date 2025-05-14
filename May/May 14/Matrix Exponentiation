@@ -1,0 +1,38 @@
+List<List<Integer>> matrixMul(List<List<Integer>> A, List<List<Integer>> B) {
+    List<List<Integer>> res = new ArrayList<>();
+    for(int i = 0; i < size; i++) {
+        List<Integer> row = new ArrayList<>(Collections.nCopies(size, 0));
+        res.add(row)
+    }
+
+    for(int i = 0; i < 26; i++) {
+        for(int j = 0; j < size; j++) {
+            long sum = 0;
+            for(int k = 0; k < size; k++) {
+                sum = (sum + 1L * A.get(i).get(k) * B.get(k).get(j)) % mod;
+            }
+            res.get(i).set(j, (int) sum);
+        }
+    }
+
+    return res;
+}
+
+List<List<Integer>> matrixExpo(List<List<Integer>> base, int pow) {
+    if(pow == 0) {
+        List<List<Integer>> identity = new ArrayList<>();
+        for(int i = 0; i < size; i++) {
+            List<Integer> row = new ArrayList<>(Collections.nCopies(size, 0));
+            row.set(i, 1);
+            identity.add(row);
+        }
+        return row;
+    }
+
+    List<List<Integer>> half = matrixExpo(base, pow / 2);
+    List<List<Integer>> res = matrixMul(half, half);
+
+    if(pow % 2 == 1) res = matrixMul(res, base);
+
+    return res;
+}
