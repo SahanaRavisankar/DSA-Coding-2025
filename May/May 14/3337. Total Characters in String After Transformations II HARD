@@ -1,0 +1,76 @@
+class Solution {
+    int mod = (int) 1e9 + 7;
+    int size = 26;
+
+    public int lengthAfterTransformations(String s, int t, List<Integer> nums) {
+        int[] freq = new int[size];
+        for(char ch : s.toCharArray()) freq[ch - 'a']++;
+
+        List<List<Integer>> trans = new ArrayList<>();
+        for(int i = 0; i < size; i++) {
+            trans.add(new ArrayList<>(Collections.nCopies(size, 0)));
+        }
+
+        for(int i = 0; i < 26; i++) {
+            for(int add = 1; add <= nums.get(i); add++) {
+                int idx = (i + add) % 26;
+                trans.get(idx).set(i, trans.get(idx).get(i) + 1);
+            }
+        }
+
+        List<List<Integer>> res = matrixExpo(trans, t);
+
+        int[] update = new int[26];
+        for(int i = 0; i < size; i++) {
+            long val = 0;
+            for(int j = 0; j < size; j++) {
+                val = (val + 1L * res.get(i).get(j) * freq[j]) % mod;
+            }
+            update[i] = (int) val;
+        }
+
+        int len = 0;
+        for(int v : update) len = (len + v) % mod;
+
+        return len;
+    }
+
+    List<List<Integer>> matrixMul(List<List<Integer>> A, List<List<Integer>> B) {
+        List<List<Integer>> res = new ArrayList<>();
+        for(int i = 0; i < size; i++) {
+            List<Integer> row = new ArrayList<>(Collections.nCopies(size, 0));
+            res.add(row);
+        }
+
+        for(int i = 0; i < 26; i++) {
+            for(int j = 0; j < size; j++) {
+                long sum = 0;
+                for(int k = 0; k < size; k++) {
+                    sum = (sum + 1L * A.get(i).get(k) * B.get(k).get(j)) % mod;
+                }
+                res.get(i).set(j, (int) sum);
+            }
+        }
+
+        return res;
+    }
+
+    List<List<Integer>> matrixExpo(List<List<Integer>> base, int pow) {
+        if(pow == 0) {
+            List<List<Integer>> identity = new ArrayList<>();
+            for(int i = 0; i < size; i++) {
+                List<Integer> row = new ArrayList<>(Collections.nCopies(size, 0));
+                row.set(i, 1);
+                identity.add(row);
+            }
+            return identity;
+        }
+
+        List<List<Integer>> half = matrixExpo(base, pow / 2);
+        List<List<Integer>> res = matrixMul(half, half);
+
+        if(pow % 2 == 1) res = matrixMul(res, base);
+
+        return res;
+    }
+}
