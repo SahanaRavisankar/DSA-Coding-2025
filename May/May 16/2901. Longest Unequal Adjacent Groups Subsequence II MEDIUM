@@ -1,0 +1,53 @@
+class Solution {
+    public List<String> getWordsInLongestSubsequence(String[] words, int[] groups) {
+        List<String> res = new ArrayList<>();
+        int maxlis = 0;
+        int lisidx = 0;
+        int n = words.length;
+
+        int[] dp = new int[n];
+        int[] previdx = new int[n];
+        Arrays.fill(dp, 1);
+        Arrays.fill(previdx, -1);
+
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < i; j++) {
+                if(groups[i] != groups[j] && hamming(words[i], words[j])) {
+                    if(dp[i] < dp[j] + 1) {
+                        dp[i] = dp[j] + 1;
+                        previdx[i] = j;
+                    }
+
+                    if(maxlis < dp[i]) {
+                        maxlis = dp[i];
+                        lisidx = i;
+                    }
+                }
+            }
+        }
+
+        while(lisidx != -1) {
+            res.add(words[lisidx]);
+            lisidx = previdx[lisidx];
+        }
+
+        Collections.reverse(res);
+        return res;
+    }
+
+    boolean hamming(String s1, String s2) {
+        if(s1.length() != s2.length())
+            return false;
+        
+        int freq = 0;
+        for(int i = 0; i < s1.length(); i++) {
+            if(s1.charAt(i) != s2.charAt(i))
+                freq++;
+
+            if(freq > 1)
+                return false;
+        }
+
+        return freq == 1;
+    }
+}
