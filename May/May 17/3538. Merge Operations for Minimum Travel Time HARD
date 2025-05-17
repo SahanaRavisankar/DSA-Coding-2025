@@ -1,0 +1,109 @@
+// approach 1 recursion without memoization
+class Solution {
+    int n;
+    int max = Integer.MAX_VALUE;
+
+    public int minTravelTime(int l, int size, int k, int[] position, int[] time) {
+        n = size;
+        return solve(0, k, position, time, time[0]);
+    }
+
+    int solve(int i, int k, int[] pos, int[] time, int currtime) {
+        // base case
+        if(i == n - 1) {
+            if(k > 0)
+                return max;
+            return 0;
+        }
+
+        int res = max;
+        
+        int skip = solve(i + 1, k, pos, time, time[i + 1]);
+        if(skip != max) {
+            int dist = pos[i + 1] - pos[i];
+            int t = dist * currtime;
+            res = Math.min(res, t + skip); // skip calculates from i + 1 to l and t is for i to i + 1
+        }
+
+        if(k > 0) {
+            int mergetime = time[i + 1];
+            int mergecnt = 0;
+
+            for(int j = i + 2; j < n && mergecnt < k; j++) {
+                mergecnt++;
+                mergetime += time[j]; // cummalative sum
+                int take = solve(j, k - mergecnt, pos, time, mergetime);
+
+                if(take != max) {
+                    int dist = pos[j] - pos[i];
+                    int t = dist * currtime; // calculating till we are wherever
+                    res = Math.min(res, t + take);
+                }
+            }
+        }
+
+        return res;
+    }
+}
+
+
+// approach 2 memoize
+class Solution {
+    int n;
+    int max = Integer.MAX_VALUE;
+
+    public int minTravelTime(int l, int size, int k, int[] position, int[] time) {
+        n = size;
+
+        int currtime = 0;
+        for(int t : time)
+            currtime += t;
+
+        int[][][] dp = new int[n][k + 1][currtime];
+        for(int[][] t1 : dp)
+            for(int[] t2 : t1)
+                Arrays.fill(t2, -1);
+        
+        return solve(0, k, position, time, time[0], dp);
+    }
+
+    int solve(int i, int k, int[] pos, int[] time, int currtime, int[][][] dp) {
+        // base case
+        if(i == n - 1) {
+            if(k > 0)
+                return max;
+            return 0;
+        }
+
+        if(dp[i][k][currtime] != -1)
+            return dp[i][k][currtime];
+
+        int res = max;
+        
+        int skip = solve(i + 1, k, pos, time, time[i + 1], dp);
+        if(skip != max) {
+            int dist = pos[i + 1] - pos[i];
+            int t = dist * currtime;
+            res = Math.min(res, t + skip); // skip calculates from i + 1 to l and t is for i to i + 1
+        }
+
+        if(k > 0) {
+            int mergetime = time[i + 1];
+            int mergecnt = 0;
+
+            for(int j = i + 2; j < n && mergecnt < k; j++) {
+                mergecnt++;
+                mergetime += time[j]; // cummalative sum
+                int take = solve(j, k - mergecnt, pos, time, mergetime, dp);
+
+                if(take != max) {
+                    int dist = pos[j] - pos[i];
+                    int t = dist * currtime; // calculating till we are wherever
+                    res = Math.min(res, t + take);
+                }
+            }
+        }
+
+        return dp[i][k][currtime] = res;
+    }
+}
