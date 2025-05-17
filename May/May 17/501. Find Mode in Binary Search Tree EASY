@@ -1,0 +1,66 @@
+// approach 1
+class Solution {
+    public int[] findMode(TreeNode root) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int[] maxcnt = {0};
+        solve(root, map, maxcnt);
+
+        ArrayList<Integer> list = new ArrayList<>();
+        for(Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            if(entry.getValue() == maxcnt[0]) {
+                list.add(entry.getKey());
+            }
+        }
+
+        return list.stream().mapToInt(i -> i).toArray();
+    }
+
+    void solve(TreeNode root, Map<Integer, Integer> map, int[] maxcnt) {
+        if(root == null)
+            return;
+
+        map.put(root.val, map.getOrDefault(root.val, 0) + 1);
+        maxcnt[0] = Math.max(map.get(root.val), maxcnt[0]);
+
+        solve(root.left, map, maxcnt);
+        solve(root.right, map, maxcnt);
+    }
+}
+
+
+// approach 2
+class Solution {
+    int currnum = 0, currfreq = 0, maxfreq = 0;
+    ArrayList<Integer> list = new ArrayList<>();
+    
+    public int[] findMode(TreeNode root) {
+        solve(root);
+
+        return list.stream().mapToInt(i -> i).toArray();
+    }
+
+    void solve(TreeNode root) {
+        if(root == null)
+            return;
+
+        solve(root.left);
+
+        if(root.val == currnum) {
+            currfreq++;
+        } else {
+            currnum = root.val;
+            currfreq = 1;
+        }
+
+        if(maxfreq < currfreq) {
+            list.clear();
+            maxfreq = currfreq;
+        }
+
+        if(currfreq == maxfreq) {
+            list.add(currnum);
+        }
+
+        solve(root.right);
+    }
+}
