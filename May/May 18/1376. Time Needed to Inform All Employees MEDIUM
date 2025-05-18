@@ -1,0 +1,61 @@
+// approach 1
+class Solution {
+    public int numOfMinutes(int n, int head, int[] manager, int[] inf) {
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+
+        for(int i = 0; i < n; i++) {
+            int emp = i;
+            int mng = manager[i];
+            if(mng != -1) {
+                adj.computeIfAbsent(mng, k -> new ArrayList<Integer>()).add(emp);
+            }
+        }
+
+        int[] max = {-1};
+        dfs(adj, inf, head, 0, max);
+        return max[0];
+    }
+
+    void dfs(Map<Integer, List<Integer>> adj, int[] inf, int curremp, int currtime, int[] max) {
+        max[0] = Math.max(max[0], currtime);
+        for(int emp : adj.getOrDefault(curremp, new ArrayList<Integer>())) {
+            dfs(adj, inf, emp, inf[curremp] + currtime, max);
+        }
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int numOfMinutes(int n, int head, int[] manager, int[] inf) {
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+
+        for(int i = 0; i < n; i++) {
+            int emp = i;
+            int mng = manager[i];
+            if(mng != -1) {
+                adj.computeIfAbsent(mng, k -> new ArrayList<Integer>()).add(emp);
+            }
+        }
+
+        int[] max = {-1};
+        bfs(adj, inf, head, max);
+        return max[0];
+    }
+
+    void bfs(Map<Integer, List<Integer>> adj, int[] inf, int curremp, int[] max) {
+        Queue<int[]> que = new LinkedList<>();
+        que.offer(new int[]{curremp, 0});
+
+        while(!que.isEmpty()) {
+            int emp = que.peek()[0];
+            int time = que.peek()[1];
+            que.poll();
+            max[0] = Math.max(max[0], time);
+
+            for(int nbr : adj.getOrDefault(emp, new ArrayList<>())) {
+                que.offer(new int[]{nbr, time + inf[emp]});
+            }
+        }
+    }
+}
