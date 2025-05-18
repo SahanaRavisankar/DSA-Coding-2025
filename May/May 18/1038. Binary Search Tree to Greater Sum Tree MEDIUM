@@ -1,0 +1,60 @@
+// approach 1
+class Solution {
+    int idx = 0;
+    public TreeNode bstToGst(TreeNode root) {
+        List<Integer> prev = new ArrayList<>();
+        inorder(root, prev);
+        int n = prev.size();
+
+        for(int i = n - 2; i >= 0; i--) {
+            prev.set(i, prev.get(i + 1) + prev.get(i));
+        }
+
+        solve(root, prev);
+        return root;
+    }
+
+    void solve(TreeNode root, List<Integer> prev) {
+        if(root == null)
+            return;
+
+        solve(root.left, prev);
+        root.val = prev.get(idx++);
+        solve(root.right, prev);
+    }
+
+    void inorder(TreeNode root, List<Integer> prev) {
+        if(root == null)
+            return;
+
+        inorder(root.left, prev);
+        prev.add(root.val);
+        inorder(root.right, prev);
+    }
+}
+
+
+// approach 2
+class Solution {
+    public TreeNode bstToGst(TreeNode root) {
+        int[] prev = {-1};
+        solve(root, prev);
+        return root;
+    }
+
+    void solve(TreeNode root, int[] prev) {
+        if(root == null)
+            return;
+
+        solve(root.right, prev);
+
+        if(prev[0] == -1)
+            prev[0] = root.val;
+        else
+            prev[0] += root.val;
+        
+        root.val = prev[0];
+
+        solve(root.left, prev);
+    }
+}
