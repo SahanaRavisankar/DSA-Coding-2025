@@ -1,3 +1,5 @@
+NOTE - 1411. Number of Ways to Paint N × 3 Grid Solved with same code. Make col as 3 as the row and continue
+
 // approach 1 recursion
 class Solution {
     int mod = (int) 1e9 + 7;
