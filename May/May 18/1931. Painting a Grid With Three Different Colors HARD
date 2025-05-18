@@ -1,0 +1,130 @@
+// approach 1 recursion
+class Solution {
+    int mod = (int) 1e9 + 7;
+    int m, n;
+    List<String> colstate = new ArrayList<>();
+
+    public int colorTheGrid(int M, int N) {
+        m = M;
+        n = N;
+        generate("", 0, '0');
+
+        int res = 0;
+        for(int i = 0; i < colstate.size(); i++) {
+            res = (res + solve(i, n - 1)) % mod;
+        }
+
+        return res;
+    }
+
+    int solve(int previdx, int remcol) {
+        if(remcol == 0)
+            return 1;
+        
+        String prevstate = colstate.get(previdx);
+        int ways = 0;
+
+        for(int i = 0; i < colstate.size(); i++) {
+            if(i == previdx)
+                continue;
+
+            String curr = colstate.get(i);
+            boolean valid = true;
+
+            for(int j = 0; j < m; j++) {
+                if(prevstate.charAt(j) == curr.charAt(j)) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if(valid)
+                ways = (ways + solve(i, remcol - 1)) % mod;
+        }
+
+        return ways;
+    }
+
+    void generate(String curr, int l, char prev) {
+        if(l == m) {
+            colstate.add(curr);
+            return;
+        }
+
+        for(char ch : new char[]{'r', 'g', 'b'}) {
+            if(ch == prev) {
+                continue;
+            }
+            generate(curr + ch, l + 1, ch);
+        }
+    }
+}
+
+
+// approach 2 memoize
+class Solution {
+    int mod = (int) 1e9 + 7;
+    int m, n;
+    List<String> colstate = new ArrayList<>();
+
+    public int colorTheGrid(int M, int N) {
+        m = M;
+        n = N;
+        generate("", 0, '0');
+        int[][] dp = new int[n + 1][colstate.size() + 1];
+        for(int[] t : dp)
+            Arrays.fill(t, -1);
+
+        int res = 0;
+        for(int i = 0; i < colstate.size(); i++) {
+            res = (res + solve(i, n - 1, dp)) % mod;
+        }
+
+        return res;
+    }
+
+    int solve(int previdx, int remcol, int[][] dp) {
+        if(remcol == 0)
+            return 1;
+        
+        if(dp[remcol][previdx] != -1)
+            return dp[remcol][previdx];
+
+        String prevstate = colstate.get(previdx);
+        int ways = 0;
+
+        for(int i = 0; i < colstate.size(); i++) {
+            if(i == previdx)
+                continue;
+
+            String curr = colstate.get(i);
+            boolean valid = true;
+
+            for(int j = 0; j < m; j++) {
+                if(prevstate.charAt(j) == curr.charAt(j)) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if(valid)
+                ways = (ways + solve(i, remcol - 1, dp)) % mod;
+        }
+
+        return dp[remcol][previdx] = ways;
+    }
+
+    void generate(String curr, int l, char prev) {
+        if(l == m) {
+            colstate.add(curr);
+            return;
+        }
+
+        for(char ch : new char[]{'r', 'g', 'b'}) {
+            if(ch == prev) {
+                continue;
+            }
+            generate(curr + ch, l + 1, ch);
+        }
+    }
+}
