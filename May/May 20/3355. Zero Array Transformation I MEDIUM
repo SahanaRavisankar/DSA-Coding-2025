@@ -1,0 +1,61 @@
+// approach 1
+class Solution {
+    public boolean isZeroArray(int[] nums, int[][] queries) {
+        int n = nums.length;
+        int count = 0;
+        boolean[] vis = new boolean[n];
+        Arrays.fill(vis, false);
+
+        for(int[] q : queries) {
+            int st = q[0];
+            int end = q[1];
+
+            for(int i = st; i <= end; i++) {
+                if(!vis[i]) {
+                    if(nums[i] == 0) {
+                        vis[i] = true;
+                        count++;
+                    } else if(nums[i] == 1) {
+                        vis[i] = true;
+                        count++;
+                    } else {
+                        nums[i]--;
+                    }
+                }
+            }
+        }
+
+        return count == n;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public boolean isZeroArray(int[] nums, int[][] queries) {
+        int n = nums.length;
+        int[] diff = new int[n];
+        Arrays.fill(diff, 0);
+
+        for(int[] query : queries) {
+            int start = query[0];
+            int end = query[1];
+
+            diff[start] += 1;
+            if(end + 1 < n)
+                diff[end + 1] -= 1;
+        }
+
+        if(diff[0] < nums[0])
+            return false;
+
+
+        for(int i = 1; i < n; i++) {
+            diff[i] += diff[i - 1];
+            if(diff[i] < nums[i])
+                return false;
+        }
+
+        return true;
+    }
+}
