@@ -1,0 +1,78 @@
+class Solution {
+    boolean reach = false;
+    public int minMutation(String start, String end, String[] bank) {
+        int res = 0;
+        Queue<String> que = new LinkedList<>();
+        Set<String> set = new HashSet<>();
+        Set<String> vis = new HashSet<>();
+
+        for(String str : bank)
+            set.add(str);
+
+        if(!set.contains(end))
+            return -1;
+            
+        que.offer(start);
+        vis.add(start);
+        int level = 0;
+
+        boolean[] check = new boolean[4];
+        Arrays.fill(check, false);
+        char[] charcheck = {'A', 'C', 'G', 'T'};
+
+        for(String str : bank) {
+            for(char ch : str.toCharArray()) {
+                if(ch == 'A')
+                    check[0] = true;
+                else if(ch == 'C')
+                    check[1] = true;
+                else if(ch == 'G')
+                    check[2] = true;
+                else
+                    check[3] = true;
+            }
+        }
+
+        while(!que.isEmpty()) {
+            level++;
+            int n = que.size();
+
+            for(int j = 0; j < n; j++) {
+                String qpoll = que.poll();
+                char[] q = qpoll.toCharArray();
+                for(int i = 0; i < 4; i++) {
+                    if(check[i]) {
+                        solve(que, q, qpoll, charcheck[i], end, vis, set);
+                        if(reach)
+                            return level;
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    void solve(Queue<String> que, char[] q, String qpoll, char ch, String end, Set<String> vis, Set<String> set) {
+        for(int i = 0; i < q.length; i++) {
+
+            if(q[i] == ch) continue;
+
+            char temp = q[i];
+            q[i] = ch;
+            String qstr = new String(q);
+            
+            if(end.equals(qstr)) {
+                reach = true;
+                break;
+            }
+
+            if(set.contains(qstr) && !vis.contains(qstr)) {
+                vis.add(qstr);
+                que.offer(qstr);
+            }
+
+            q[i] = temp;
+        }
+    }
+}
