@@ -1,0 +1,39 @@
+// approach 1
+class Solution {
+    public int differenceOfSums(int n, int m) {
+        int res = 0;
+        for (int i = 1; i <= n; i++) {
+            if (i % m == 0)
+                res -= i;
+            else
+                res += i;
+        }
+
+        return res;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int differenceOfSums(int n, int m) {
+        long totalSum = n * (n + 1) / 2;
+        long mSum = 0;
+        for (int i = m; i <= n; i += m) {
+            mSum += i;
+        }
+
+        return (int) (totalSum - (2 * mSum));
+    }
+}
+
+
+// approach 3
+class Solution {
+    public int differenceOfSums(int n, int m) {
+        long totalSum = n * (n + 1) / 2;
+        int k = n / m;
+        long mSum = m * k * (k + 1) / 2;
+        return (int) (totalSum - (2 * mSum));
+    }
+}
