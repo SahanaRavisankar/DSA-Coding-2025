@@ -1,0 +1,63 @@
+// approach 1
+class Solution {
+    public int[] maxTargetNodes(int[][] edges1, int[][] edges2, int k) {
+        int n = edges1.length + 1;
+        int[] res = new int[n];
+        int max = 0;
+
+        Map<Integer, List<Integer>> adj1 = new HashMap<>();
+        for(int[] ed : edges1) {
+            int u = ed[0];
+            int v = ed[1];
+            adj1.computeIfAbsent(u, x -> new ArrayList<Integer>()).add(v);
+            adj1.computeIfAbsent(v, x -> new ArrayList<Integer>()).add(u);
+        }
+        
+        Map<Integer, List<Integer>> adj2 = new HashMap<>();
+        for(int[] ed : edges2) {
+            int u = ed[0];
+            int v = ed[1];
+            adj2.computeIfAbsent(u, x -> new ArrayList<Integer>()).add(v);
+            adj2.computeIfAbsent(v, x -> new ArrayList<Integer>()).add(u);
+        }
+
+        int m = edges2.length + 1;
+        for(int i = 0; i < m; i++) {
+            max = Math.max(max, bfs(i, adj2, k - 1, m));
+        }
+
+        Arrays.fill(res, max);
+        for(int i = 0; i < n; i++) {
+            res[i] += bfs(i, adj1, k, n);
+        }
+
+        return res;
+    }
+
+    int bfs(int u, Map<Integer, List<Integer>> adj, int d, int n) {
+        Queue<int[]> que = new LinkedList<>();
+        que.offer(new int[]{u, 0});
+        boolean[] vis = new boolean[n];
+        Arrays.fill(vis, false);
+        vis[u] = true;
+        int cnt = 0;
+
+        while(!que.isEmpty()) {
+            int curr = que.peek()[0];
+            int dist = que.peek()[1];
+            que.poll();
+            
+            if(dist > d)
+                continue;
+            cnt++;
+            for(int v : adj.getOrDefault(curr, new ArrayList<Integer>())){
+                if(!vis[v]){
+                    vis[v] = true;
+                    que.offer(new int[]{v, dist + 1});
+                }
+            }
+        }
+
+        return cnt;
+    }
+}
