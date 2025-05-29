@@ -1,0 +1,55 @@
+class Solution {
+    public int[] maxTargetNodes(int[][] edges1, int[][] edges2) {
+        int n = edges1.length + 1;
+        int m = edges2.length + 1;
+
+        int[] marka = new int[n];
+        Arrays.fill(marka, -1);
+        marka[0] = 0;
+        int[] counta = new int[2];
+
+        int[] markb = new int[m];
+        Arrays.fill(markb, -1);
+        markb[0] = 0;
+        int[] countb = new int[2];
+
+        Map<Integer, List<Integer>> adja = adjMake(edges1);
+        Map<Integer, List<Integer>> adjb = adjMake(edges2);
+
+        dfs(0, adja, -1, marka, counta);
+        dfs(0, adjb, -1, markb, countb);
+
+        int[] res = new int [n];
+        int max = Math.max(countb[0], countb[1]);
+
+        for(int i = 0; i < n; i++){
+            if(marka[i] == 0) res[i] = max + counta[0];
+            else res[i] = max + counta[1];
+        }
+
+        return res;
+    }
+
+    void dfs(int u, Map<Integer, List<Integer>> adj, int par, int[] mark, int[] cnt) {
+        if(mark[u] == 0) cnt[0]++;
+        else cnt[1]++;
+
+        for(int v : adj.getOrDefault(u, new ArrayList<Integer>())){
+            if(v != par){
+                mark[v] = (mark[u] == 0) ? 1 : 0;
+                dfs(v, adj, u, mark, cnt);
+            }
+        }
+    }
+
+    Map<Integer, List<Integer>> adjMake(int[][] edges) {
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+        for(int[] ed : edges) {
+            int u = ed[0];
+            int v = ed[1];
+            adj.computeIfAbsent(u, k -> new ArrayList<Integer>()).add(v);
+            adj.computeIfAbsent(v, k -> new ArrayList<Integer>()).add(u);
+        }
+        return adj;
+    }
+}
