@@ -1,0 +1,47 @@
+class Solution {
+    public int snakesAndLadders(int[][] board) {
+        int n = board.length;
+        Queue<Integer> que = new LinkedList<>();
+        boolean[][] vis = new boolean[n][n];
+        que.offer(1);
+        int steps = 0;
+        vis[n - 1][0] = true;
+
+        while(!que.isEmpty()) {
+            int size = que.size();
+            while(size-- > 0) {
+                int u = que.poll();
+                if(u == n * n)
+                    return steps;
+                
+                for(int k = 1; k <= 6; k++) {
+                    if(u + k > n * n)
+                        break;
+                    int[] co_ord = getCo_ord(u + k, n);
+                    int r = co_ord[0];
+                    int c = co_ord[1];
+                    if(vis[r][c])
+                        continue;
+                    vis[r][c] = true;
+                    if(board[r][c] == -1){
+                        que.offer(u + k);
+                    } else {
+                        que.offer(board[r][c]);
+                    }
+                }
+            }
+            steps++;
+        }
+
+        return -1;
+    }
+
+    int[] getCo_ord(int num, int n){
+        int rt = (num - 1) / n;
+        int rb = n - 1 - rt;
+        int col = (num - 1) % n;
+        if(n % 2 == rb % 2)
+            col = n - 1 - col;
+        return new int[] {rb, col};
+    }
+}
