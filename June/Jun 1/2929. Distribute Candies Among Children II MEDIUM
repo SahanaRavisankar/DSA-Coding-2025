@@ -59,7 +59,7 @@ class Solution {
 }
 
 
-// approach 4
+// approach 4 min max approach
 class Solution {
     public long distributeCandies(int n, int limit) {
         long ways = 0;
