@@ -1,0 +1,82 @@
+// approach 1
+class Solution {
+    public int maxCandies(int[] status, int[] candies, int[][] keys, int[][] containedBoxes, int[] initialBoxes) {
+        int n = status.length;
+        boolean[] vis = new boolean[n];
+        int candy = 0;
+        Set<Integer> foundbox = new HashSet<>();
+        for(int box : initialBoxes) {
+            candy += dfs(status, candies, keys, containedBoxes, box, vis, foundbox);
+        }
+        return candy;
+    }
+
+    int dfs(int[] status, int[] candies, int[][] keys, int[][] containedBoxes, int box, boolean[] vis, Set<Integer> foundbox) {
+        if(vis[box])
+            return 0;
+        if(status[box] == 0) {
+            foundbox.add(box);
+            return 0;
+        }
+        
+        vis[box] = true;
+        int candy = candies[box];
+
+        for(int inbox : containedBoxes[box]){
+            candy += dfs(status, candies, keys, containedBoxes, inbox, vis, foundbox);
+        }
+
+        for(int boxkey : keys[box]) {
+            status[boxkey] = 1;
+            if(foundbox.contains(boxkey)) {
+                candy += dfs(status, candies, keys, containedBoxes, boxkey, vis, foundbox);
+            }
+        }
+
+        return candy;
+    }
+}
+
+
+// aproach 2
+class Solution {
+    public int maxCandies(int[] status, int[] candies, int[][] keys, int[][] containedBoxes, int[] initialBoxes) {
+        int n = status.length;
+        boolean[] vis = new boolean[n];
+        int candy = 0;
+        Set<Integer> found = new HashSet<>();
+        
+        Queue<Integer> que = new LinkedList<>();
+        for(int box : initialBoxes) {
+            found.add(box);
+            if(status[box] == 1) {
+                que.offer(box);
+                vis[box] = true;
+                candy += candies[box];
+            }
+        }
+
+        while(!que.isEmpty()) {
+            int box = que.poll();
+            for(int inbox : containedBoxes[box]){
+                found.add(inbox);
+                if(status[inbox] == 1 && !vis[inbox]){
+                    que.offer(inbox);
+                    vis[inbox] = true;
+                    candy += candies[inbox];
+                }
+            }
+
+            for(int bkey : keys[box]){
+                status[bkey] = 1;
+                if(found.contains(bkey) && !vis[bkey]){
+                    que.offer(bkey);
+                    vis[bkey] = true;
+                    candy += candies[bkey];
+                }
+            }
+        }
+
+        return candy;
+    }
+}
