@@ -1,0 +1,51 @@
+// approach 1
+class Solution {
+    public String answerString(String word, int numFriend) {
+        if(numFriend == 1)
+            return word;
+
+        String res = "";
+        int n = word.length();
+        int longPos = n - (numFriend - 1);
+
+        for(int i = 0; i < n; i++) {
+            int cantakelen = Math.min(longPos, n - i);
+            String temp = word.substring(i, i + cantakelen);
+            if(temp.compareTo(res) > 0)
+                res = temp;
+        }
+
+        return res;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public String answerString(String word, int numFriend) {
+        if(numFriend == 1)
+            return word;
+
+        int n = word.length();
+        int i = 0, j = 1;
+
+        while(j < n){
+            int k = 0;
+            while(k + j < n && word.charAt(i + k) == word.charAt(j + k)){
+                k++;
+            }
+
+            if(k + j < n && word.charAt(i + k) < word.charAt(j + k)){
+                i = j;
+                j++;
+            } else {
+                j = j + k + 1;
+            }
+        }
+
+        int longpos = n - (numFriend - 1);
+        int cantake = Math.min(n - i, longpos);
+
+        return word.substring(i, i + cantake);
+    }
+}
