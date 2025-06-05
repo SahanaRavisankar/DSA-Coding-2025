@@ -1,0 +1,37 @@
+class Solution {
+    public String smallestEquivalentString(String s1, String s2, String baseStr) {
+        int n = s1.length();
+        int m = baseStr.length();
+        Map<Character, List<Character>> adj = new HashMap<>();
+
+        for(int i = 0; i < n; i++) {
+            char u = s1.charAt(i);
+            char v = s2.charAt(i);
+            adj.computeIfAbsent(u, k -> new ArrayList<Character>()).add(v);
+            adj.computeIfAbsent(v, k -> new ArrayList<Character>()).add(u);
+        }
+
+        String res = "";
+        for(int i = 0; i < m; i++){
+            char ch = baseStr.charAt(i);
+            boolean[] vis = new boolean[26];
+            char minchar = dfs(adj, ch, vis);
+            res += minchar;
+        }
+
+        return res;
+    }
+
+    char dfs(Map<Character, List<Character>> adj, char current_char, boolean[] visited) {
+        visited[current_char - 'a'] = true;
+        char minchar = current_char;
+
+        for(char v : adj.getOrDefault(current_char, new ArrayList<Character>())) {
+            if(!visited[v - 'a']){
+                minchar = (char) Math.min((int) minchar, (int) dfs(adj, v, visited));
+            }
+        }
+
+        return minchar;
+    }
+}
