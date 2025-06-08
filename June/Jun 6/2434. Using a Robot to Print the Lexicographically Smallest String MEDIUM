@@ -1,0 +1,31 @@
+class Solution {
+    public String robotWithString(String s) {
+        int n = s.length();
+        char[] minchar = new char[n];
+        minchar[n - 1] = s.charAt(n - 1);
+
+        for(int i = n - 2; i >= 0; i--) {
+            minchar[i] = (char) Math.min((int) minchar[i + 1], (int) s.charAt(i));
+        }
+
+        StringBuilder t = new StringBuilder();
+        StringBuilder paper = new StringBuilder();
+        int i = 0;
+
+        while(i < n) {
+            t.append(s.charAt(i));
+            char min = (i + 1 < n) ? minchar[i + 1] : s.charAt(i);
+            
+            while(t.length() > 0 && t.charAt(t.length() - 1) <= min){
+                paper.append(t.charAt(t.length() - 1));
+                t.deleteCharAt(t.length() - 1);
+            }
+            
+            i++;
+        }
+
+        paper.append(t.reverse());
+
+        return paper.toString();
+    }
+}
