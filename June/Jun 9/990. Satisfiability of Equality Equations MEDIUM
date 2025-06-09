@@ -1,0 +1,48 @@
+class Solution {
+    public boolean equationsPossible(String[] equations) {
+        int[] rank = new int[26];
+        Arrays.fill(rank, 0);
+        int[] parent = new int[26];
+        for(int i = 0; i < 26; i++)
+            parent[i] = i;
+        
+        for(String eqn : equations) {
+            if(eqn.charAt(1) == '=') {
+                union(eqn.charAt(0) - 'a', eqn.charAt(3) - 'a', parent, rank);
+            }
+        }
+        
+        for(String eqn : equations) {
+            if(eqn.charAt(1) == '!') {
+                int par1 = find(parent, eqn.charAt(0) - 'a');
+                int par2 = find(parent, eqn.charAt(3) - 'a');
+                if(par1 == par2)
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    int find(int[] parent, int x) {
+        if(x == parent[x])
+            return x;
+        return find(parent, parent[x]);
+    }
+
+    void union(int x, int y, int[] parent, int[] rank) {
+        int xpar = find(parent, x);
+        int ypar = find(parent, y);
+        
+        if(xpar == ypar)
+            return;
+        if(rank[xpar] > rank[ypar]) {
+            parent[ypar] = xpar;
+        } else if(rank[xpar] < rank[ypar]) {
+            parent[xpar] = ypar;
+        } else {
+            parent[ypar] = xpar;
+            rank[xpar]++;
+        }
+    }
+}
