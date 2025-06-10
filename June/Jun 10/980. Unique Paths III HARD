@@ -1,0 +1,39 @@
+class Solution {
+    int[][] direction = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    public int uniquePathsIII(int[][] grid) {
+        int x = -1, y = -1, numob = 0;
+        int m = grid.length;
+        int n = grid[0].length;
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                if(grid[i][j] == 1){
+                    x = i;
+                    y = j;
+                }
+
+                if(grid[i][j] != -1 && grid[i][j] != 2)
+                    numob++;
+            }
+        }
+
+        int[] res = {0};
+        backtrack(grid, 0, x, y, numob, res, m, n);
+        return res[0];
+    }
+
+    void backtrack(int[][] grid, int count, int i, int j, int numob, int[] res, int m, int n) {
+        if(i < 0 || j < 0 || i >= m || j >= n || grid[i][j] == -1)
+            return;
+        if(grid[i][j] == 2){
+            if(count == numob)
+                res[0]++;
+            return;
+        }
+
+        grid[i][j] = -1;
+        for(int[] dir : direction){
+            backtrack(grid, count + 1, i + dir[0], j + dir[1], numob, res, m, n);
+        }
+        grid[i][j] = 0;
+    }
+}
