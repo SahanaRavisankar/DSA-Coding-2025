@@ -1,0 +1,21 @@
+class Solution {
+    public int maxDifference(String s) {
+        int[] freq = new int[26];
+        for(char ch : s.toCharArray()){
+            freq[ch - 'a']++;
+        }
+
+        int maxodd = 0;
+        int mineven = s.length();
+        for(int i : freq){
+            if(i != 0) {
+                if(i % 2 == 0)
+                    mineven = Math.min(mineven, i);
+                else
+                    maxodd = Math.max(maxodd, i);
+            }
+        }
+
+        return maxodd - mineven;
+    }
+}
