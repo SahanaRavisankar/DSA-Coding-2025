@@ -1,0 +1,42 @@
+class Solution {
+    public int minMaxDifference(int num) {
+        int maxres = Integer.MIN_VALUE;
+        int minres = Integer.MAX_VALUE;
+
+        for(char i = '0'; i <= '9'; i++){
+            for(char j = '0'; j <= '9'; j++){
+                char[] arr = String.valueOf(num).toCharArray();
+                if(i == j)
+                    continue;
+
+                for(int k = 0; k < arr.length; k++){
+                    char ch = arr[k];
+                    if(ch == j){
+                        arr[k] = i;
+                    }
+                }
+
+                maxres = Math.max(maxres, Integer.valueOf(new String(arr)));
+            }
+        }
+
+        for(char i = '0'; i <= '9'; i++){
+            for(char j = '0'; j <= '9'; j++){
+                char[] arr = String.valueOf(num).toCharArray();
+                if(i == j)
+                    continue;
+
+                for(int k = 0; k < arr.length; k++){
+                    char ch = arr[k];
+                    if(ch == j){
+                        arr[k] = i;
+                    }
+                }
+
+                minres = Math.min(minres, Integer.valueOf(new String(arr)));
+            }
+        }
+
+        return maxres - minres;
+    }
+}
