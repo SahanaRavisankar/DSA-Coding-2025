@@ -1,3 +1,4 @@
+// approach 1
 class Solution {
     public int minMaxDifference(int num) {
         int maxres = Integer.MIN_VALUE;
@@ -38,5 +39,53 @@ class Solution {
         }
 
         return maxres - minres;
+    }
+}
+
+
+// appraoch 2
+class Solution {
+    public int minMaxDifference(int num) {
+        int minres = getMinimum(num);
+        int maxres = getMaximum(num);
+
+        return maxres - minres;
+    }
+
+    int getMaximum(int num){
+        char[] number = String.valueOf(num).toCharArray();
+        int n = number.length;
+        int idx = 0;
+        while(idx < n && number[idx] == '9'){
+            idx++;
+        }
+
+        if(idx == n)
+            return num;
+        
+        for(int i = 0; i < n; i++){
+            if(i != idx && number[i] == number[idx]){
+                number[i] = '9';
+            }
+        }
+        number[idx] = '9';
+
+        return Integer.valueOf(new String(number));
+    }
+
+    int getMinimum(int num){
+        char[] number = String.valueOf(num).toCharArray();
+        int n = number.length;
+
+        if(n == 1)
+            return 0;
+        for(int i = 1; i < n; i++){
+            if(number[i] == number[0]){
+                number[i] = '0';
+            }
+        }
+        number[0] = '0';
+
+        return Integer.valueOf(new String(number));
     }
 }
