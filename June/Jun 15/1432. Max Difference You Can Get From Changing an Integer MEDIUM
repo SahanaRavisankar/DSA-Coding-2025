@@ -1,0 +1,115 @@
+// approach 1
+class Solution {
+    public int maxDiff(int num) {
+        int maxres = Integer.MIN_VALUE;
+        int minres = Integer.MAX_VALUE;
+
+       for(char i = '0'; i <= '9'; i++){
+            for(char j = '0'; j <= '9'; j++){
+                char[] arr = String.valueOf(num).toCharArray();
+                if(i == j)
+                    continue;
+
+                for(int k = 0; k < arr.length; k++){
+                    char ch = arr[k];
+                    if(ch == j){
+                        arr[k] = i;
+                    }
+                }
+
+                int temp = Integer.valueOf(new String(arr));
+                if(check(temp, num))
+                    maxres = Math.max(maxres, temp);
+            }
+        }
+
+        for(char i = '0'; i <= '9'; i++){
+            for(char j = '0'; j <= '9'; j++){
+                char[] arr = String.valueOf(num).toCharArray();
+                if(i == j)
+                    continue;
+
+                for(int k = 0; k < arr.length; k++){
+                    char ch = arr[k];
+                    if(ch == j){
+                        arr[k] = i;
+                    }
+                }
+
+                int temp = Integer.valueOf(new String(arr));
+                if(check(temp, num))
+                    minres = Math.min(minres, temp);
+            }
+        }
+
+        return maxres - minres;
+    }
+
+    boolean check(int num1, int num2){
+        return String.valueOf(num1).length() == String.valueOf(num2).length() && num1 != 0;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int maxDiff(int num) {
+        int maxres = getMaximum(num);
+        System.out.println(maxres);
+        int minres = getMinimum(num);
+        System.out.println(minres);
+        return maxres - minres;
+    }
+
+    int getMinimum(int num) {
+        int n = (int) Math.log10(num) + 1;
+        
+        Set<Character> set = new HashSet<>();
+        int max = Integer.MAX_VALUE;
+
+        for(int i = 0; i < n; i++){
+            char[] number = String.valueOf(num).toCharArray();
+            char temp = number[i];
+            if(set.contains(temp) || (temp == '1' && i != 0))
+                continue;
+            set.add(temp);
+            char replaceChar = '1';
+            if(i != 0) {
+                replaceChar = '0';
+            }
+            for(int j = i; j < n; j++){
+                
+                if(number[j] == temp){
+                    number[j] = replaceChar;
+                }
+            }
+
+            max = Math.min(max, Integer.valueOf(new String(number)));
+        }
+        return max;
+    }
+
+    int getMaximum(int num){
+        int n = (int) Math.log10(num) + 1;
+        
+        Set<Character> set = new HashSet<>();
+        int max = Integer.MIN_VALUE;
+
+        for(int i = 0; i < n; i++){
+            char[] number = String.valueOf(num).toCharArray();
+            char temp = number[i];
+            if(set.contains(temp) || (temp == '9' && i != 0))
+                continue;
+            set.add(temp);
+            for(int j = i; j < n; j++){
+                if(number[j] == temp){
+                    number[j] = '9';
+                }
+            }
+
+            max = Math.max(max, Integer.valueOf(new String(number)));
+        }
+
+        return max;
+    }
+}
