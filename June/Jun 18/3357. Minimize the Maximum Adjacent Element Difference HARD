@@ -1,0 +1,69 @@
+class Solution {
+    public int minDifference(int[] nums) {
+        int n = nums.length;
+        int minval = Integer.MAX_VALUE;
+        int maxval = 0;
+        int maxdiff = 0;
+
+        for(int i = 0; i < n - 1; i++) {
+            if(nums[i] != -1 && nums[i + 1] != -1){
+                maxdiff = Math.max(maxdiff, Math.abs(nums[i + 1] - nums[i]));
+            } else if (!(nums[i] == -1 && nums[i + 1] == -1)) {
+                int val = Math.max(nums[i], nums[i + 1]);
+                minval = Math.min(minval, val);
+                maxval = Math.max(maxval, val);
+            }
+        }
+
+        int l = maxdiff;
+        int r = maxval - minval;
+        int res = maxdiff;
+
+        while(l <= r){
+            int d = l + (r - l) / 2;
+            int x = minval + d;
+            int y = maxval - d;
+            if(check(nums, x, y, d)){
+                res = d;
+                r = d - 1;
+            } else {
+                l = d + 1;
+            }
+        }
+
+        return res;
+    }
+
+    boolean check(int[] nums, int x, int y, int d){
+        int cnt = 0;
+        int prev = 0;
+        for(int i = 0; i < nums.length; i++){
+            if(nums[i] == -1){
+                if(prev != 0 && Math.min(Math.abs(prev - x), Math.abs(prev - y)) > d)
+                    return false;
+                cnt++;
+            } else {
+                if(cnt > 0){
+                    int abs = 0;
+                    if(prev != 0){
+                        int xmax = Math.max(Math.abs(prev - x), Math.abs(nums[i] - x));
+                        int ymax = Math.max(Math.abs(prev - y), Math.abs(nums[i] - y));
+                        abs = Math.min(xmax, ymax);
+                    } else {
+                        abs = Math.min(Math.abs(nums[i] - x), Math.abs(nums[i] - y));
+                    }
+
+                    boolean canmix = cnt >= 2 && Math.abs(x - y) <= d;
+
+                    if(abs > d && !canmix)
+                        return false;
+                }
+
+                prev = nums[i];
+                cnt = 0;
+            }
+        }
+
+        return true;
+    }
+}
