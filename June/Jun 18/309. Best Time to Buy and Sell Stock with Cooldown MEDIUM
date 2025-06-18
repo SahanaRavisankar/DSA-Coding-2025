@@ -1,0 +1,54 @@
+// approach 1 recursion and memoization
+class Solution {
+    public int maxProfit(int[] prices) {
+        int n = prices.length;
+        int[][] dp = new int[n + 1][2];
+        for(int[] t : dp)
+            Arrays.fill(t, -1);
+
+        return solve(prices, 0, n, 1, dp); // buy is true initially
+    }
+
+    int solve(int[] prices, int day, int n, int buy, int[][] dp) {
+        if(day >= n)
+            return 0;
+
+        if(dp[day][buy] != -1)
+            return dp[day][buy];
+
+        int profit = Integer.MIN_VALUE;
+
+        if(buy == 1) {
+            int take = solve(prices, day + 1, n, 0, dp) - prices[day];
+            int skip_take = solve(prices, day + 1, n, 1, dp);
+            profit = Math.max(take, skip_take);
+        } else {
+            int sell = prices[day] + solve(prices, day + 2, n, 1, dp);
+            int skip_sell = solve(prices, day + 1, n, 0, dp);
+            profit = Math.max(sell, skip_sell);
+        }
+
+        return dp[day][buy] = profit;
+    }
+}
+
+
+// approach 2 bottom up
+class Solution {
+    public int maxProfit(int[] prices) {
+        int n = prices.length;
+        int[] dp = new int[n];
+        dp[0] = 0;
+        if(n > 1) dp[1] = Math.max(prices[1] - prices[0], 0);
+
+        for(int i = 2; i < n; i++){
+            dp[i] = dp[i - 1];
+            for(int j = 0; j < i; j++){
+                int prev = j - 2 >= 0 ? dp[j - 2] : 0;
+                dp[i] = Math.max(dp[i], prices[i] - prices[j] + prev);
+            }
+        }
+
+        return dp[n - 1];
+    }
+}
