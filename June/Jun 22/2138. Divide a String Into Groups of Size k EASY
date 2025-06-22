@@ -1,0 +1,63 @@
+// approach 1
+class Solution {
+    public String[] divideString(String s, int k, char fill) {
+        int n = s.length();
+        if(n == k){
+            return new String[]{s};
+        } else if(n < k){
+            for(int i = 0; i < k - n; i++) {
+                s += fill;
+            }
+            return new String[]{s};
+        }
+
+        int len = 0;
+        int idx = 0;
+        int size = (int) Math.ceil((double) n / (double) k);
+        String[] res = new String[size];
+        int start = 0;
+        for(int i = 0; i < n; i++) {
+            len++;
+            if(len == k) {
+                res[idx] = s.substring(start, start + len);
+                len = 0;
+                start = i + 1;
+                idx++;
+            }
+        }
+
+        if(len != 0) {
+            String substr = s.substring(start);
+            for(int i = 0; i < k - len; i++){
+                substr += fill;
+                res[idx] = substr;
+            }
+        }
+
+        return res;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public String[] divideString(String s, int k, char fill) {
+        int n = s.length();
+        if(n == k){
+            return new String[]{s};
+        }
+        
+        List<String> res = new ArrayList<>();
+
+        for(int i = 0; i < n; i += k) {
+            int len = Math.min(i + k, n);
+            String grp = s.substring(i, len);
+            while(grp.length() < k){
+                grp += fill;
+            }
+            res.add(grp);
+        }
+
+        return res.toArray(new String[0]);
+    }
+}
