@@ -1,0 +1,39 @@
+class Solution {
+    
+    Map<Character, String> getMapChar(){
+        Map<Character, String> map = new HashMap<>();
+        map.put('2', "abc");
+        map.put('3', "def");
+        map.put('4', "ghi");
+        map.put('5', "jkl");
+        map.put('6', "mno");
+        map.put('7', "pqrs");
+        map.put('8', "tuv");
+        map.put('9', "wxyz");
+
+        return map;
+    }
+
+    public List<String> letterCombinations(String digits) {
+        List<String> res = new ArrayList<>();
+        Map<Character, String> map = getMapChar();
+        solve(0, digits.length(), digits, new StringBuilder(), map, res);
+        return res;
+    }
+
+    void solve(int idx, int n, String digit, StringBuilder prev, Map<Character, String> map, List<String> res) {
+        if(idx >= n) {
+            if(prev.length() > 0)
+                res.add(prev.toString());
+            return;
+        }
+
+        String key = map.get(digit.charAt(idx));
+
+        for(int i = 0; i < key.length(); i++) {
+            prev.append(key.charAt(i));
+            solve(idx + 1, n, digit, prev, map, res);
+            prev.deleteCharAt(prev.length() - 1);
+        }
+    }
+}
