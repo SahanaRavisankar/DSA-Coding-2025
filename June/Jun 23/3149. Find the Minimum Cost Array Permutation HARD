@@ -1,0 +1,44 @@
+class Solution {
+    int[] res = {Integer.MAX_VALUE};
+    public int[] findPermutation(int[] nums) {
+        int n = nums.length;
+        List<Integer> perm = new ArrayList<>();
+        perm.add(0);
+        
+        boolean[] vis = new boolean[n];
+        int[] resperm = new int[n];
+        for(int i = 0; i < n; i++) {
+            resperm[i] = i;
+        }
+
+        solve(nums, n, vis, 0, perm, resperm);
+
+        return resperm;
+    }
+
+    void solve(int[] nums, int n, boolean[] vis, int score, List<Integer> perm, int[] resperm) {
+        if(score >= res[0])
+            return;
+
+        if(perm.size() == n) {
+            score += Math.abs(perm.get(n - 1) - nums[perm.get(0)]);
+            if(res[0] > score) {
+                res[0] = score;
+                for(int i = 0; i < n; i++) {
+                    resperm[i] = perm.get(i);
+                }
+            }
+            return;
+        }
+
+        for(int i = 1; i < n; i++) {
+            if(!vis[i]) {
+                vis[i] = true;
+                perm.add(i);
+                solve(nums, n, vis, score + Math.abs(perm.get(perm.size() - 2) - nums[perm.get(perm.size() - 1)]), perm, resperm);
+                perm.remove(perm.size() - 1);
+                vis[i] = false;
+            }
+        }
+    }
+}
