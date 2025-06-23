@@ -18,7 +18,7 @@ class Solution {
 
     void solve(int[] nums, int n, boolean[] vis, int score, List<Integer> perm, int[] resperm) {
         if(score >= res[0])
-            return;
+            return; // pruning
 
         if(perm.size() == n) {
             score += Math.abs(perm.get(n - 1) - nums[perm.get(0)]);
