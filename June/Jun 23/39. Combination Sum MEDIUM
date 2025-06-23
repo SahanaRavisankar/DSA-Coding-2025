@@ -1,0 +1,26 @@
+class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> temp = new ArrayList<>();
+
+        solve(0, candidates, target, candidates.length, temp, res);
+
+        return res;
+    }
+
+    void solve(int currSum, int[] cand, int target, int n, List<Integer> temp, List<List<Integer>> res) {
+        if(currSum >= target) {
+            if(currSum == target)
+                res.add(new ArrayList<>(temp));
+            return;
+        }
+
+        for(int i = 0; i < n; i++) {
+            if(temp.size() == 0 || temp.get(temp.size() - 1) <= cand[i]) {
+                temp.add(cand[i]);
+                solve(currSum + cand[i], cand, target, n, temp, res);
+                temp.remove(temp.size() - 1);
+            }
+        }
+    }
+}
