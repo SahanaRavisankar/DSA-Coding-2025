@@ -1,0 +1,32 @@
+class Solution {
+    int[] ans = {Integer.MIN_VALUE};
+    public int maximumRequests(int n, int[][] requests) {
+        int[] res = new int[n];
+        solve(0, 0, requests.length, res, requests);
+        return ans[0];
+    }
+
+    void solve(int idx, int count, int n, int[] res, int[][] req) {
+        if(idx >= n) {
+            boolean bool = true;
+            for(int i : res)
+                if(i != 0)
+                    bool = false;
+            if(bool)
+                ans[0] = Math.max(ans[0], count);
+            
+            return;
+        }
+
+        int from = req[idx][0];
+        int to = req[idx][1];
+
+        res[from]--;
+        res[to]++;
+        solve(idx + 1, count + 1, n, res, req);
+        res[from]++;
+        res[to]--;
+
+        solve(idx + 1, count, n, res, req);
+    }
+}
