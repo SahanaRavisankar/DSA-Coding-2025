@@ -1,0 +1,49 @@
+// approach 1
+class Solution {
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> temp = new ArrayList<>();
+        solve(1, k, n, temp, res);
+        return res;
+    }
+
+    void solve(int curr, int k, int n, List<Integer> temp, List<List<Integer>> res) {
+        if(k == 0) {
+            res.add(new ArrayList<>(temp));
+            return;
+        }
+        
+        if(curr > n)
+            return;
+
+        temp.add(curr);
+        solve(curr + 1, k - 1, n, temp, res);
+        temp.remove(temp.size() - 1);
+
+        solve(curr + 1, k, n, temp, res);
+    }
+}
+
+
+// approach 2
+class Solution {
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> temp = new ArrayList<>();
+        solve(1, k, n, temp, res);
+        return res;
+    }
+
+    void solve(int curr, int k, int n, List<Integer> temp, List<List<Integer>> res) {
+        if(k == 0) {
+            res.add(new ArrayList<>(temp));
+            return;
+        }
+
+        for(int i = curr; i <= n; i++) {
+            temp.add(i);
+            solve(i + 1, k - 1, n, temp, res);
+            temp.remove(temp.size() - 1);
+        }
+    }
+}
