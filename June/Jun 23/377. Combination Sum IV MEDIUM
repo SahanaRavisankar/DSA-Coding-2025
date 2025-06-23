@@ -1,0 +1,56 @@
+// approach 1
+class Solution {
+    public int combinationSum4(int[] nums, int target) {
+        int n = nums.length;
+        int[][] dp = new int[n][target + 1];
+        for(int[] t : dp)
+            Arrays.fill(t, -1);
+
+        return solve(0, target, n, dp, nums);
+    }
+
+    int solve(int idx, int target, int n, int[][] dp, int[] nums) {
+        if(target == 0)
+            return 1;
+        if(idx >= n || target < 0)
+            return 0;
+
+        if(dp[idx][target] != -1)
+            return dp[idx][target];
+
+        int take = solve(0, target - nums[idx], n, dp, nums);
+        int skip = solve(idx + 1, target, n, dp, nums);
+
+        return dp[idx][target] = take + skip;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int combinationSum4(int[] nums, int target) {
+        int n = nums.length;
+        int[][] dp = new int[n][target + 1];
+        for(int[] t : dp)
+            Arrays.fill(t, -1);
+
+        return solve(0, target, n, dp, nums);
+    }
+
+    int solve(int idx, int target, int n, int[][] dp, int[] nums) {
+        if(target == 0)
+            return 1;
+        if(idx >= n || target < 0)
+            return 0;
+
+        if(dp[idx][target] != -1)
+            return dp[idx][target];
+
+        int res = 0;
+        for(int i = idx; i < n; i++) {
+            res += solve(0, target - nums[i], n, dp, nums);
+        }
+
+        return dp[idx][target] = res;
+    }
+}
