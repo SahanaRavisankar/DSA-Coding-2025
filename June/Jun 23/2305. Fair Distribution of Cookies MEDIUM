@@ -1,0 +1,25 @@
+class Solution {
+    int[] res = {Integer.MAX_VALUE};
+    public int distributeCookies(int[] cookies, int k) {
+        int[] child = new int[k];
+        solve(0, cookies, k, child);
+        return res[0];
+    }
+
+    void solve(int idx, int[] cookies, int k, int[] child) {
+        if(idx >= cookies.length) {
+            int max = 0;
+            for(int i : child)
+                max = Math.max(i, max);
+            res[0] = Math.min(res[0], max);
+            return;
+        }
+
+        int cookie = cookies[idx];
+        for(int i = 0; i < k; i++) {
+            child[i] += cookie;
+            solve(idx + 1, cookies, k, child);
+            child[i] -= cookie;
+        }
+    }
+}
