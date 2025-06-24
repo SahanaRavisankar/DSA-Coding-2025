@@ -1,0 +1,25 @@
+class Solution {
+    public int maxUniqueSplit(String s) {
+        Set<String> set = new HashSet<>();
+        int[] maxcnt = {0};
+        int currcnt = 0, i = 0;
+        solve(i, s, set, maxcnt, currcnt);
+        return maxcnt[0];
+    }
+
+    void solve(int i, String s, Set<String> set, int[] maxcnt, int currcnt) {
+        if(i >= s.length()) {
+            maxcnt[0] = Math.max(maxcnt[0], currcnt);
+            return;
+        }
+
+        for(int j = i; j < s.length(); j++) {
+            String sub = s.substring(i, j + 1);
+            if(!set.contains(sub)) {
+                set.add(sub);
+                solve(j + 1, s, set, maxcnt, currcnt + 1);
+                set.remove(sub);
+            }
+        }
+    }
+}
