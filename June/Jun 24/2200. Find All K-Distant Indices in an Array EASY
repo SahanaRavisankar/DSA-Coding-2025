@@ -1,0 +1,116 @@
+// approach 1
+class Solution {
+    public List<Integer> findKDistantIndices(int[] nums, int key, int k) {
+        List<Integer> index = new ArrayList<>();
+        List<Integer> res = new ArrayList<>();
+        int n = nums.length;
+        for(int i = 0; i < n; i++) {
+            if(nums[i] == key)
+                index.add(i);
+        }
+
+        if(index.size() == n)
+            return index;
+        
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < index.size(); j++) {
+                if(Math.abs(index.get(j) - i) <= k) {
+                    res.add(i);
+                    break;
+                }
+            }
+        }
+
+        return res;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public List<Integer> findKDistantIndices(int[] nums, int key, int k) {
+        List<Integer> index = new ArrayList<>();
+        List<Integer> res = new ArrayList<>();
+        int n = nums.length;
+        for(int i = 0; i < n; i++) {
+            if(nums[i] == key)
+                index.add(i);
+        }
+
+        if(index.size() == n)
+            return index;
+        
+        for(int i = 0; i < n; i++) {
+            int lb = lowerbound(i, index);
+            if(lb != -1 && Math.abs(i - index.get(lb)) <= k) {
+                res.add(i);
+            } else {
+                int ub = upperbound(i, index);
+                if(ub != -1 && Math.abs(i - index.get(ub)) <= k)
+                    res.add(i);
+            }
+        }
+
+        return res;
+    }
+
+    int lowerbound(int target, List<Integer> nums) {
+        int idx = -1;
+        int l = 0;
+        int r = nums.size() - 1;
+
+        while(l <= r) {
+            int mid = l + (r - l) / 2;
+            if(nums.get(mid) <= target) {
+                idx = mid;
+                l = mid + 1;
+            } else {
+                r = mid - 1;
+            }
+        }
+
+        return idx;
+    }
+    
+    int upperbound(int target, List<Integer> nums) {
+        int idx = -1;
+        int l = 0;
+        int r = nums.size() - 1;
+
+        while(l <= r) {
+            int mid = l + (r - l) / 2;
+            if(nums.get(mid) >= target) {
+                idx = mid;
+                r = mid - 1;
+            } else {
+                l = mid + 1;
+            }
+        }
+
+        return idx;
+    }
+}
+
+
+// approach 3
+class Solution {
+    public List<Integer> findKDistantIndices(int[] nums, int key, int k) {
+        List<Integer> res = new ArrayList<>();
+        int n = nums.length;
+        
+        for(int i = 0; i < n; i++) {
+            if(nums[i] == key) {
+                int start = Math.max(i - k, 0);
+                int end = Math.min(i + k, n - 1);
+
+                if(res.size() != 0 && res.get(res.size() - 1) >= start)
+                    start = res.get(res.size() - 1) + 1;
+
+                for(int j = start; j <= end; j++)
+                    res.add(j);
+            }
+        }
+
+        return res;
+    }
+}
