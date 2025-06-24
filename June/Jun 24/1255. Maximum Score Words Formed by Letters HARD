@@ -1,0 +1,44 @@
+class Solution {
+    public int maxScoreWords(String[] words, char[] letters, int[] score) {
+        int[] map = new int[26];
+        int n = words.length;
+
+        for(char ch : letters)
+            map[ch - 'a']++;
+        
+        return solve(0, n, map, words, score, 0);
+    }
+
+    int solve(int idx, int n, int[] map, String[] words, int[] score, int currscore) {
+        if(idx >= n)
+            return currscore;
+        int take = 0;
+        if(possible(map, words[idx])) {
+            for(char ch : words[idx].toCharArray()) {
+                map[ch - 'a']--;
+                currscore += score[ch - 'a'];
+            }
+            take = solve(idx + 1, n, map, words, score, currscore);
+            for(char ch : words[idx].toCharArray()) {
+                map[ch - 'a']++;
+                currscore -= score[ch - 'a'];
+            }
+        }
+
+        int skip = solve(idx + 1, n, map, words, score, currscore);
+
+        return Math.max(take, skip);
+    }
+
+    boolean possible(int[] map, String s) {
+        int[] freq = new int[26];
+
+        for(char ch : s.toCharArray()) {
+            freq[ch - 'a']++;
+            if(freq[ch - 'a'] > map[ch - 'a'])
+                return false;
+        }
+        
+        return true;
+    }
+}
