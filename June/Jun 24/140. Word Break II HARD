@@ -1,0 +1,69 @@
+// aproach 1
+class Solution {
+    public List<String> wordBreak(String s, List<String> wordDict) {
+        List<String> res = new ArrayList<>();
+        int n = s.length();
+        Set<String> set = new HashSet<>();
+        for(String str : wordDict) {
+            set.add(str);
+        }
+
+        solve(0, "", set, n, res, s);
+
+        return res;
+    }
+
+    void solve(int i, String curr, Set<String> set, int n, List<String> res, String s) {
+        if(i >= n) {
+            res.add(curr.substring(1));
+            return;
+        }
+        
+        for(int j = i; j < n; j++) {
+            String str = s.substring(i, j + 1);
+            if(set.contains(str)) {
+                String temp = curr;
+                curr += " " + str;
+                solve(j + 1, curr, set, n, res, s);
+                curr = temp;
+            }
+        }
+    }
+}
+
+
+// approach 2
+class Solution {
+    public List<String> wordBreak(String s, List<String> wordDict) {
+        Set<String> set = new HashSet<>();
+        for(String str : wordDict) {
+            set.add(str);
+        }
+
+        return solve(s, set);
+    }
+
+    List<String> solve(String s, Set<String> set) {
+        if(s.length() == 0) {
+            List<String> res = new ArrayList<String>();
+            res.add("");
+            return res;
+        }
+
+        List<String> res = new ArrayList<>();
+        
+        for(int l = 1; l <= s.length(); l++) {
+            String str = s.substring(0, l);
+            if(set.contains(str)) {
+                String rem = s.substring(l);
+                List<String> resrem = solve(rem, set);
+                for(String w : resrem) {
+                    String s_ = str + (w.length() == 0 ? "" : " ") + w;
+                    res.add(s_);
+                }
+            }
+        }
+
+        return res;
+    }
+}
