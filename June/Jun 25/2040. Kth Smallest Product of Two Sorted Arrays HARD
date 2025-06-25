@@ -1,0 +1,67 @@
+class Solution {
+    public long kthSmallestProduct(int[] nums1, int[] nums2, long k) {
+        long res = 0;
+        long l = (long) -1e10;
+        long r = (long) 1e10;
+
+        while(l <= r) {
+            long mid = l + (r - l) / 2;
+            long cntsmall = findCountSmall(nums1, nums2, mid);
+            if(cntsmall >= k) {
+                res = mid;
+                r = mid - 1;
+            } else {
+                l = mid + 1;
+            }
+        }
+
+        return res;
+    }
+
+    long findCountSmall(int[] nums1, int[] nums2, long midprod) {
+        long prodcnt = 0;
+        int n = nums2.length;
+
+        for(int i = 0; i < nums1.length; i++) {
+            if(nums1[i] > 0) {
+                int l = 0;
+                int r = n - 1;
+                int m = -1;
+
+                while(l <= r) {
+                    int mid = l + (r - l) / 2;
+                    long prod = (long) nums1[i] * nums2[mid];
+
+                    if(prod <= midprod) {
+                        m = mid;
+                        l = mid + 1;
+                    } else {
+                        r = mid - 1;
+                    }
+                }
+
+                prodcnt += m + 1;
+            } else {
+                int l = 0;
+                int r = n - 1;
+                int m = n;
+
+                while(l <= r) {
+                    int mid = l + (r - l) / 2;
+                    long prod = (long) nums1[i] * nums2[mid];
+
+                    if(prod <= midprod) {
+                        m = mid;
+                        r = mid - 1;
+                    } else {
+                        l = mid + 1;
+                    }
+                }
+
+                prodcnt += n - m;
+            }
+        }
+
+        return prodcnt;
+    }
+}
