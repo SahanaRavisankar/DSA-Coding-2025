@@ -1,0 +1,61 @@
+// approach 1
+class Solution {
+    public int maxWidthRamp(int[] nums) {
+        int n = nums.length;
+        int max = 0;
+
+        for(int i = 0; i < n - 1; i++) {
+            for(int j = i + 1; j < n; j++) {
+                if(nums[i] <= nums[j])
+                    max = Math.max(max, j - i);
+            }
+        }
+
+        return max;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int maxWidthRamp(int[] nums) {
+        int n = nums.length;
+        int max = 0;
+
+        for(int i = 0; i < n; i++) {
+            for(int j = n - 1; j > i; j--) {
+                if(nums[i] <= nums[j]) {
+                    max = Math.max(max, j - i);
+                    break;
+                }
+            }
+        }
+
+        return max;
+    }
+}
+
+
+// approach 3
+class Solution {
+    public int maxWidthRamp(int[] nums) {
+        int n = nums.length;
+        int[] maxright = new int[n];
+        maxright[n - 1] = nums[n - 1];
+        for(int i = n - 2; i >= 0; i--) {
+            maxright[i] = Math.max(maxright[i + 1], nums[i]);
+        }
+
+        int i = 0, j = 0;
+        int max = 0;
+        while(j < n) {
+            while(j < n && nums[i] <= maxright[j]) {
+                max = Math.max(max, j - i);
+                j++;
+            }
+            i++;
+        }
+
+        return max;
+    }
+}
