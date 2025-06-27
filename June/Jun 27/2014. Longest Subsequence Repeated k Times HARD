@@ -1,0 +1,125 @@
+// approach 1
+class Solution {
+    public String longestSubsequenceRepeatedK(String s, int k) {
+        int n = s.length();
+        int[] freq = new int[26];
+        for(char ch : s.toCharArray()) {
+            freq[ch - 'a']++;
+        }
+
+        boolean[] canuse = new boolean[26];
+        int[] reqfreq = new int[26];
+        for(int i = 0; i < 26; i++) {
+            if(freq[i] >= k){
+                canuse[i] = true;
+                reqfreq[i] = freq[i] / k;
+            }
+        }
+
+        int maxlen = n / k;
+        String curr = "";
+        String[] res = {""};
+        backtrack(s, curr, canuse, reqfreq, k, maxlen, res);
+        return res[0];
+    }
+
+    void backtrack(String s, String curr, boolean[] canuse, int[] reqfreq, int k, int maxlen, String[] res) {
+        if(curr.length() > maxlen) {
+            return;
+        }
+
+        if((curr.length() > res[0].length() || (curr.length() == res[0].length() && curr.compareTo(res[0]) > 0)) && isSubseq(s, curr, k))
+            res[0] = curr;
+
+        for(int i = 0; i < 26; i++) {
+            if(!canuse[i] || reqfreq[i] == 0)
+                continue;
+            char ch = (char) (i + 'a');
+            curr += ch;
+            reqfreq[i]--;
+
+            backtrack(s, curr, canuse, reqfreq, k, maxlen, res);
+
+            curr = curr.substring(0, curr.length() - 1);
+            reqfreq[i]++;
+        }
+    }
+
+    boolean isSubseq(String s, String curr, int k) {
+        int i = 0, j = 0, l = curr.length(), n = s.length();
+        while(i < n && j < k * l) {
+            if(s.charAt(i) == curr.charAt(j % l))
+                j++;
+            i++;
+        }
+        return j == k * l;
+    }
+}
+
+
+// approach 2 slight improvement
+class Solution {
+    public String longestSubsequenceRepeatedK(String s, int k) {
+        int n = s.length();
+        int[] freq = new int[26];
+        for(char ch : s.toCharArray()) {
+            freq[ch - 'a']++;
+        }
+
+        boolean[] canuse = new boolean[26];
+        int[] reqfreq = new int[26];
+        for(int i = 0; i < 26; i++) {
+            if(freq[i] >= k){
+                canuse[i] = true;
+                reqfreq[i] = freq[i] / k;
+            }
+        }
+
+        int maxlen = n / k;
+        String[] res = {""};
+        for(int len = maxlen; len >= 0; len--) {
+            String curr = "";
+            int[] tempfreq = reqfreq.clone();
+            if(backtrack(s, curr, canuse, tempfreq, k, len, res))
+                return res[0];
+        }
+
+        return res[0];
+    }
+
+    boolean backtrack(String s, String curr, boolean[] canuse, int[] reqfreq, int k, int maxlen, String[] res) {
+        if(curr.length() == maxlen) {
+            if(isSubseq(s, curr, k)) {
+                res[0] = curr;
+                return true;
+            }
+            return false;
+        }
+        
+        for(int i = 25; i >= 0; i--) {
+            if(!canuse[i] || reqfreq[i] == 0)
+                continue;
+            char ch = (char) (i + 'a');
+            curr += ch;
+            reqfreq[i]--;
+
+            if(backtrack(s, curr, canuse, reqfreq, k, maxlen, res))
+                return true;
+
+            curr = curr.substring(0, curr.length() - 1);
+            reqfreq[i]++;
+        }
+
+        return false;
+    }
+
+    boolean isSubseq(String s, String curr, int k) {
+        int i = 0, j = 0, l = curr.length(), n = s.length();
+        while(i < n && j < k * l) {
+            if(s.charAt(i) == curr.charAt(j % l))
+                j++;
+            i++;
+        }
+        return j == k * l;
+    }
+}
