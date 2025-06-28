@@ -1,0 +1,44 @@
+// approach 1
+class Solution {
+    public int countNodes(TreeNode root) {
+        int[] res = {0};
+        solve(root, res);
+        return res[0];
+    }
+
+    void solve(TreeNode root, int[] res) {
+        if(root == null)
+            return;
+        solve(root.left, res);
+        res[0]++;
+        solve(root.right, res);
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int countNodes(TreeNode root) {
+        if(root == null)
+            return 0;
+        int lh = getleft(root);
+        int rh = getright(root);
+
+        if(lh == rh)
+            return (int) Math.pow(2, lh) - 1;
+        
+        return 1 + countNodes(root.left) + countNodes(root.right);
+    }
+
+    int getleft(TreeNode root) {
+        if(root == null)
+            return 0;
+        return 1 + getleft(root.left);
+    }
+    
+    int getright(TreeNode root) {
+        if(root == null)
+            return 0;
+        return 1 + getright(root.right);
+    }
+}
