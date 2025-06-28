@@ -1,0 +1,63 @@
+// approach 1
+class Solution {
+    public int[] maxSubsequence(int[] nums, int k) {
+        int[] numsClone = nums.clone();
+        int n = nums.length;
+        int[] res = new int[k];
+        Map<Integer, Integer> map = new HashMap<>();
+
+        Arrays.sort(numsClone);
+        for(int i = n - 1; i >= n - k; i--) {
+            map.put(numsClone[i], map.getOrDefault(numsClone[i], 0) + 1);
+        }
+
+        int idx = 0;
+        for(int i = 0; i < n; i++) {
+            if(map.containsKey(nums[i])) {
+                res[idx++] = nums[i];
+                map.put(nums[i], map.get(nums[i]) - 1);
+                if(map.get(nums[i]) == 0)
+                    map.remove(nums[i]);
+            }
+            if(idx == k)
+                break;
+        }
+
+        return res;
+    }
+}
+
+
+// approach 2 - TLE
+class Solution {
+    public int[] maxSubsequence(int[] nums, int k) {
+        List<Integer> resList = new ArrayList<>();
+        List<Integer> temp = new ArrayList<>();
+        int[] res = {Integer.MIN_VALUE};
+        solve(0, nums, temp, resList, k, nums.length, res, 0);
+        return resList.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    void solve(int idx, int[] nums, List<Integer> temp, List<Integer> resList, int k, int n, int[] res, int sum) {
+        if(k == 0 || idx >= n) {
+            if(res[0] < sum && k == 0) {
+                resList.clear();
+                resList.addAll(temp);
+                res[0] = sum;
+            }
+            return;
+        }
+        
+        if(k > 0) {
+            temp.add(nums[idx]);
+            solve(idx + 1, nums, temp, resList, k - 1, n, res, sum + nums[idx]);
+            temp.remove(temp.size() - 1);
+        }
+
+        solve(idx + 1, nums, temp, resList, k, n, res, sum);
+    }
+}
+
+
+// approach 3
+// use nth_element - java doesn't have but cpp does have
