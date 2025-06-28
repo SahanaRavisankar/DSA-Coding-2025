@@ -1,0 +1,42 @@
+// approach 1
+class Solution {
+    public int maxAncestorDiff(TreeNode root) {
+        int[] maxdiff = {-1};
+        find_diff(root, maxdiff);
+        return maxdiff[0];
+    }
+
+    void find_diff(TreeNode root, int[] maxdiff) {
+        if(root == null)
+            return;
+        max_diff(root, root.left, maxdiff);
+        max_diff(root, root.right, maxdiff);
+        find_diff(root.left, maxdiff);
+        find_diff(root.right, maxdiff);
+    }
+
+    void max_diff(TreeNode root, TreeNode child, int[] maxdiff) {
+        if(child == null)
+            return;
+        maxdiff[0] = Math.max(maxdiff[0], Math.abs(root.val - child.val));
+        max_diff(root, child.left, maxdiff);
+        max_diff(root, child.right, maxdiff);
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int maxAncestorDiff(TreeNode root) {
+        return solve(root, root.val, root.val);
+    }
+
+    int solve(TreeNode root, int min, int max) {
+        if(root == null)
+            return max - min;
+        min = Math.min(min, root.val);
+        max = Math.max(max, root.val);
+
+        return Math.max(solve(root.right, min, max), solve(root.left, min, max));
+    }
+}
