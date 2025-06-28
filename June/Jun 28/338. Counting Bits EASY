@@ -1,0 +1,30 @@
+// approach 1
+class Solution {
+    public int[] countBits(int n) {
+        int[] res = new int[n + 1];
+        for(int i = 0; i <= n; i++)
+            res[i] = solve(i);
+        return res;
+    }
+
+    int solve(int i) {
+        int cnt = 0;
+        while(i > 0) {
+            cnt += (i % 2);
+            i /= 2;
+        }
+        return cnt;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int[] countBits(int n) {
+        int[] res = new int[n + 1];
+        res[0] = 0;
+        for(int i = 1; i <= n; i++)
+            res[i] = res[i / 2] + (i % 2);
+        return res;
+    }
+}
