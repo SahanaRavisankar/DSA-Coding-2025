@@ -1,0 +1,30 @@
+class Solution {
+    public int minEatingSpeed(int[] piles, int h) {
+        int l = 1;
+        int r = Arrays.stream(piles).max().getAsInt();
+
+        while(l < r) {
+            int mid = l + (r - l) / 2;
+            if(check(piles, h, mid))
+                r = mid;
+            else
+                l = mid + 1;
+        }
+
+        return l;
+    }
+
+    boolean check(int[] piles, int hrs, int val) {
+        int res = 0;
+        for(int i : piles) {
+            res += (i / val);
+            if(i % val != 0)
+                res += 1;
+
+            if(res > hrs)
+                return false;
+        }
+
+        return true;
+    }
+}
