@@ -1,0 +1,19 @@
+class Solution {
+    public int minOperations(int[] nums, int k) {
+        int res = 0;
+        for(int i : nums)
+            res ^= i;
+        if(res == k)
+            return 0;
+        return solve(res ^ k);
+    }
+
+    int solve(int i) {
+        int cnt = 0;
+        while(i > 0) {
+            cnt += (i % 2);
+            i /= 2;
+        }
+        return cnt;
+    }
+}
