@@ -1,0 +1,26 @@
+class Solution {
+    static List<Integer> firstNegInt(int nums[], int k) {
+        int i = 0, j = 0;
+        int n = nums.length;
+        Deque<Integer> deque = new LinkedList<>(); // ArrayDeque - read - it is cool!
+        List<Integer> list = new ArrayList<>();
+        
+        while(j < n) {
+            if(nums[j] < 0)
+                deque.offer(nums[j]);
+            if(j - i + 1 == k) {
+                if(deque.isEmpty())
+                    list.add(0);
+                else
+                    list.add(deque.peekFirst());
+                
+                if(nums[i] < 0)
+                    deque.pollFirst();
+                i++;
+            }
+            j++;
+        }
+        
+        return list;
+    }
+}
