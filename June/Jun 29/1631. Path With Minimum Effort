@@ -1,0 +1,36 @@
+class Solution {
+    int[][] direc = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    public int minimumEffortPath(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+        int[][] res = new int[m][n];
+        for(int[] r : res)
+            Arrays.fill(r, Integer.MAX_VALUE);
+        
+        pq.offer(new int[]{0, 0, 0});
+        res[0][0] = 0;
+
+        while(!pq.isEmpty()) {
+            int diff = pq.peek()[0];
+            int i = pq.peek()[1];
+            int j = pq.poll()[2];
+
+            for(int[] dir : direc) {
+                int i_ = i + dir[0];
+                int j_ = j + dir[1];
+                if(i_ >= 0 && i_< m && j_ >= 0 && j_ < n) {
+                    int val = Math.abs(grid[i][j] - grid[i_][j_]);
+                    val = Math.max(val, diff);
+
+                    if(res[i_][j_] > val) {
+                        res[i_][j_] = val;
+                        pq.offer(new int[]{val, i_, j_});
+                    }
+                }
+            }
+        }
+
+        return res[m - 1][n - 1];
+    }
+}
