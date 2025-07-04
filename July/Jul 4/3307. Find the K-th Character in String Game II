@@ -1,0 +1,30 @@
+class Solution {
+    public char kthCharacter(long k, int[] op) {
+        if(k == 1)
+            return 'a';
+        
+        int n = op.length;
+        long idx = 1;
+        long len = 1;
+        int optype = 0;
+
+        for(int i = 0; i < n; i++) {
+            len *= 2;
+            if(len >= k) {
+                optype = op[i];
+                idx = k - (len / 2);
+                break;
+            }
+        }
+
+        char ch = kthCharacter(idx, op);
+        if(optype == 0)
+            return ch;
+        else {
+            if(ch == 'z')
+                return 'a';
+            else
+                return (char) (ch + 1);
+        }
+    }
+}
