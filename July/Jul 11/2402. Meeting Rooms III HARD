@@ -1,0 +1,50 @@
+// approach 1
+class Solution {
+    public int mostBooked(int n, int[][] meet) {
+        int size = meet.length;
+        long[] sch = new long[n];
+        int[] count = new int[n];
+        Arrays.sort(meet, (a, b) -> Integer.compare(a[0], b[0]));
+
+        for (int i = 0; i < size; i++) {
+            long min = Long.MAX_VALUE;
+            int idx = n;
+            boolean set = false;
+
+            for (int j = 0; j < n; j++) {
+                if (sch[j] <= meet[i][0]) {
+                    sch[j] = meet[i][1];
+                    count[j]++;
+                    set = true;
+                    break;
+                } else {
+                    if (sch[j] < min || (sch[j] == min && j < idx)) {
+                        min = sch[j];
+                        idx = j;
+                    }
+                }
+
+            }
+
+            if (!set) {
+                long duration = meet[i][1] - meet[i][0];
+                sch[idx] = min + duration;
+                count[idx]++;
+            }
+        }
+
+        int idx = -1;
+        long max = -1;
+        for (int i = 0; i < n; i++) {
+            if (count[i] > max) {
+                max = count[i];
+                idx = i;
+            }
+        }
+
+        return idx;
+    }
+}
+
+
+// approach 2
