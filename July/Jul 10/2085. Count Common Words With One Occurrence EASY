@@ -1,0 +1,27 @@
+class Solution {
+    public int countWords(String[] words1, String[] words2) {
+        Map<String, Integer> map1 = getMapUtils(words1);
+        Map<String, Integer> map2 = getMapUtils(words2);
+
+        return map1.size() < map2.size() ? getIntersectionCountOfOne(map1, map2) : getIntersectionCountOfOne(map2, map1);
+    }
+
+    Map<String, Integer> getMapUtils(String[] words) {
+        Map<String, Integer> map = new HashMap<>();
+        for (String s : words)
+            map.put(s, map.getOrDefault(s, 0) + 1);
+
+        return map;
+    }
+
+    int getIntersectionCountOfOne(Map<String, Integer> map1, Map<String, Integer> map2) {
+        int result = 0;
+        
+        for (Map.Entry<String, Integer> entry : map1.entrySet()) {
+            if (entry.getValue() == 1 && map2.getOrDefault(entry.getKey(), 0) == 1)
+                result++;
+        }
+
+        return result;
+    }
+}
