@@ -1,0 +1,37 @@
+// approach 1
+class Solution {
+    public boolean isPalindrome(int x) {
+        if (x >= 0 && x < 10)
+            return true;
+        if (x < 0) {
+            return false;
+        }
+
+        return check(String.valueOf(x), 0, String.valueOf(x).length() - 1);
+    }
+
+    boolean check(String num, int start, int end) {
+        return start >= end || (num.charAt(start) == num.charAt(end) && check(num, start + 1, end - 1));
+    }
+}
+
+
+// approach 2
+class Solution {
+    public boolean isPalindrome(int xval) {
+        if (xval >= 0 && xval < 10)
+            return true;
+        if (xval < 0) {
+            return false;
+        }
+
+        int num = 0;
+        int x = xval;
+        while (x > 0) {
+            num = num * 10 + (x % 10);
+            x /= 10;
+        }
+
+        return num == xval;
+    }
+}
