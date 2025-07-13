@@ -1,0 +1,17 @@
+public class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode curra = headA;
+        ListNode currb = headB;
+
+        while (curra != null && currb != null && curra != currb) {
+            curra = curra.next;
+            currb = currb.next;
+            if(curra == null && currb != null)
+                curra = headB;
+            if(currb == null && curra != null)
+                currb = headA;
+        }
+
+        return curra;
+    }
+}
