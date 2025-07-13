@@ -1,0 +1,29 @@
+class Solution {
+    public int[] plusOne(int[] digits) {
+        ArrayList<Integer> list = new ArrayList<>();
+        int n = digits.length;
+        int carry = 1;
+        int i = n - 1;
+        
+        for (; i >= 0; i--) {
+            int sum = carry + digits[i];
+            carry = sum / 10;
+            list.add(sum % 10);
+            if(carry == 0) {
+                i--;
+                break;
+            }
+        }
+
+        for(; i >= 0; i--) {
+            list.add(digits[i]);
+        }
+
+        if(carry == 1)
+            list.add(carry);
+
+        Collections.reverse(list);
+        
+        return list.stream().mapToInt(k -> k).toArray();
+    }
+}
