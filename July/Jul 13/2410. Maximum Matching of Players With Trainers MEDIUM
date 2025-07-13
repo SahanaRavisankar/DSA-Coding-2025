@@ -1,0 +1,20 @@
+class Solution {
+    public int matchPlayersAndTrainers(int[] players, int[] trainers) {
+        int nt = trainers.length;
+        int np = players.length;
+        Arrays.sort(players);
+        Arrays.sort(trainers);
+        int i = 0, j = 0;
+        int count = 0;
+
+        while(i < np && j < nt) {
+            if(trainers[j] >= players[i]) {
+                count++;
+                i++;
+            }
+            j++;
+        }
+
+        return count;
+    }
+}
