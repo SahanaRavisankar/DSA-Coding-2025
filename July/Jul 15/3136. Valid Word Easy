@@ -1,0 +1,38 @@
+class Solution {
+    public boolean isValid(String word) {
+        int n = word.length();
+
+        if(n < 3)
+            return false;
+
+        int conso = 0, vowel = 0;
+        for(char ch : word.toCharArray()) {
+            if(validLetter(ch)) {
+                if(digitLetter(ch))
+                    continue;
+
+                if (vowelLetter(ch)) {
+                    vowel++;
+                } else {
+                    conso++;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        return conso >= 1 && vowel >= 1;
+    }
+
+    boolean validLetter(char ch) {
+        return ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') || ('0' <= ch && ch <= '9');
+    }
+
+    boolean vowelLetter(char ch) {
+        return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u' || ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U';
+    }
+
+    boolean digitLetter(char ch) {
+        return '0' <= ch && ch <= '9';
+    }
+}
