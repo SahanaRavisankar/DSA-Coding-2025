@@ -22,3 +22,26 @@ class Solution {
 
 
 // approach 2 using reverse
+class Solution {
+    public int getDecimalValue(ListNode head) {
+        head = reverse(head);
+        int num = 0;
+        int i = 0;
+        while(head != null){
+            num += Math.pow(2, i) * (head.val);
+            i++;
+            head = head.next;
+        }
+
+        return num;
+    }
+
+    ListNode reverse(ListNode head) {
+        if(head == null || head.next == null)
+            return head;
+        ListNode list = reverse(head.next);
+        head.next.next = head;
+        head.next = null;
+        return list;
+    }
+}
