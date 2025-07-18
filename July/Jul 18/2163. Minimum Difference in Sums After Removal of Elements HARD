@@ -1,0 +1,33 @@
+class Solution {
+    public long minimumDifference(int[] nums) {
+        long res = Long.MAX_VALUE;
+        int N = nums.length;
+        int n = N / 3;
+        long[] rightmax = new long[N];
+        long[] leftmin = new long[N];
+        PriorityQueue<Integer> minheap = new PriorityQueue<>();
+        PriorityQueue<Integer> maxheap = new PriorityQueue<>(Collections.reverseOrder());
+
+        long leftsum = 0, rightsum = 0;
+        for(int i = 0; i < 2 * n; i++) {
+            maxheap.offer(nums[i]);
+            leftsum += nums[i];
+            if(maxheap.size() > n)
+                leftsum -= maxheap.poll();
+            leftmin[i] = leftsum;
+        }
+        for(int i = N - 1; i >= n; i--) {
+            minheap.offer(nums[i]);
+            rightsum += nums[i];
+            if(minheap.size() > n)
+                rightsum -= minheap.poll();
+            rightmax[i] = rightsum;
+        }
+
+        for(int i = n - 1; i <= 2 * n - 1; i++){
+            res = Math.min(res, leftmin[i] - rightmax[i + 1]);
+        }
+
+        return res;
+    }
+}
