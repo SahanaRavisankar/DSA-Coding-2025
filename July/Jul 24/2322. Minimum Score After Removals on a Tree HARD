@@ -1,0 +1,72 @@
+class Solution {
+    public int minimumScore(int[] nums, int[][] edges) {
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+        for (int[] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            adj.computeIfAbsent(u, k -> new ArrayList<Integer>()).add(v);
+            adj.computeIfAbsent(v, k -> new ArrayList<Integer>()).add(u);
+        }
+
+        int n = nums.length;
+        int[] subtreexor = new int[n];
+        int[] intime = new int[n];
+        int[] outtime = new int[n];
+        int[] time = {0};
+
+        dfs(0, -1, subtreexor, intime, outtime, time, nums, adj);
+
+        int res = Integer.MAX_VALUE;
+
+        for (int u = 1; u < n; u++) {
+            for (int v = u + 1; v < n; v++) {
+                int xor1 = 0, xor2 = 0, xor3 = 0;
+                if (isAncestor(u, v, intime, outtime)) {
+                    xor1 = subtreexor[v];
+                    xor2 = subtreexor[u] ^ xor1;
+                    xor3 = subtreexor[0] ^ xor1 ^ xor2;
+                } else if (isAncestor(v, u, intime, outtime)) {
+                    xor1 = subtreexor[u];
+                    xor2 = subtreexor[v] ^ xor1;
+                    xor3 = subtreexor[0] ^ xor1 ^ xor2;
+                } else {
+                    xor1 = subtreexor[u];
+                    xor2 = subtreexor[v];
+                    xor3 = subtreexor[0] ^ xor1 ^ xor2;
+                }
+
+                int score = getScore(xor1, xor2, xor3);
+                res = Math.min(res, score);
+            }
+        }
+
+        return res;
+    }
+
+    int getScore(int xor1, int xor2, int xor3) {
+        int max = Math.max(xor1, Math.max(xor2, xor3));
+        int min = Math.min(xor1, Math.min(xor2, xor3));
+
+        return max - min;
+    }
+
+    boolean isAncestor(int u, int v, int[] intime, int[] outtime) {
+        return intime[v] >= intime[u] && outtime[u] >= outtime[v];
+    }
+
+    void dfs(int u, int parent, int[] subtreexor, int[] intime, int[] outtime, int[] time, int[] nums, Map<Integer, List<Integer>> adj) {
+        subtreexor[u] = nums[u];
+        intime[u] = time[0];
+        time[0]++;
+
+        for (int v : adj.getOrDefault(u, new ArrayList<Integer>())) {
+            if (v != parent) {
+                dfs(v, u, subtreexor, intime, outtime, time, nums, adj);
+                subtreexor[u] ^= subtreexor[v];
+            }
+        }
+
+        outtime[u] = time[0];
+        time[0]++;
+    }
+}
