@@ -1,0 +1,83 @@
+import java.util.AbstractMap;
+
+class Solution {
+
+    class Node {
+        String val;
+        String subfolder;
+        Map<String, Node> children;
+
+        Node(String val){
+            this.val = val;
+            this.subfolder = "";
+            this.children = new HashMap<>();
+        }
+    }
+
+    Node getNode(String val){
+        return new Node(val);
+    }
+
+    void insert(Node root, List<String> path){
+        for(String folder : path){
+            root.children.putIfAbsent(folder, getNode(folder));
+            root = root.children.get(folder);
+        }
+    }
+
+    String populate(Node root, Map<String, Integer> sub){
+        List<Map.Entry<String, String>> subpath = new ArrayList<>();
+        for(Map.Entry<String, Node> entry : root.children.entrySet()) {
+            String subres = populate(entry.getValue(), sub);
+            subpath.add(new AbstractMap.SimpleEntry<>(entry.getKey(), subres));
+        }
+        subpath.sort(Comparator.comparing(Map.Entry::getKey));
+
+        StringBuilder res = new StringBuilder();
+        for(Map.Entry<String, String> entry : subpath){
+            res.append("(").append(entry.getKey()).append(entry.getValue()).append(")");
+        }
+        root.subfolder = res.toString();
+        if(!res.toString().isEmpty()){
+            sub.put(res.toString(), sub.getOrDefault(res.toString(), 0) + 1);
+        }
+        return res.toString();
+    }
+
+    void remove(Node root, Map<String, Integer> submap){
+        Iterator<Map.Entry<String, Node>> it = root.children.entrySet().iterator();
+        while(it.hasNext()){
+            Map.Entry<String, Node> entry = it.next();
+            Node child = entry.getValue();
+            if(!child.subfolder.isEmpty() && submap.get(child.subfolder) > 1){
+                it.remove();
+            }else{
+                remove(child, submap);
+            }
+        }
+    }
+
+    void construct(Node root, List<String> path, List<List<String>> res){
+        for(Map.Entry<String, Node> entry : root.children.entrySet()){
+            path.add(entry.getKey());
+            res.add(new ArrayList<>(path));
+            construct(entry.getValue(), path, res);
+            path.remove(path.size() - 1);
+        }
+    }
+
+    public List<List<String>> deleteDuplicateFolder(List<List<String>> paths) {
+        Node root = getNode("/");
+
+        for(List<String> path : paths){
+            insert(root, path);
+        }
+        Map<String, Integer> submap = new HashMap<>();
+        populate(root, submap);
+        remove(root, submap);
+        List<List<String>> res = new ArrayList<>();
+        List<String> path = new ArrayList<>();
+        construct(root, path, res);
+        return res;
+    }
+}
