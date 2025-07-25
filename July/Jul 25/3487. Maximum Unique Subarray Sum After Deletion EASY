@@ -1,0 +1,52 @@
+// java
+class Solution {
+    public int maxSum(int[] nums) {
+        int max = Arrays.stream(nums).max().getAsInt();
+        if (max < 0)
+            return max;
+
+        Set<Integer> set = new HashSet<>();
+        int n = nums.length;
+        int sum = 0;
+        
+        for (int num : nums) {
+            if (!set.contains(num)) {
+                if (num >= 0) {
+                    set.add(num);
+                    sum += num;
+                }
+            }
+        }
+
+        return sum;
+    }
+}
+
+
+// javascript
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var maxSum = function(nums) {
+    const set = new Set()
+    let sum = 0
+    let max = nums[0]
+    // declare above because while calling forEach the declaration hasnt reached yet. or use var
+    nums.forEach(numberMax)
+
+    function numberMax(num) {
+        max = Math.max(max, num)
+
+        if (!set.has(num)) {
+            if (num > 0) {
+                sum += num
+                set.add(num)
+            }
+        }
+    }
+
+    if (max < 0)
+        return max
+    return sum
+};
