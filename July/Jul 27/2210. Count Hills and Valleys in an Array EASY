@@ -1,0 +1,31 @@
+class Solution {
+    public int countHillValley(int[] nums) {
+        int n = nums.length;
+        int res = 0;
+
+        for (int i = 1; i < n - 1; i++) {
+            int j = i - 1;
+            while (j >= 0 && nums[i] == nums[j]) {
+                j--;
+            }
+
+            int k = i + 1;
+            while (k < n && nums[i] == nums[k]) {
+                k++;
+            }
+
+            if (k < n && j >= 0 && check(nums, i, j, k)) {
+                res++;
+            }
+
+            i = k - 1;
+        }
+
+        return res;
+    }
+
+    boolean check(int[] nums, int i, int l, int r) {
+        return (nums[l] < nums[i] && nums[i] > nums[r]) ||
+                (nums[l] > nums[i] && nums[i] < nums[r]);
+    }
+}
