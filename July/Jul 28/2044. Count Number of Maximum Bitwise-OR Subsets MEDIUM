@@ -1,0 +1,20 @@
+class Solution {
+    public int countMaxOrSubsets(int[] nums) {
+        int max = 0;
+        int n = nums.length;
+
+        for (int num : nums)
+            max |= num;
+        
+        return solve(nums, max, 0, 0, n);
+    }
+
+    int solve(int[] nums, int max, int idx, int or, int n) {
+        if (idx == n) {
+            return (or == max) ? 1 : 0;
+        }
+
+        return solve(nums, max, idx + 1, or | nums[idx], n) +
+                solve(nums, max, idx + 1, or, n);
+    }
+}
