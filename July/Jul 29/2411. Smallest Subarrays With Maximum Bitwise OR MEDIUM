@@ -1,0 +1,23 @@
+class Solution {
+    public int[] smallestSubarrays(int[] nums) {
+        int n = nums.length;
+        int[] res = new int[n];
+        int[] setbit = new int[31];
+
+        for (int i = n - 1; i >= 0; i--) {
+            int end = i;
+            for (int j = 0; j < 31; j++) {
+                if ((nums[i] & (1 << j)) == 0) {
+                    if (setbit[j] != -1) {
+                        end = Math.max(end, setbit[j]);
+                    }
+                } else {
+                    setbit[j] = i;
+                }
+            }
+            res[i] = end - i + 1;
+        }
+
+        return res;
+    }
+}
