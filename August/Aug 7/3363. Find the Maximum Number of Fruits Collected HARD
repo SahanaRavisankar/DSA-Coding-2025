@@ -1,0 +1,116 @@
+// approach1
+class Solution {
+    public int maxCollectedFruits(int[][] fruits) {
+        int n = fruits.length;
+        int child1 = collectChild1(n, fruits);
+
+        int[][] dp = new int[n][n];
+        for (int[] t : dp)
+            Arrays.fill(t, -1);
+        int child2 = collectChild2(0, n - 1, fruits, dp, n);
+        
+        for (int[] t : dp)
+            Arrays.fill(t, -1);
+        int child3 = collectChild3(n - 1, 0, fruits, dp, n);
+
+        return child1 + child2 + child3;
+    }
+
+    int collectChild2(int i, int j, int[][] fruits, int[][] dp, int n) {
+        if (i >= n || i < 0 || j >= n || j < 0)
+            return 0;
+        if (i == n - 1 && j == n - 1)
+            return 0;
+        if (i >= j)
+            return 0;
+        if (dp[i][j] != -1)
+            return dp[i][j];
+
+        int left = fruits[i][j] + collectChild2(i + 1, j - 1, fruits, dp, n);
+        int down = fruits[i][j] + collectChild2(i + 1, j, fruits, dp, n);
+        int right = fruits[i][j] + collectChild2(i + 1, j + 1, fruits, dp, n);
+
+        return dp[i][j] = Math.max(down, Math.max(left, right));
+    }
+    
+    int collectChild3(int i, int j, int[][] fruits, int[][] dp, int n) {
+        if (i >= n || i < 0 || j >= n || j < 0)
+            return 0;
+        if (i == n - 1 && j == n - 1)
+            return 0;
+        if (i <= j)
+            return 0;
+        if (dp[i][j] != -1)
+            return dp[i][j];
+
+        int down = fruits[i][j] + collectChild3(i - 1, j + 1, fruits, dp, n);
+        int right = fruits[i][j] + collectChild3(i, j + 1, fruits, dp, n);
+        int up = fruits[i][j] + collectChild3(i + 1, j + 1, fruits, dp, n);
+
+        return dp[i][j] = Math.max(right, Math.max(up, down));
+    }
+
+    int collectChild1(int n, int[][] fruits) {
+        int child = 0;
+        for (int i = 0; i < n; i++) {
+            child += fruits[i][i];
+        }
+        return child;
+    }
+}
+
+
+// approach 2
+class Solution {
+    public int maxCollectedFruits(int[][] fruits) {
+        int n = fruits.length;
+        int child1 = collectChild1(n, fruits);
+
+        int[][] dp = new int[n][n];
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i > j && i + j < n - 1) {
+                    dp[i][j] = 0;
+                } else if (i < j && i + j < n - 1) {
+                    dp[i][j] = 0;
+                } else {
+                    dp[i][j] = fruits[i][j];
+                }
+            }
+        }
+
+        for (int i = 1; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int val = 0;
+                val = Math.max(dp[i - 1][j - 1], dp[i - 1][j]);
+                if (j + 1 < n)
+                    val = Math.max(val, dp[i - 1][j + 1]);
+                dp[i][j] += val;
+            }
+        }
+        
+        for (int j = 1; j < n; j++) {
+            for (int i = j + 1; i < n; i++) {
+                int val = 0;
+                val = Math.max(dp[i - 1][j - 1], dp[i][j - 1]);
+                if (i + 1 < n)
+                    val = Math.max(val, dp[i + 1][j - 1]);
+                dp[i][j] += val;
+            }
+        }
+
+        int child2 = dp[n - 2][n - 1];
+        int child3 = dp[n - 1][n - 2];
+
+        return child1 + child2 + child3;
+    }
+    
+    int collectChild1(int n, int[][] fruits) {
+        int child = 0;
+        for (int i = 0; i < n; i++) {
+            child += fruits[i][i];
+        }
+        return child;
+    }
+}
