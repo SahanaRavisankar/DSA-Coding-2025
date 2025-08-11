@@ -1,0 +1,29 @@
+class Solution {
+    int mod = 1_000_000_007;
+    public int[] productQueries(int n, int[][] queries) {
+        List<Integer> list = new ArrayList<>();
+        for(int i = 0; i < 32; i++){
+            int check = n & (1 << i);
+            if(check != 0) {
+                list.add(1 << i);
+            }
+        }
+
+        int[] res = new int[queries.length];
+        int idx = 0;
+
+        for(int[] query : queries) {
+            int start = query[0];
+            int end = query[1];
+            long pow = 1;
+            for(int i = start; i <= end; i++) {
+                pow = (list.get(i) * pow) % mod;
+            }
+
+            res[idx] = (int) (pow % mod);
+            idx++;
+        }
+
+        return res;
+    }
+}
