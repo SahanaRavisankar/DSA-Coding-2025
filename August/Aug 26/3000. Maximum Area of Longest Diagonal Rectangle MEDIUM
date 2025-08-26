@@ -1,0 +1,18 @@
+class Solution {
+    public int areaOfMaxDiagonal(int[][] dim) {        
+        double max = 0;
+        int res = 0;
+        for(int[] rect : dim) {
+            int i = rect[0];
+            int j = rect[1];
+            double temp = Math.sqrt(Math.pow(i, 2) + Math.pow(j, 2));
+            if(temp == max) {
+                res = Math.max(res, i * j);
+            } else if (temp > max) {
+                res = i * j;
+                max = temp;
+            }
+        }
+        return res;
+    }
+}
