@@ -1,0 +1,32 @@
+class Solution {
+    public double maxAverageRatio(int[][] classes, int extra) {
+        int n = classes.length;
+        PriorityQueue<double[]> pq = new PriorityQueue<>((a, b) -> Double.compare(b[0], a[0]));
+
+        for (int i = 0; i < n; i++) {
+            double curr = (double) classes[i][0] / classes[i][1];
+            double next = (double) (((double) classes[i][0] + 1) / (classes[i][1] + 1));
+            double diff = next - curr;
+            pq.offer(new double[]{diff, i});
+        }
+
+        while (extra-- > 0) {
+            double[] current = pq.poll();
+            int idx = (int) current[1];
+            classes[idx][0]++;
+            classes[idx][1]++;
+            double curr = (double) classes[idx][0] / classes[idx][1];
+            double next = (double) (((double) classes[idx][0] + 1) / (classes[idx][1] + 1));
+            double diff = next - curr;
+            pq.offer(new double[]{diff, idx});
+        }
+
+        double res = 0.0;
+        for(int i = 0; i < n; i++) {
+            double add = (double) classes[i][0] / classes[i][1];
+            res += add;
+        }
+
+        return res / n;
+    }
+}
