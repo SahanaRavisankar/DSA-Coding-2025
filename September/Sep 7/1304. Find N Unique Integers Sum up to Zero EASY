@@ -1,0 +1,21 @@
+class Solution {
+    public int[] sumZero(int n) {
+        if(n == 1)
+            return new int[]{0};
+        int idx = 0;
+        int val = 1;
+        int[] res = new int[n];
+        if(n % 2 == 1) {
+            res[idx] = 0;
+            idx++;
+        }
+
+        while(idx < n) {
+            res[idx++] = val;
+            res[idx++] = (val * -1);
+            val++;
+        }
+
+        return res;
+    }
+}
