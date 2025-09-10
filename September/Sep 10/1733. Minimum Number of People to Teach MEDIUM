@@ -1,0 +1,35 @@
+class Solution {
+    public int minimumTeachings(int n, int[][] languages, int[][] friendships) {
+        Set<Integer> sad = new HashSet<>();
+
+        for (int[] frnd : friendships) {
+            int u = frnd[0] - 1;
+            int v = frnd[1] - 1;
+            Set<Integer> lang = new HashSet<>();
+            for(int i : languages[u]) {
+                lang.add(i);
+            }
+            boolean present = false;
+            for (int i : languages[v]) {
+                if (lang.contains(i))
+                    present = true;
+            }
+
+            if (!present) {
+                sad.add(u);
+                sad.add(v);
+            }
+        }
+
+        int[] arr = new int[n + 1];
+        int most = 0;
+        for (int user : sad) {
+            for (int lang : languages[user]) {
+                arr[lang]++;
+                most = Math.max(most, arr[lang]);
+            }
+        }
+
+        return sad.size() - most;
+    }
+}
