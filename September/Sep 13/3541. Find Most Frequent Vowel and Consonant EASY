@@ -1,0 +1,21 @@
+class Solution {
+    public int maxFreqSum(String s) {
+        int[] freq = new int[26];
+        int vowel = 0;
+        int conso = 0;
+
+        for (char ch : s.toCharArray()) {
+            freq[ch - 'a']++;
+            if (isVowel(ch))
+                vowel = Math.max(vowel, freq[ch - 'a']);
+            else
+                conso = Math.max(conso, freq[ch - 'a']);
+        }
+
+        return vowel + conso;
+    }
+
+    boolean isVowel(char ch) {
+        return (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u');
+    }
+}
