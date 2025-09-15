@@ -1,0 +1,26 @@
+class Solution {
+    public int canBeTypedWords(String text, String brokenLetters) {
+        int count = 0;
+
+        Set<Character> set = new HashSet<>();
+        for (char ch : brokenLetters.toCharArray())
+            set.add(ch);
+
+        String[] words = text.split(" ");
+        for (String word : words) {
+            if (!check(set, word))
+                count++;
+        }
+
+        return count;
+    }
+
+    boolean check(Set<Character> set, String word) {
+        for (char ch : word.toCharArray()) {
+            if (set.contains(ch))
+                return true;
+        }
+
+        return false;
+    }
+}
