@@ -1,0 +1,64 @@
+class Spreadsheet {
+
+    int[][] sheet;
+
+    public Spreadsheet(int rows) {
+        sheet = new int[rows][26];
+        for (int[] s : sheet)
+            Arrays.fill(s, 0);
+    }
+    
+    public void setCell(String cell, int value) {
+        int[] dim = getDimention(cell);
+        sheet[dim[0]][dim[1]] = value;
+    }
+    
+    public void resetCell(String cell) {
+        int[] dim = getDimention(cell);
+        sheet[dim[0]][dim[1]] = 0;
+    }
+    
+    public int getValue(String formula) {
+        int i = 0, n = formula.length();
+        while (i < n && formula.charAt(i) != '+')
+            i++;
+        
+        String num1 = formula.substring(1, i);
+        String num2 = formula.substring(i + 1);
+        int n1 = 0, n2 = 0;
+
+        if (check(num1.charAt(0))) {
+            int[] dim = getDimention(num1);
+            n1 = sheet[dim[0]][dim[1]];
+        } else {
+            n1 = Integer.valueOf(num1);
+        }
+
+        if (check(num2.charAt(0))) {
+            int[] dim = getDimention(num2);
+            n2 = sheet[dim[0]][dim[1]];
+        } else {
+            n2 = Integer.valueOf(num2);
+        }
+
+        return n1 + n2;
+    }
+
+    int[] getDimention(String cell) {
+        int col = cell.charAt(0) - 'A';
+        int row = Integer.valueOf(cell.substring(1)) - 1;
+        return new int[]{row, col};
+    }
+
+    boolean check(char ch) {
+        return 'A' <= ch && ch <= 'Z';
+    }
+}
+
+/**
+ * Your Spreadsheet object will be instantiated and called as such:
+ * Spreadsheet obj = new Spreadsheet(rows);
+ * obj.setCell(cell,value);
+ * obj.resetCell(cell);
+ * int param_3 = obj.getValue(formula);
+ */
