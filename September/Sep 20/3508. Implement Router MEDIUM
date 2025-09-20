@@ -1,0 +1,93 @@
+class Router {
+
+    int max_limit;
+    Map<String, int[]> packetMap;
+    Map<Integer, List<Integer>> destMap;
+    Map<Integer, Integer> idx;
+    Queue<String> que;
+
+    public Router(int memoryLimit) {
+        max_limit = memoryLimit;
+        packetMap = new HashMap<>();
+        destMap = new HashMap<>();
+        idx = new HashMap<>();
+        que = new LinkedList<>();
+    }
+
+    String getKey(int s, int d, int t) {
+        return s + "_" + d + "_" + t;
+    }
+    
+    public boolean addPacket(int source, int destination, int timestamp) {
+        String key = getKey(source, destination, timestamp);
+        if (packetMap.containsKey(key))
+            return false;
+        if (packetMap.size() >= max_limit)
+            forwardPacket();
+        packetMap.put(key, new int[]{source, destination, timestamp});
+        que.offer(key);
+
+        destMap.computeIfAbsent(destination, k -> new ArrayList<>()).add(timestamp);
+        idx.putIfAbsent(destination, 0);
+
+        return true;
+    }
+    
+    public int[] forwardPacket() {
+        if (packetMap.size() == 0)
+            return new int[0];
+        String key = que.poll();
+        int[] packet = packetMap.get(key);
+        packetMap.remove(key);
+
+        int dest = packet[1];
+        int id = idx.get(dest);
+        idx.put(dest, id + 1);
+
+        return packet;
+    }
+    
+    public int getCount(int destination, int startTime, int endTime) {
+        if (!destMap.containsKey(destination))
+            return 0;
+        List<Integer> list = destMap.get(destination);
+        int id = idx.get(destination);
+        int l = lower(list, startTime, id);
+        int u = upper(list, endTime, id);
+        return u - l;
+    }
+
+    int lower(List<Integer> list, int target, int start) {
+        int low = start, high = list.size();
+        while (low < high) {
+            int mid = (low + high) / 2;
+            if (list.get(mid) >= target) {
+                high = mid;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return low;
+    }
+
+    int upper(List<Integer> list, int target, int start) {
+        int low = start, high = list.size();
+        while (low < high) {
+            int mid = (low + high) / 2;
+            if (list.get(mid) > target) {
+                high = mid;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return low;
+    }
+}
+
+/**
+ * Your Router object will be instantiated and called as such:
+ * Router obj = new Router(memoryLimit);
+ * boolean param_1 = obj.addPacket(source,destination,timestamp);
+ * int[] param_2 = obj.forwardPacket();
+ * int param_3 = obj.getCount(destination,startTime,endTime);
+ */
