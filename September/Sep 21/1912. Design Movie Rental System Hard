@@ -1,0 +1,116 @@
+class MovieRentingSystem {
+
+    class Priceshop implements Comparable<Priceshop> {
+        int price, shop;
+        Priceshop (int price, int shop) {
+            this.price = price;
+            this.shop = shop;
+        }
+        public int compareTo(Priceshop p) {
+            if (this.price != p.price) {
+                return this.price - p.price;
+            }
+            return this.shop - p.shop;
+        }
+        @Override
+        public boolean equals(Object o) {
+            if(!(o instanceof Priceshop))
+                return false;
+            Priceshop p = (Priceshop) o;
+            return p.price == price && p.shop == shop;
+        }
+        @Override
+        public int hashCode(){
+            return Objects.hash(price, shop);
+        }
+    }
+    
+    class Rentedmovie implements Comparable<Rentedmovie> {
+        int price, shop, movie;
+        Rentedmovie (int price, int shop, int movie) {
+            this.price = price;
+            this.shop = shop;
+            this.movie = movie;
+        }
+        public int compareTo(Rentedmovie p) {
+            if (this.price != p.price)
+                return this.price - p.price;
+            if (this.shop != p.shop)
+                return this.shop - p.shop;
+            return this.movie - p.movie;
+        }
+        @Override
+        public boolean equals(Object o) {
+            if(!(o instanceof Rentedmovie))
+                return false;
+            Rentedmovie p = (Rentedmovie) o;
+            return p.price == price && p.shop == shop && p.movie == movie;
+        }
+        @Override
+        public int hashCode(){
+            return Objects.hash(price, shop, movie);
+        }
+    }
+
+    Map<Integer, TreeSet<Priceshop>> avail;
+    Map<Integer, Map<Integer, Integer>> mtsp;
+    TreeSet<Rentedmovie> rented;
+
+    public MovieRentingSystem(int n, int[][] entries) {
+        avail = new HashMap<>();
+        mtsp = new HashMap<>();
+        rented = new TreeSet<>();
+        for (int[] e : entries) {
+            int shop = e[0], movie = e[1], price = e[2];
+            avail.computeIfAbsent(movie, k -> new TreeSet<>()).add(new Priceshop(price, shop));
+            mtsp.computeIfAbsent(movie, k -> new HashMap<>()).put(shop, price);
+        }
+    }
+    
+    public List<Integer> search(int movie) {
+        List<Integer> res = new ArrayList<>();
+        if(avail.containsKey(movie)){
+            int cnt = 0;
+            for(Priceshop ps : avail.get(movie)){
+                res.add(ps.shop);
+                cnt++;
+                if(cnt >= 5)
+                    break;
+            }
+        }
+        return res;
+    }
+    
+    public void rent(int shop, int movie) {
+        int price = mtsp.get(movie).get(shop);
+        avail.get(movie).remove(new Priceshop(price, shop));
+        rented.add(new Rentedmovie(price, shop, movie));
+    }
+    
+    public void drop(int shop, int movie) {
+        int price = mtsp.get(movie).get(shop);
+        avail.get(movie).add(new Priceshop(price, shop));
+        rented.remove(new Rentedmovie(price, shop, movie));
+    }
+    
+    public List<List<Integer>> report() {
+        List<List<Integer>> res = new ArrayList<>();
+        int cnt = 0;
+        for(Rentedmovie rm : rented) {
+            res.add(Arrays.asList(rm.shop, rm.movie));
+            cnt++;
+            if(cnt >= 5)
+                break;
+        }
+        return res;
+    }
+}
+
+/**
+ * Your MovieRentingSystem object will be instantiated and called as such:
+ * MovieRentingSystem obj = new MovieRentingSystem(n, entries);
+ * List<Integer> param_1 = obj.search(movie);
+ * obj.rent(shop,movie);
+ * obj.drop(shop,movie);
+ * List<List<Integer>> param_4 = obj.report();
+ */
