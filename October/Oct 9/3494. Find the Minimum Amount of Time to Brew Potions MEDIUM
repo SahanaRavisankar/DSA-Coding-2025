@@ -1,0 +1,19 @@
+class Solution {
+    public long minTime(int[] skill, int[] mana) {
+        int n = skill.length;
+        int m = mana.length;
+        long[] finish = new long[n];
+
+        for(int j = 0; j < m; j++) {
+            finish[0] += mana[j] * skill[0];
+            for( int i = 1; i < n; i++) {
+                finish[i] = Math.max(finish[i], finish[i - 1]) + ((long) mana[j] * skill[i]);
+            }
+            for(int i = n - 1; i > 0; i--){
+                finish[i - 1] = finish[i] - (long) mana[j] * (long) skill[i];
+            }
+        }
+
+        return finish[n - 1];
+    }
+}
