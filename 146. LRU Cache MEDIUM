@@ -1,0 +1,181 @@
+JAVA
+Approach 1
+class LRUCache {
+
+    static class Pair {
+        Integer key, value;
+        Pair(Integer a, Integer b) {
+            this.key = a;
+            this.value = b;
+        }
+
+        Integer getKey() {
+            return key;
+        }
+
+        Integer getValue() {
+            return value;
+        }
+    }
+
+    ArrayList<Pair> lru = new ArrayList<>();
+    int n = 0;
+
+    public LRUCache(int capacity) {
+        n = capacity;
+    }
+
+    public int get(int key) {
+        for (int i = 0; i < lru.size(); i++) {
+            Pair pair = lru.get(i);
+            if (pair.getKey() == key) {
+                lru.remove(i);
+                lru.add(pair);
+                return pair.getValue();
+            }
+        }
+        return -1;
+    }
+
+    public void put(int key, int value) {
+        Pair pair = new Pair(key, value);
+        for(int i = 0; i < lru.size(); i++) {
+            Pair p = lru.get(i);
+            if (p.getKey() == key) {
+                lru.remove(i);
+                lru.add(pair);
+                return;
+            }
+        }
+        if (lru.size() == n) {
+            lru.remove(0);
+        }
+        lru.add(pair);
+    }
+}
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
+
+Approach 2
+class DLL {
+    static class Node {
+        int val;
+        int key;
+        Node prev;
+        Node next;
+
+        Node(int k, int v) {
+            this.val = v;
+            this.key = k;
+        }
+    }
+
+    Node head;
+    Node tail;
+
+    void pushFront(Node curr) {
+        if (head == null) {
+            head = curr;
+            tail = curr;
+        } else {
+            curr.next = head;
+            head.prev = curr;
+            head = curr;
+        }
+    }
+
+    void popFront() {
+        if (head == null)
+            return;
+        if (tail == head) {
+            tail = null;
+            head = null;
+            return;
+        }
+        head = head.next;
+        head.prev = null;
+    }
+
+    void remove(Node rem) {
+        if (rem == null)
+            return;
+
+        if (rem == head) {
+            popFront();
+        } else if (rem == tail) {
+            popBack();
+        } else {
+            Node pre = rem.prev;
+            Node post = rem.next;
+            pre.next = post;
+            post.prev = pre;
+            rem.prev = null;
+            rem.next = null;
+        }
+    }
+
+    void popBack() {
+        if (tail == null)
+            return;
+        if (tail == head) {
+            tail = null;
+            head = null;
+            return;
+        }
+        Node pre = tail.prev;
+        pre.next = null;
+        tail = pre;
+    }
+}
+
+class LRUCache {
+    HashMap<Integer, DLL.Node> lru = new HashMap<>();
+    int n;
+    DLL list;
+
+    public LRUCache(int capacity) {
+        n = capacity;
+        list = new DLL();
+    }
+
+    public void makeRecent(int key) {
+        DLL.Node node = lru.get(key);
+        list.remove(node);
+        list.pushFront(node);
+    }
+
+    public int get(int key) {
+        if (!lru.containsKey(key))
+            return -1;
+        makeRecent(key);
+        return lru.get(key).val;
+    }
+
+    public void put(int key, int value) {
+        if (!lru.containsKey(key)) {
+            if (lru.size() == n) {
+                lru.remove(list.tail.key);
+                list.popBack();
+            }
+            DLL.Node node = new DLL.Node(key, value);
+            list.pushFront(node);
+            lru.put(key, node);
+        } else {
+            DLL.Node node = lru.get(key);
+            node.val = value;
+            makeRecent(key);
+        }
+    }
+}
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
